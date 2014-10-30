@@ -1,0 +1,25 @@
+#
+# Copyright 2010-2014 Fabric Software Inc. All rights reserved.
+#
+
+Import('parentEnv', 'capiIncludeDir')
+
+env = parentEnv.CloneSubStage('ASTWrapper')
+
+env.Append(CPPDEFINES = ['FEC_SHARED'])
+env.Append(CPPPATH = [capiIncludeDir])
+
+sources = Glob('*.cpp')
+
+astWrapperLib = env.StaticLibrary('Fabric-ASTWrapper', sources)
+
+astWrapperIncludeDir = env.Dir('.')
+
+astWrapperFlags = {
+  'CPPPATH': [astWrapperIncludeDir],
+  'LIBS': [astWrapperLib]
+}
+
+Export('astWrapperLib', 'astWrapperIncludeDir', 'astWrapperFlags')
+Alias('astWrapper', astWrapperLib)
+Return('astWrapperLib')
