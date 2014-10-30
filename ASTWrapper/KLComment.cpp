@@ -10,3 +10,7 @@ KLComment::KLComment(const Variant & data)
 {
 }
 
+bool KLComment::isInternal() const
+{
+  return true;
+}

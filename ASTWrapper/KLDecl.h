@@ -5,6 +5,8 @@
 
 #include <FabricCore.h>
 
+#include <string>
+
 namespace FabricCore
 {
 
@@ -14,10 +16,27 @@ namespace FabricCore
     class KLDecl
     {
     public:
+
       KLDecl(const FabricCore::Variant & data);
 
+      virtual bool isInternal() const = 0;
+      virtual unsigned int getID() const;
+      virtual FabricCore::Variant getJSON() const;
+      virtual const std::string & getExtension() const;
+      virtual const std::string & getKLFile() const;
+
     private:
-      FabricCore::Variant data;
+
+      virtual void setExtension(const std::string & extension);
+      virtual void setKLFile(const std::string & klFile);
+
+      const FabricCore::Variant * getDictValue(const char * key);
+      const char * getStringDictValue(const char * key);
+
+      unsigned int m_id;
+      FabricCore::Variant m_data;
+      std::string m_extension;
+      std::string m_klFile;
     };
 
   };
