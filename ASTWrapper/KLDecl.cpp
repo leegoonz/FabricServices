@@ -14,19 +14,13 @@ KLDecl::KLDecl(const Variant & data)
 
   if(data.isDict())
   {
-    const Variant * owningExtName = data.getDictValue("owningExtName");
+    const char * owningExtName = getStringDictValue("owningExtName");
     if(owningExtName)
-    {
-      if(owningExtName)
-    }
-
-
-      if data.has_key('owningExtName'):
-        self.__ext = data['owningExtName']
+      m_extension = owningExtName;      
   }
 }
 
-const std::string & KLDecl::getID() const
+unsigned int KLDecl::getID() const
 {
   return m_id;
 }
@@ -66,7 +60,7 @@ const FabricCore::Variant * KLDecl::getDictValue(const char * key)
 
 const char * KLDecl::getStringDictValue(const char * key)
 {
-  const Variant * value = data.getDictValue(key);
+  const Variant * value = getDictValue(key);
   if(!value)
     return NULL;
 
