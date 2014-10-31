@@ -21,7 +21,6 @@ namespace FabricServices
 
       virtual bool isInternal() const = 0;
       virtual unsigned int getID() const;
-      virtual JSONData getJSON() const;
       virtual const std::string & getExtension() const;
       virtual const std::string & getKLFile() const;
 
@@ -31,8 +30,14 @@ namespace FabricServices
       virtual void setExtension(const std::string & extension);
       virtual void setKLFile(const std::string & klFile);
 
-      JSONData getDictValue(const char * key);
-      const char * getStringDictValue(const char * key);
+      unsigned int getArraySize() const;
+      const char * getStringArrayElement(unsigned int index) const;
+      const char * getStringDictValue(const char * key) const;
+
+      JSONData getArrayElement(unsigned int index) const;
+      JSONData getDictValue(const char * key) const;
+
+    private:
 
       unsigned int m_id;
       JSONData m_data;

@@ -26,6 +26,8 @@ namespace FabricServices
       
       KLConstant(JSONData data);
 
+    private:
+      
       std::string m_name;
       std::string m_type;
     };

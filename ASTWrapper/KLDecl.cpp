@@ -22,11 +22,6 @@ unsigned int KLDecl::getID() const
   return m_id;
 }
 
-JSONData KLDecl::getJSON() const
-{
-  return m_data;
-}
-
 const std::string & KLDecl::getExtension() const
 {
   return m_extension;
@@ -47,15 +42,25 @@ void KLDecl::setKLFile(const std::string & klFile)
   m_klFile = klFile;
 }
 
-JSONData KLDecl::getDictValue(const char * key)
+unsigned int KLDecl::getArraySize() const
 {
-  if(!m_data->isDict())
-    return NULL;
-
-  return m_data->getDictValue(key);
+  if(!m_data->isArray())
+    return 0;
+  return m_data->getArraySize();
 }
 
-const char * KLDecl::getStringDictValue(const char * key)
+const char * KLDecl::getStringArrayElement(unsigned int index) const
+{
+  JSONData value = getArrayElement(index);
+  if(!value)
+    return NULL;
+  if(!value->isString())
+    return NULL;
+  return value->getStringData();
+
+}
+
+const char * KLDecl::getStringDictValue(const char * key) const
 {
   JSONData value = getDictValue(key);
   if(!value)
@@ -65,4 +70,19 @@ const char * KLDecl::getStringDictValue(const char * key)
     return NULL;
 
   return value->getStringData();
+}
+
+JSONData KLDecl::getArrayElement(unsigned int index) const
+{
+  if(!m_data->isArray())
+    return NULL;
+  return m_data->getArrayElement(index);
+}
+
+JSONData KLDecl::getDictValue(const char * key) const
+{
+  if(!m_data->isDict())
+    return NULL;
+
+  return m_data->getDictValue(key);
 }

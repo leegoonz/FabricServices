@@ -23,6 +23,8 @@ namespace FabricServices
     protected:
 
       KLCommented(JSONData data);
+
+    private:
       
       KLComment * m_comments;
     };
