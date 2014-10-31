@@ -1,4 +1,4 @@
-// Copyright 2010-2013 Fabric Engine Inc. All rights reserved.
+// Copyright 2010-2014 Fabric Engine Inc. All rights reserved.
 
 #include "KLDecl.h"
 
@@ -7,7 +7,7 @@ using namespace ASTWrapper;
 
 unsigned int gNumKLDeclInstances = 0;
 
-KLDecl::KLDecl(const Variant & data)
+KLDecl::KLDecl(const Variant * data)
 {
   m_data = data;
   m_id = gNumKLDeclInstances++;
@@ -25,7 +25,7 @@ unsigned int KLDecl::getID() const
   return m_id;
 }
 
-Variant KLDecl::getJSON() const
+const Variant * KLDecl::getJSON() const
 {
   return m_data;
 }
@@ -52,10 +52,10 @@ void KLDecl::setKLFile(const std::string & klFile)
 
 const FabricCore::Variant * KLDecl::getDictValue(const char * key)
 {
-  if(!m_data.isDict())
+  if(!m_data->isDict())
     return NULL;
 
-  return m_data.getDictValue(key);
+  return m_data->getDictValue(key);
 }
 
 const char * KLDecl::getStringDictValue(const char * key)

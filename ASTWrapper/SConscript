@@ -2,10 +2,11 @@
 # Copyright 2010-2014 Fabric Software Inc. All rights reserved.
 #
 
-Import('parentEnv', 'capiIncludeDir')
+Import('parentEnv', 'capiIncludeDir', 'boostFlags')
 
 env = parentEnv.CloneSubStage('ASTWrapper')
 
+env.MergeFlags(boostFlags)
 env.Append(CPPDEFINES = ['FEC_SHARED'])
 env.Append(CPPPATH = [capiIncludeDir])
 

@@ -1,4 +1,4 @@
-// Copyright 2010-2013 Fabric Engine Inc. All rights reserved.
+// Copyright 2010-2014 Fabric Engine Inc. All rights reserved.
 
 #ifndef __ASTWrapper_KLComment__
 #define __ASTWrapper_KLComment__
@@ -19,8 +19,10 @@ namespace FabricCore
     class KLComment : public KLDecl
     {
     public:
+
+      typedef boost::smart_ptr<KLComment> Ptr;
       
-      KLComment(const FabricCore::Variant & data);
+      KLComment(const FabricCore::Variant * data);
 
       virtual bool isInternal() const;
 

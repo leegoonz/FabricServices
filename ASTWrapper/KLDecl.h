@@ -1,4 +1,4 @@
-// Copyright 2010-2013 Fabric Engine Inc. All rights reserved.
+// Copyright 2010-2014 Fabric Engine Inc. All rights reserved.
 
 #ifndef __ASTWrapper_KLDecl__
 #define __ASTWrapper_KLDecl__
@@ -6,6 +6,8 @@
 #include <FabricCore.h>
 
 #include <string>
+
+#include <boost/smart_ptr.hpp>
 
 namespace FabricCore
 {
@@ -17,11 +19,11 @@ namespace FabricCore
     {
     public:
 
-      KLDecl(const FabricCore::Variant & data);
+      KLDecl(const FabricCore::Variant * data);
 
       virtual bool isInternal() const = 0;
       virtual unsigned int getID() const;
-      virtual FabricCore::Variant getJSON() const;
+      virtual const FabricCore::Variant * getJSON() const;
       virtual const std::string & getExtension() const;
       virtual const std::string & getKLFile() const;
 
@@ -34,7 +36,7 @@ namespace FabricCore
       const char * getStringDictValue(const char * key);
 
       unsigned int m_id;
-      FabricCore::Variant m_data;
+      const FabricCore::Variant * m_data;
       std::string m_extension;
       std::string m_klFile;
     };
