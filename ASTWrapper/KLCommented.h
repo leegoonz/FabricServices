@@ -18,7 +18,12 @@ namespace FabricServices
     {
     public:
 
-      const KLComment * getComments() const;
+      virtual ~KLCommented();
+
+      virtual bool isInternal() const;
+      virtual void setExtension(const std::string & extension);
+      virtual void setKLFile(const std::string & klFile);
+      virtual const KLComment * getComments() const;
 
     protected:
 

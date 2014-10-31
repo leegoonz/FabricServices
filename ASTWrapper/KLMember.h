@@ -1,13 +1,11 @@
 // Copyright 2010-2014 Fabric Engine Inc. All rights reserved.
 
-#ifndef __ASTWrapper_KLConstant__
-#define __ASTWrapper_KLConstant__
+#ifndef __ASTWrapper_KLMember__
+#define __ASTWrapper_KLMember__
 
-#include "KLDecl.h"
+#include "KLCommented.h"
 
 #include <string>
-#include <map>
-#include <vector>
 
 namespace FabricServices
 {
@@ -15,18 +13,18 @@ namespace FabricServices
   namespace ASTWrapper
   {
 
-    class KLConstant : public KLDecl
+    class KLMember : public KLCommented
     {
     public:
 
-      virtual ~KLConstant();
+      virtual ~KLMember();
 
       const std::string & getName() const;
       const std::string & getType() const;
 
     protected:
-      
-      KLConstant(JSONData data);
+
+      KLMember(JSONData data);
 
     private:
       
@@ -39,4 +37,4 @@ namespace FabricServices
 };
 
 
-#endif // __ASTWrapper_KLConstant__
+#endif // __ASTWrapper_KLMember__

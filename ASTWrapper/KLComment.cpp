@@ -12,6 +12,10 @@ KLComment::KLComment(JSONData data)
 {
 }
 
+KLComment::~KLComment()
+{
+}
+
 bool KLComment::isInternal() const
 {
   return true;

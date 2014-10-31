@@ -19,6 +19,7 @@ namespace FabricServices
     {
     public:
 
+      virtual ~KLDecl();
       virtual bool isInternal() const = 0;
       virtual unsigned int getID() const;
       virtual const std::string & getExtension() const;
@@ -36,6 +37,9 @@ namespace FabricServices
 
       JSONData getArrayElement(unsigned int index) const;
       JSONData getDictValue(const char * key) const;
+      JSONData getArrayDictValue(const char * key) const;
+
+      static const KLDecl * getKLDeclByID(unsigned int id);
 
     private:
 

@@ -2,19 +2,35 @@
 
 #include "KLDecl.h"
 
+#include <map>
+
 using namespace FabricServices::ASTWrapper;
 
-// todo: add a mutex around this
 unsigned int gNumKLDeclInstances = 0;
+std::map<unsigned int, KLDecl*> s_allDecls;
 
 KLDecl::KLDecl(JSONData data)
 {
   m_data = data;
+
+  // todo: thread safety
   m_id = gNumKLDeclInstances++;
+
+  // todo: thread safety
+  if(s_allDecls.find(m_id) == s_allDecls.end())
+    s_allDecls.insert(std::pair<unsigned int, KLDecl*>(m_id, this));
 
   const char * owningExtName = getStringDictValue("owningExtName");
   if(owningExtName)
     m_extension = owningExtName;      
+}
+
+KLDecl::~KLDecl()
+{
+  // todo: thread safety
+  std::map<unsigned int, KLDecl*>::iterator it = s_allDecls.find(m_id);
+  if(it != s_allDecls.end())
+    s_allDecls.erase(it);
 }
 
 unsigned int KLDecl::getID() const
@@ -85,4 +101,22 @@ JSONData KLDecl::getDictValue(const char * key) const
     return NULL;
 
   return m_data->getDictValue(key);
+}
+
+JSONData KLDecl::getArrayDictValue(const char * key) const
+{
+  JSONData result = getDictValue(key);
+  if(!result)
+    return NULL;
+  if(!result->isArray())
+    return NULL;
+  return result;
+}
+
+const KLDecl * KLDecl::getKLDeclByID(unsigned int id)
+{
+  std::map<unsigned int, KLDecl*>::iterator it = s_allDecls.find(id);
+  if(it != s_allDecls.end())
+    return it->second;
+  return NULL;
 }

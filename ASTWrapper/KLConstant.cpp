@@ -7,5 +7,20 @@ using namespace FabricServices::ASTWrapper;
 KLConstant::KLConstant(JSONData data)
 : KLDecl(data)
 {
+  m_name = getDictValue("constDecl")->getDictValue("name")->getStringData();
+  m_type = getDictValue("constDecl")->getDictValue("type")->getStringData();
 }
 
+KLConstant::~KLConstant()
+{
+}
+
+const std::string & KLConstant::getName() const
+{
+  return m_name;
+}
+
+const std::string & KLConstant::getType() const
+{
+  return m_type;
+}

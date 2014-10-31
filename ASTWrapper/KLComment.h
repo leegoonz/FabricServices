@@ -21,6 +21,8 @@ namespace FabricServices
       
     public:
       
+      virtual ~KLComment();
+
       virtual bool isInternal() const;
       bool isEmpty();
       bool hasQualifier(const char * qualifier);

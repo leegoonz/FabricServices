@@ -14,6 +14,33 @@ KLCommented::KLCommented(JSONData data)
     m_comments = NULL;
 }
 
+KLCommented::~KLCommented()
+{
+  if(m_comments)
+    delete(m_comments);
+}
+
+bool KLCommented::isInternal() const
+{
+  if(!m_comments)
+    return false;
+  return m_comments->hasQualifier("internal");
+}
+
+void KLCommented::setExtension(const std::string & extension)
+{
+  KLDecl::setExtension(extension);
+  if(m_comments)
+    m_comments->setExtension(extension);
+}
+
+void KLCommented::setKLFile(const std::string & klFile)
+{
+  KLDecl::setKLFile(klFile);
+  if(m_comments)
+    m_comments->setKLFile(klFile);
+}
+
 const KLComment * KLCommented::getComments() const
 {
   return m_comments;
