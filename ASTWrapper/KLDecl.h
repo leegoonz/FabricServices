@@ -7,36 +7,35 @@
 
 #include <string>
 
-#include <boost/smart_ptr.hpp>
-
-namespace FabricCore
+namespace FabricServices
 {
 
   namespace ASTWrapper
   {
 
+    typedef const FabricCore::Variant * JSONData;
+
     class KLDecl
     {
     public:
 
-      KLDecl(const FabricCore::Variant * data);
-
       virtual bool isInternal() const = 0;
       virtual unsigned int getID() const;
-      virtual const FabricCore::Variant * getJSON() const;
+      virtual JSONData getJSON() const;
       virtual const std::string & getExtension() const;
       virtual const std::string & getKLFile() const;
 
-    private:
+    protected:
 
+      KLDecl(JSONData data);
       virtual void setExtension(const std::string & extension);
       virtual void setKLFile(const std::string & klFile);
 
-      const FabricCore::Variant * getDictValue(const char * key);
+      JSONData getDictValue(const char * key);
       const char * getStringDictValue(const char * key);
 
       unsigned int m_id;
-      const FabricCore::Variant * m_data;
+      JSONData m_data;
       std::string m_extension;
       std::string m_klFile;
     };

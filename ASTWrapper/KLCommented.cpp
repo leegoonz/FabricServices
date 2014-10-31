@@ -2,18 +2,19 @@
 
 #include "KLCommented.h"
 
-using namespace FabricCore;
-using namespace ASTWrapper;
+using namespace FabricServices::ASTWrapper;
 
-KLCommented::KLCommented(const Variant * data)
+KLCommented::KLCommented(JSONData data)
 : KLDecl(data)
 {
-  const Variant * preComments = getDictValue("preComments");
+  JSONData preComments = getDictValue("preComments");
   if(preComments)
-    m_comments = KLComment::Ptr(new KLComment(preComments));
+    m_comments = new KLComment(preComments);
+  else
+    m_comments = NULL;
 }
 
-KLComment::Ptr KLCommented::getComments() const
+const KLComment * KLCommented::getComments() const
 {
   return m_comments;
 }

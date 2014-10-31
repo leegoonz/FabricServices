@@ -2,22 +2,19 @@
 
 #include "KLDecl.h"
 
-using namespace FabricCore;
-using namespace ASTWrapper;
+using namespace FabricServices::ASTWrapper;
 
+// todo: add a mutex around this
 unsigned int gNumKLDeclInstances = 0;
 
-KLDecl::KLDecl(const Variant * data)
+KLDecl::KLDecl(JSONData data)
 {
   m_data = data;
   m_id = gNumKLDeclInstances++;
 
-  if(data.isDict())
-  {
-    const char * owningExtName = getStringDictValue("owningExtName");
-    if(owningExtName)
-      m_extension = owningExtName;      
-  }
+  const char * owningExtName = getStringDictValue("owningExtName");
+  if(owningExtName)
+    m_extension = owningExtName;      
 }
 
 unsigned int KLDecl::getID() const
@@ -25,7 +22,7 @@ unsigned int KLDecl::getID() const
   return m_id;
 }
 
-const Variant * KLDecl::getJSON() const
+JSONData KLDecl::getJSON() const
 {
   return m_data;
 }
@@ -50,7 +47,7 @@ void KLDecl::setKLFile(const std::string & klFile)
   m_klFile = klFile;
 }
 
-const FabricCore::Variant * KLDecl::getDictValue(const char * key)
+JSONData KLDecl::getDictValue(const char * key)
 {
   if(!m_data->isDict())
     return NULL;
@@ -60,7 +57,7 @@ const FabricCore::Variant * KLDecl::getDictValue(const char * key)
 
 const char * KLDecl::getStringDictValue(const char * key)
 {
-  const Variant * value = getDictValue(key);
+  JSONData value = getDictValue(key);
   if(!value)
     return NULL;
 

@@ -2,10 +2,9 @@
 
 #include "KLComment.h"
 
-using namespace FabricCore;
-using namespace ASTWrapper;
+using namespace FabricServices::ASTWrapper;
 
-KLComment::KLComment(const Variant * data)
+KLComment::KLComment(JSONData data)
 : KLDecl(data)
 {
 }

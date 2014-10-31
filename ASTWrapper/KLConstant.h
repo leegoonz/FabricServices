@@ -3,14 +3,13 @@
 #ifndef __ASTWrapper_KLConstant__
 #define __ASTWrapper_KLConstant__
 
-#include <FabricCore.h>
 #include "KLDecl.h"
 
 #include <string>
 #include <map>
 #include <vector>
 
-namespace FabricCore
+namespace FabricServices
 {
 
   namespace ASTWrapper
@@ -20,14 +19,13 @@ namespace FabricCore
     {
     public:
 
-      typedef boost::smart_ptr<KLConstant> Ptr;
-
-      KLConstant(const FabricCore::Variant * data);
-
       const std::string & getName() const;
       const std::string & getType() const;
 
-    private:
+    protected:
+      
+      KLConstant(JSONData data);
+
       std::string m_name;
       std::string m_type;
     };

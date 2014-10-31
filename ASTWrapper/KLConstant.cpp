@@ -2,10 +2,9 @@
 
 #include "KLConstant.h"
 
-using namespace FabricCore;
-using namespace ASTWrapper;
+using namespace FabricServices::ASTWrapper;
 
-KLConstant::KLConstant(const Variant * data)
+KLConstant::KLConstant(JSONData data)
 : KLDecl(data)
 {
 }

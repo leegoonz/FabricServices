@@ -3,12 +3,12 @@
 #ifndef __ASTWrapper_KLCommented__
 #define __ASTWrapper_KLCommented__
 
-#include <FabricCore.h>
 #include "KLDecl.h"
+#include "KLComment.h"
 
 #include <string>
 
-namespace FabricCore
+namespace FabricServices
 {
 
   namespace ASTWrapper
@@ -18,15 +18,13 @@ namespace FabricCore
     {
     public:
 
-      typedef boost::smart_ptr<KLCommented> Ptr;
+      const KLComment * getComments() const;
 
-      KLCommented(const FabricCore::Variant * data);
+    protected:
 
-      KLComment::Ptr getComments() const;
-
-
-    private:
-      KLComment::Ptr m_comments;
+      KLCommented(JSONData data);
+      
+      KLComment * m_comments;
     };
 
   };

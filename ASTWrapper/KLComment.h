@@ -3,14 +3,13 @@
 #ifndef __ASTWrapper_KLComment__
 #define __ASTWrapper_KLComment__
 
-#include <FabricCore.h>
 #include "KLDecl.h"
 
 #include <string>
 #include <map>
 #include <vector>
 
-namespace FabricCore
+namespace FabricServices
 {
 
   namespace ASTWrapper
@@ -18,15 +17,16 @@ namespace FabricCore
 
     class KLComment : public KLDecl
     {
-    public:
-
-      typedef boost::smart_ptr<KLComment> Ptr;
+      friend class KLCommented;
       
-      KLComment(const FabricCore::Variant * data);
-
+    public:
+      
       virtual bool isInternal() const;
 
-    private:
+    protected:
+
+      KLComment(JSONData data);
+
       std::vector<std::string> m_lines;
       std::map<std::string, std::string> m_qualifiers;
     };
