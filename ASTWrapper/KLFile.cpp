@@ -55,6 +55,11 @@ KLFile::KLFile(const FabricCore::Client * client, const char * extension, const 
       KLConstant * e = new KLConstant(element);
       m_constants.push_back(e);
     }
+    else if(et == "Function")
+    {
+      KLFunction * e = new KLFunction(element);
+      m_functions.push_back(e);
+    }
     else
     {
       std::string message = "Unknown AST token '"+et+"'.";
