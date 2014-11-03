@@ -28,3 +28,8 @@ const char * KLInterface::getKLType() const
 {
   return "interface";
 }
+
+std::vector<const KLType*> KLInterface::getParents() const
+{
+  return std::vector<const KLType*>(); 
+}

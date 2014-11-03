@@ -20,6 +20,7 @@ namespace FabricServices
       virtual ~KLInterface();
 
       virtual const char * getKLType() const;
+      virtual std::vector<const KLType*> getParents() const = 0;
 
     protected:
 

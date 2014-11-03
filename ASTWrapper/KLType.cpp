@@ -90,10 +90,43 @@ const KLMethod * KLType::getMethod(const char * labelOrName) const
 
 std::vector<const KLMethod*> KLType::getMethods(bool includeInherited, bool includeInternal, const char * category) const
 {
+  std::map<std::string, const KLMethod*> lookup;
+  for(uint32_t i=0;i<m_methods.size();i++)
+  {
+    if(!includeInternal && m_methods[i]->isInternal())
+      continue;
+
+    if(category)
+    {
+      if(m_methods[i]->getComments()->getSingleQualifier("category", category) != category)
+        continue;
+    }
+
+    std::string key = m_methods[i]->getLabel();
+    lookup.insert(std::pair<std::string, const KLMethod*>(key,m_methods[i]));
+  }
+
+  if(includeInherited)
+  {
+    std::vector<const KLType*> parents = getParents();
+    for(uint32_t i=0;i<parents.size();i++)
+    {
+      std::vector<const KLMethod*> methods = parents[i]->getMethods(includeInherited, includeInternal, category);
+      for(uint32_t j=0;j<methods.size();j++)
+      {
+        std::string key = m_methods[j]->getLabel();
+        if(lookup.find(key) != lookup.end())
+          continue;
+        lookup.insert(std::pair<std::string, const KLMethod*>(key,methods[j]));
+      }
+    }
+  }
+
   std::vector<const KLMethod*> methods;
-
-  // todo
-
+  for(std::map<std::string, const KLMethod*>::const_iterator it = lookup.begin(); it != lookup.end(); it++)
+  {
+    methods.push_back(it->second);
+  }
   return methods;
 }
 

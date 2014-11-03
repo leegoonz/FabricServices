@@ -24,11 +24,11 @@ namespace FabricServices
       virtual ~KLComment();
 
       virtual bool isInternal() const;
-      bool isEmpty();
-      bool hasQualifier(const char * qualifier);
-      std::string getQualifier(const char * qualifier = 0, const char * defaultResult = 0);
-      std::string getSingleQualifier(const char * qualifier, const char * defaultResult = 0);
-      std::string getQualifierBracket(const char * qualifier, const char * defaultResult = 0);
+      bool isEmpty() const;
+      bool hasQualifier(const char * qualifier) const;
+      std::string getQualifier(const char * qualifier = 0, const char * defaultResult = 0) const;
+      std::string getSingleQualifier(const char * qualifier, const char * defaultResult = 0) const;
+      std::string getQualifierBracket(const char * qualifier, const char * defaultResult = 0) const;
 
     protected:
 
@@ -36,10 +36,10 @@ namespace FabricServices
 
     private:
 
-      void gatherDoxygenContent();
+      void gatherDoxygenContent() const;
 
-      std::vector<std::string> m_content;
-      std::map<std::string, std::string> m_qualifiers;
+      mutable std::vector<std::string> m_content;
+      mutable std::map<std::string, std::string> m_qualifiers;
     };
 
   };

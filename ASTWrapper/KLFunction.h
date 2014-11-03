@@ -29,8 +29,8 @@ namespace FabricServices
       const KLParameter * getParameter(uint32_t index) const;
 
       virtual bool isMethod() const;
-      virtual std::string getPrefix() const;
-      virtual std::string getSuffix() const;
+      virtual std::string getPrefix() const; // the prefix of the function *may* be something like 'Vec3.'
+      virtual std::string getSuffix() const; // the suffix can be '!' or '?'
       virtual const char * getKLType() const;
       virtual std::string getKLCode(bool includeReturnType = true, bool includeKeyWord = true, bool includePrefix = true, bool includeName = true) const;
       virtual std::string getLabel() const;

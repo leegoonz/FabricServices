@@ -25,6 +25,7 @@ namespace FabricServices
 
       const std::string & getName() const;
       virtual const char * getKLType() const = 0;
+      virtual std::vector<const KLType*> getParents() const = 0;
 
       uint32_t getMethodCount() const;
       const KLMethod * getMethod(uint32_t index) const;

@@ -17,7 +17,7 @@ KLMethod::KLMethod(JSONData data, const std::string & thisType)
   if(thisUsage)
     m_thisUsage = thisUsage;
   else
-    m_thisUsage = "io";
+    m_thisUsage = "in";
 }
 
 KLMethod::~KLMethod()

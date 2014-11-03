@@ -21,7 +21,7 @@ bool KLComment::isInternal() const
   return true;
 }
 
-void KLComment::gatherDoxygenContent()
+void KLComment::gatherDoxygenContent() const
 {
   if(m_content.size() > 0)
     return;
@@ -60,19 +60,19 @@ void KLComment::gatherDoxygenContent()
   }
 }
 
-bool KLComment::isEmpty()
+bool KLComment::isEmpty() const
 {
   gatherDoxygenContent();
   return m_content.size() == 0;
 }
 
-bool KLComment::hasQualifier(const char * qualifier)
+bool KLComment::hasQualifier(const char * qualifier) const
 {
   std::string result = getQualifier(qualifier);
   return result.length() > 0;
 }
 
-std::string KLComment::getQualifier(const char * qualifier, const char * defaultResult)
+std::string KLComment::getQualifier(const char * qualifier, const char * defaultResult) const
 {
   std::string q;
   if(qualifier)
@@ -138,7 +138,7 @@ std::string KLComment::getQualifier(const char * qualifier, const char * default
   return result;
 }
 
-std::string KLComment::getSingleQualifier(const char * qualifier, const char * defaultResult)
+std::string KLComment::getSingleQualifier(const char * qualifier, const char * defaultResult) const
 {
   std::string q = getQualifier(qualifier, defaultResult);
   if(q.length() == 0)
@@ -150,7 +150,7 @@ std::string KLComment::getSingleQualifier(const char * qualifier, const char * d
   return lines[0];
 }
 
-std::string KLComment::getQualifierBracket(const char * qualifier, const char * defaultResult)
+std::string KLComment::getQualifierBracket(const char * qualifier, const char * defaultResult) const
 {
   if(!qualifier)
     return "";
