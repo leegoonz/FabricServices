@@ -48,12 +48,42 @@ std::vector<const KLType*> KLStruct::getParents() const
   return parents;
 }
 
-uint32_t KLStruct::getMemberCount() const
+uint32_t KLStruct::getMemberCount(bool includeInherited) const
 {
-  return m_members.size();
+  if(!includeInherited)
+    return m_members.size();
+
+  std::vector<const KLType*> parents = getParents();
+  uint32_t result = 0;
+  for(uint32_t i=0;i<parents.size();i++)
+  {
+    if(parents[i]->getKLType() == std::string("struct"))
+    {
+      const KLStruct* parentStruct = (const KLStruct*)parents[i];
+      result += parentStruct->getMemberCount(true);
+    }    
+  }
+  return result + m_members.size();
 }
 
-const KLMember * KLStruct::getMember(uint32_t index) const
+const KLMember * KLStruct::getMember(uint32_t index, bool includeInherited) const
 {
-  return m_members[index];
+  if(!includeInherited)
+    return m_members[index];
+
+  std::vector<const KLType*> parents = getParents();
+  uint32_t offset = index;
+  uint32_t result = 0;
+  for(uint32_t i=0;i<parents.size();i++)
+  {
+    if(parents[i]->getKLType() == std::string("struct") || parents[i]->getKLType() == std::string("object")) 
+    {
+      const KLStruct* parentStruct = (const KLStruct*)parents[i];
+      uint32_t memberCount = parentStruct->getMemberCount(true);
+      if(offset < memberCount)
+        return parentStruct->getMember(offset);
+      offset -= memberCount;
+    }    
+  }
+  return m_members[offset];
 }

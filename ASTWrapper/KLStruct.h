@@ -25,8 +25,8 @@ namespace FabricServices
       virtual const char * getKLType() const;
       virtual std::vector<const KLType*> getParents() const;
 
-      virtual uint32_t getMemberCount() const;
-      virtual const KLMember * getMember(uint32_t index) const;
+      virtual uint32_t getMemberCount(bool includeInherited = true) const;
+      virtual const KLMember * getMember(uint32_t index, bool includeInherited = true) const;
 
     protected:
 
