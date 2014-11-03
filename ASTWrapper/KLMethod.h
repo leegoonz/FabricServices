@@ -26,6 +26,7 @@ namespace FabricServices
       const std::string & getThisUsage() const;
 
       virtual bool isMethod() const;
+      virtual bool isVirtual() const;
       virtual std::string getPrefix() const;
       virtual std::string getSuffix() const;
       virtual const KLComment * getComments() const;
@@ -38,6 +39,7 @@ namespace FabricServices
       
       std::string m_thisType;
       std::string m_thisUsage;
+      mutable int m_isVirtual;
     };
 
   };

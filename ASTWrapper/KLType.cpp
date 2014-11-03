@@ -114,6 +114,8 @@ std::vector<const KLMethod*> KLType::getMethods(bool includeInherited, bool incl
       std::vector<const KLMethod*> methods = parents[i]->getMethods(includeInherited, includeInternal, category);
       for(uint32_t j=0;j<methods.size();j++)
       {
+        if(!methods[j]->isVirtual())
+          continue;
         std::string key = m_methods[j]->getLabel();
         if(lookup.find(key) != lookup.end())
           continue;
@@ -140,6 +142,8 @@ const KLType * KLType::getKLTypeByName(const char * name)
 
 void KLType::pushMethod(KLMethod * method)
 {
+  WriteLock w_lock(gKLTypeLock);
+
   m_methodLabelToId.insert(std::pair<std::string, uint32_t>(method->getLabel(), (uint32_t)m_methods.size()));
   m_methods.push_back(method);
 }
