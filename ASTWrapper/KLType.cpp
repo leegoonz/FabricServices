@@ -140,7 +140,7 @@ const KLType * KLType::getKLTypeByName(const char * name)
   return NULL;
 }
 
-void KLType::pushMethod(KLMethod * method)
+void KLType::pushMethod(KLMethod * method) const
 {
   WriteLock w_lock(gKLTypeLock);
 

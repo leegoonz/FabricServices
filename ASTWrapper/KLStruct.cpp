@@ -10,11 +10,23 @@ KLStruct::KLStruct(JSONData data)
   const char * parentStructName = getStringDictValue("parentStructName");
   if(parentStructName)
     m_parentStructName = parentStructName;
+
+  JSONData members = getArrayDictValue("members");
+  if(members)
+  {
+    for(uint32_t i=0;i<members->getArraySize();i++)
+    {
+      KLMember * member = new KLMember(members->getArrayElement(i));
+      m_members.push_back(member);
+    }
+  }
 }
 
 KLStruct::~KLStruct()
 {
   // KLMethods are deleted by the KLType destructor
+  for(uint32_t i=0;i<m_members.size();i++)
+    delete(m_members[i]);
 }
 
 const char * KLStruct::getKLType() const
@@ -34,4 +46,14 @@ std::vector<const KLType*> KLStruct::getParents() const
     }
   }
   return parents;
+}
+
+uint32_t KLStruct::getMemberCount() const
+{
+  return m_members.size();
+}
+
+const KLMember * KLStruct::getMember(uint32_t index) const
+{
+  return m_members[index];
 }

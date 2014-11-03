@@ -15,6 +15,8 @@ namespace FabricServices
 
     class KLMember : public KLCommented
     {
+      friend class KLStruct;
+      
     public:
 
       virtual ~KLMember();

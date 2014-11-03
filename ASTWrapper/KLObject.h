@@ -3,7 +3,7 @@
 #ifndef __ASTWrapper_KLObject__
 #define __ASTWrapper_KLObject__
 
-#include "KLType.h"
+#include "KLStruct.h"
 
 #include <string>
 
@@ -13,7 +13,7 @@ namespace FabricServices
   namespace ASTWrapper
   {
 
-    class KLObject : public KLType
+    class KLObject : public KLStruct
     {
       friend class KLFile;
 
@@ -22,7 +22,7 @@ namespace FabricServices
       virtual ~KLObject();
 
       virtual const char * getKLType() const;
-      virtual std::vector<const KLType*> getParents() const = 0;
+      virtual std::vector<const KLType*> getParents() const;
 
     protected:
 

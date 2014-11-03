@@ -5,7 +5,7 @@
 using namespace FabricServices::ASTWrapper;
 
 KLObject::KLObject(JSONData data)
-: KLType(data)
+: KLStruct(data)
 {
   JSONData parentsAndInterfaces = getArrayDictValue("parentsAndInterfaces");
   if(parentsAndInterfaces)

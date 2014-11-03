@@ -4,6 +4,7 @@
 #define __ASTWrapper_KLStruct__
 
 #include "KLType.h"
+#include "KLMember.h"
 
 #include <string>
 
@@ -22,7 +23,10 @@ namespace FabricServices
       virtual ~KLStruct();
 
       virtual const char * getKLType() const;
-      virtual std::vector<const KLType*> getParents() const = 0;
+      virtual std::vector<const KLType*> getParents() const;
+
+      virtual uint32_t getMemberCount() const;
+      virtual const KLMember * getMember(uint32_t index) const;
 
     protected:
 
@@ -30,6 +34,7 @@ namespace FabricServices
 
     private:
       std::string m_parentStructName;
+      std::vector<const KLMember*> m_members;
     };
 
   };

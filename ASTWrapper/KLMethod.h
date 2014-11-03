@@ -15,7 +15,7 @@ namespace FabricServices
 
     class KLMethod : public KLFunction
     {
-      friend class KLType;
+      friend class KLFile;
       friend class KLInterface;
       
     public:

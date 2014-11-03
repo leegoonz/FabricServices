@@ -39,9 +39,9 @@ namespace FabricServices
     protected:
 
       KLType(JSONData data);
-      void pushMethod(KLMethod * method);
-      std::vector<KLMethod*> m_methods;
-      std::map<std::string, uint32_t> m_methodLabelToId;
+      void pushMethod(KLMethod * method) const;
+      mutable std::vector<KLMethod*> m_methods;
+      mutable std::map<std::string, uint32_t> m_methodLabelToId;
 
     private:
       

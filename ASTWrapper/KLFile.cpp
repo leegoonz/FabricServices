@@ -65,6 +65,21 @@ KLFile::KLFile(const FabricCore::Client * client, const char * extension, const 
       KLOperator * e = new KLOperator(element);
       m_operators.push_back(e);
     }
+    else if(et == "ASTStructDecl")
+    {
+      KLStruct * e = new KLStruct(element);
+      m_types.push_back(e);
+    }
+    else if(et == "MethodOpImpl")
+    {
+      KLMethod * e = new KLMethod(element);
+      std::string thisType = e->getThisType();
+      const KLType * klType = KLType::getKLTypeByName(thisType.c_str());
+      if(klType)
+        klType->pushMethod(e);
+      else
+        m_functions.push_back(e);
+    }
     else
     {
       std::string message = "Unknown AST token '"+et+"'.";
