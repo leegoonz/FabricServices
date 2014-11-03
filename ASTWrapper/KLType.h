@@ -26,8 +26,8 @@ namespace FabricServices
       const std::string & getName() const;
       virtual const char * getKLType() const = 0;
 
-      unsigned int getMethodCount() const;
-      const KLMethod * getMethod(unsigned int index) const;
+      uint32_t getMethodCount() const;
+      const KLMethod * getMethod(uint32_t index) const;
       const KLMethod * getMethod(const char * labelOrName) const;
       std::vector<const KLMethod*> getMethods(bool includeInherited = false, bool includeInternal = true, const char * category = 0) const;
 
@@ -38,7 +38,7 @@ namespace FabricServices
       KLType(JSONData data);
       void pushMethod(KLMethod * method);
       std::vector<KLMethod*> m_methods;
-      std::map<std::string, unsigned int> m_methodLabelToId;
+      std::map<std::string, uint32_t> m_methodLabelToId;
 
     private:
       

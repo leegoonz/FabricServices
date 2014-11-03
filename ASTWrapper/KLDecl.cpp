@@ -13,8 +13,8 @@ Lock gKLDeclLock;
 
 using namespace FabricServices::ASTWrapper;
 
-unsigned int gNumKLDeclInstances = 0;
-std::map<unsigned int, KLDecl*> s_allDecls;
+uint32_t gNumKLDeclInstances = 0;
+std::map<uint32_t, KLDecl*> s_allDecls;
 
 KLDecl::KLDecl(JSONData data)
 {
@@ -24,7 +24,7 @@ KLDecl::KLDecl(JSONData data)
   m_id = gNumKLDeclInstances++;
 
   if(s_allDecls.find(m_id) == s_allDecls.end())
-    s_allDecls.insert(std::pair<unsigned int, KLDecl*>(m_id, this));
+    s_allDecls.insert(std::pair<uint32_t, KLDecl*>(m_id, this));
 
   const char * owningExtName = getStringDictValue("owningExtName");
   if(owningExtName)
@@ -35,12 +35,12 @@ KLDecl::~KLDecl()
 {
   WriteLock w_lock(gKLDeclLock);
 
-  std::map<unsigned int, KLDecl*>::iterator it = s_allDecls.find(m_id);
+  std::map<uint32_t, KLDecl*>::iterator it = s_allDecls.find(m_id);
   if(it != s_allDecls.end())
     s_allDecls.erase(it);
 }
 
-unsigned int KLDecl::getID() const
+uint32_t KLDecl::getID() const
 {
   return m_id;
 }
@@ -65,14 +65,16 @@ void KLDecl::setKLFile(const std::string & klFile)
   m_klFile = klFile;
 }
 
-unsigned int KLDecl::getArraySize() const
+uint32_t KLDecl::getArraySize() const
 {
+  if(!m_data)
+    return 0;
   if(!m_data->isArray())
     return 0;
   return m_data->getArraySize();
 }
 
-const char * KLDecl::getStringArrayElement(unsigned int index) const
+const char * KLDecl::getStringArrayElement(uint32_t index) const
 {
   JSONData value = getArrayElement(index);
   if(!value)
@@ -95,8 +97,10 @@ const char * KLDecl::getStringDictValue(const char * key) const
   return value->getStringData();
 }
 
-JSONData KLDecl::getArrayElement(unsigned int index) const
+JSONData KLDecl::getArrayElement(uint32_t index) const
 {
+  if(!m_data)
+    return NULL;
   if(!m_data->isArray())
     return NULL;
   return m_data->getArrayElement(index);
@@ -104,6 +108,8 @@ JSONData KLDecl::getArrayElement(unsigned int index) const
 
 JSONData KLDecl::getDictValue(const char * key) const
 {
+  if(!m_data)
+    return NULL;
   if(!m_data->isDict())
     return NULL;
 
@@ -120,9 +126,9 @@ JSONData KLDecl::getArrayDictValue(const char * key) const
   return result;
 }
 
-const KLDecl * KLDecl::getKLDeclByID(unsigned int id)
+const KLDecl * KLDecl::getKLDeclByID(uint32_t id)
 {
-  std::map<unsigned int, KLDecl*>::iterator it = s_allDecls.find(id);
+  std::map<uint32_t, KLDecl*>::iterator it = s_allDecls.find(id);
   if(it != s_allDecls.end())
     return it->second;
   return NULL;

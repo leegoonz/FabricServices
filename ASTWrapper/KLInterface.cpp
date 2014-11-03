@@ -11,7 +11,7 @@ KLInterface::KLInterface(JSONData data)
   JSONData members = getArrayDictValue("members");
   if(members)
   {
-    for(unsigned int i=0;i<members->getArraySize();i++)
+    for(uint32_t i=0;i<members->getArraySize();i++)
     {
       KLMethod * m = new KLMethod(members->getArrayElement(i), getName());
       pushMethod(m);
@@ -21,6 +21,7 @@ KLInterface::KLInterface(JSONData data)
 
 KLInterface::~KLInterface()
 {
+  // KLMethods are deleted by the KLType destructor
 }
 
 const char * KLInterface::getKLType() const

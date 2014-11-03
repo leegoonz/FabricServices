@@ -8,16 +8,12 @@ KLCommented::KLCommented(JSONData data)
 : KLDecl(data)
 {
   JSONData preComments = getDictValue("preComments");
-  if(preComments)
-    m_comments = new KLComment(preComments);
-  else
-    m_comments = NULL;
+  m_comments = new KLComment(preComments);
 }
 
 KLCommented::~KLCommented()
 {
-  if(m_comments)
-    delete(m_comments);
+  delete(m_comments);
 }
 
 bool KLCommented::isInternal() const

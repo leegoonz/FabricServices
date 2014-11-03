@@ -27,14 +27,14 @@ void KLComment::gatherDoxygenContent()
     return;
 
   bool inBlock = false;
-  for(unsigned int i=0;i<getArraySize();i++)
+  for(uint32_t i=0;i<getArraySize();i++)
   {
     std::vector<std::string> lines;
     const char * content = getStringArrayElement(i);
     if(!content)
       continue;
     boost::split(lines, content, boost::is_any_of("\n"));
-    for(unsigned int j=0;j<lines.size();j++)
+    for(uint32_t j=0;j<lines.size();j++)
     {
       std::string l0 = lines[j];
       std::string l1 = lines[j];
@@ -91,7 +91,7 @@ std::string KLComment::getQualifier(const char * qualifier, const char * default
   std::vector<std::string> content;
   std::string insideQualifier;
 
-  for(unsigned int i=0;i<m_content.size();i++)
+  for(uint32_t i=0;i<m_content.size();i++)
   {
     std::string l = m_content[i];
     boost::trim(l);
@@ -126,7 +126,7 @@ std::string KLComment::getQualifier(const char * qualifier, const char * default
     content.push_back(defaultResult);
 
   std::string result;
-  for(unsigned int i=0;i<content.size();i++)
+  for(uint32_t i=0;i<content.size();i++)
   {
     if(i>0)
       result += "\n";
@@ -169,11 +169,11 @@ std::string KLComment::getQualifierBracket(const char * qualifier, const char * 
 
   std::vector<std::string> content;
   bool inBlock = false;
-  unsigned int blockIndentation = UINT_MAX;
+  uint32_t blockIndentation = UINT_MAX;
 
   gatherDoxygenContent();
 
-  for(unsigned int i=0;i<m_content.size();i++)
+  for(uint32_t i=0;i<m_content.size();i++)
   {
     std::string l = m_content[i];
     boost::trim_left_if(l, boost::is_any_of(" \t"));
@@ -209,7 +209,7 @@ std::string KLComment::getQualifierBracket(const char * qualifier, const char * 
     content.push_back(defaultResult);
 
   std::string result;
-  for(unsigned int i=0;i<content.size();i++)
+  for(uint32_t i=0;i<content.size();i++)
   {
     if(i>0)
       result += "\n";

@@ -21,7 +21,7 @@ KLFunction::KLFunction(JSONData data)
   JSONData params = getArrayDictValue("params");
   if(params)
   {
-    for(unsigned int i=0;i<params->getArraySize();i++)
+    for(uint32_t i=0;i<params->getArraySize();i++)
     {
       KLParameter * param = new KLParameter(params->getArrayElement(i));
       m_params.push_back(param);
@@ -31,24 +31,23 @@ KLFunction::KLFunction(JSONData data)
 
 KLFunction::~KLFunction()
 {
-  for(unsigned int i=0;i<m_params.size();i++)
+  for(uint32_t i=0;i<m_params.size();i++)
   {
-    if(m_params[i])
-      delete(m_params[i]);
+    delete(m_params[i]);
   }
 }
 
 void KLFunction::setExtension(const std::string & extension)
 {
   KLCommented::setExtension(extension);
-  for(unsigned int i=0;i<m_params.size();i++)
+  for(uint32_t i=0;i<m_params.size();i++)
     m_params[i]->setExtension(extension);
 }
 
 void KLFunction::setKLFile(const std::string & klFile)
 {
   KLCommented::setKLFile(klFile);
-  for(unsigned int i=0;i<m_params.size();i++)
+  for(uint32_t i=0;i<m_params.size();i++)
     m_params[i]->setKLFile(klFile);
 }
 
@@ -62,12 +61,12 @@ const std::string & KLFunction::getReturnType() const
   return m_returnType;
 }
 
-unsigned int KLFunction::getParameterCount() const
+uint32_t KLFunction::getParameterCount() const
 {
   return m_params.size();
 }
 
-const KLParameter * KLFunction::getParameter(unsigned int index) const
+const KLParameter * KLFunction::getParameter(uint32_t index) const
 {
   return m_params[index];
 }
@@ -132,7 +131,7 @@ std::string KLFunction::getKLCode(bool includeReturnType, bool includeKeyWord, b
   {
     code += " ";
 
-    for(unsigned int i=0;i<m_params.size();i++)
+    for(uint32_t i=0;i<m_params.size();i++)
     {
       const KLParameter * p = m_params[i];
       if(i > 0)

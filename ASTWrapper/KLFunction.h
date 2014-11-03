@@ -25,8 +25,8 @@ namespace FabricServices
 
       const std::string & getName() const;
       const std::string & getReturnType() const;
-      unsigned int getParameterCount() const;
-      const KLParameter * getParameter(unsigned int index) const;
+      uint32_t getParameterCount() const;
+      const KLParameter * getParameter(uint32_t index) const;
 
       virtual bool isMethod() const;
       virtual std::string getPrefix() const;

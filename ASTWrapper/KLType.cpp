@@ -32,10 +32,9 @@ KLType::~KLType()
 {
   WriteLock w_lock(gKLTypeLock);
 
-  for(unsigned int i=0;i<m_methods.size();i++)
+  for(uint32_t i=0;i<m_methods.size();i++)
   {
-    if(m_methods[i])
-      delete(m_methods[i]);
+    delete(m_methods[i]);
   }
 
   std::map<std::string, KLType*>::iterator it = s_allTypes.find(m_name);
@@ -46,14 +45,14 @@ KLType::~KLType()
 void KLType::setExtension(const std::string & extension)
 {
   KLCommented::setExtension(extension);
-  for(unsigned int i=0;i<m_methods.size();i++)
+  for(uint32_t i=0;i<m_methods.size();i++)
     m_methods[i]->setExtension(extension);
 }
 
 void KLType::setKLFile(const std::string & klFile)
 {
   KLCommented::setKLFile(klFile);
-  for(unsigned int i=0;i<m_methods.size();i++)
+  for(uint32_t i=0;i<m_methods.size();i++)
     m_methods[i]->setKLFile(klFile);
 }
 
@@ -62,12 +61,12 @@ const std::string & KLType::getName() const
   return m_name;
 }
 
-unsigned int KLType::getMethodCount() const
+uint32_t KLType::getMethodCount() const
 {
   return m_methods.size();
 }
 
-const KLMethod * KLType::getMethod(unsigned int index) const
+const KLMethod * KLType::getMethod(uint32_t index) const
 {
   return m_methods[index];
 }
@@ -77,11 +76,11 @@ const KLMethod * KLType::getMethod(const char * labelOrName) const
   if(!labelOrName)
     return NULL;
 
-  std::map<std::string, unsigned int>::const_iterator it = m_methodLabelToId.find(labelOrName);
+  std::map<std::string, uint32_t>::const_iterator it = m_methodLabelToId.find(labelOrName);
   if(it != m_methodLabelToId.end())
     return m_methods[it->second];
 
-  for(unsigned int i=0;i<m_methods.size();i++)
+  for(uint32_t i=0;i<m_methods.size();i++)
   {
     if(m_methods[i]->getName() == labelOrName)
       return m_methods[i];
@@ -108,6 +107,6 @@ const KLType * KLType::getKLTypeByName(const char * name)
 
 void KLType::pushMethod(KLMethod * method)
 {
-  m_methodLabelToId.insert(std::pair<std::string, unsigned int>(method->getLabel(), (unsigned int)m_methods.size()));
+  m_methodLabelToId.insert(std::pair<std::string, uint32_t>(method->getLabel(), (uint32_t)m_methods.size()));
   m_methods.push_back(method);
 }
