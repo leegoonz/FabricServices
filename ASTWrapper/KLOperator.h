@@ -15,6 +15,8 @@ namespace FabricServices
 
     class KLOperator : public KLFunction
     {
+      friend class KLFile;
+
     public:
 
       virtual ~KLOperator();

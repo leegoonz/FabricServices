@@ -17,6 +17,8 @@ namespace FabricServices
 
     class KLConstant : public KLDecl
     {
+      friend class KLFile;
+
     public:
 
       virtual ~KLConstant();

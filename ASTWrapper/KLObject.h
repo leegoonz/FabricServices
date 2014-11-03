@@ -15,6 +15,8 @@ namespace FabricServices
 
     class KLObject : public KLType
     {
+      friend class KLFile;
+
     public:
 
       virtual ~KLObject();

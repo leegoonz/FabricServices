@@ -14,7 +14,7 @@ sources = Glob('*.cpp')
 
 astWrapperLib = env.StaticLibrary('Fabric-ASTWrapper', sources)
 
-astWrapperIncludeDir = env.Dir('.')
+astWrapperIncludeDir = env.Dir('.').dir.srcnode()
 
 astWrapperFlags = {
   'CPPPATH': [astWrapperIncludeDir],

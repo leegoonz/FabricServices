@@ -12,7 +12,7 @@ Lock gKLFileLock;
 
 using namespace FabricServices::ASTWrapper;
 
-KLFile::KLFile(const char * extension, const char * filePath, const char * klCode)
+KLFile::KLFile(const FabricCore::Client * client, const char * extension, const char * filePath, const char * klCode)
 {
   WriteLock w_lock(gKLFileLock);
 
@@ -21,13 +21,51 @@ KLFile::KLFile(const char * extension, const char * filePath, const char * klCod
   m_klCode = klCode;
 
   boost::filesystem::path path = m_filePath;
-  m_fileName = path.stem().string();
+  m_fileName = path.stem().string() + ".kl";
 
-  printf("filepath '%s', filename '%s'\n", m_filePath.c_str(), m_fileName.c_str());
+  FabricCore::RTVal jsonVal = GetKLJSONAST(*client, klCode, false);
+  std::string jsonStr = jsonVal.getStringCString();
+
+  FabricCore::Variant variant = FabricCore::Variant::CreateFromJSON(jsonStr.c_str());
+
+  for(uint32_t i=0;i<variant.getArraySize();i++)
+  {
+    const FabricCore::Variant * element = variant.getArrayElement(i);
+    if(!element->isDict())
+      continue;
+    const FabricCore::Variant * etVar = element->getDictValue("type");
+    if(!etVar)
+      continue;
+    if(!etVar->isString())
+      continue;
+
+    std::string et = etVar->getStringData();
+    if(et == "RequireGlobal")
+    {
+      KLRequire * e = new KLRequire(element);
+      m_requires.push_back(e);
+    }
+    else
+    {
+      std::string message = "Unknown AST token '"+et+"'.";
+      throw(FabricCore::Exception(message.c_str(), message.length()));
+      return;
+    }
+  }
 }
 
 KLFile::~KLFile()
 {
+  for(uint32_t i=0;i<m_requires.size();i++)
+    delete(m_requires[i]);
+  for(uint32_t i=0;i<m_aliases.size();i++)
+    delete(m_aliases[i]);
+  for(uint32_t i=0;i<m_constants.size();i++)
+    delete(m_constants[i]);
+  for(uint32_t i=0;i<m_types.size();i++)
+    delete(m_types[i]);
+  for(uint32_t i=0;i<m_functions.size();i++)
+    delete(m_functions[i]);
 }
 
 std::vector<const KLRequire*> KLFile::getRequires() const

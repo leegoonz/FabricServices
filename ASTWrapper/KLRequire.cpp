@@ -5,11 +5,11 @@
 using namespace FabricServices::ASTWrapper;
 
 KLRequire::KLRequire(JSONData data)
-: KLDecl(data)
+: KLCommented(data)
 {
   JSONData require = getArrayDictValue("requires")->getArrayElement(0);
   m_requiredExtension = require->getDictValue("name")->getStringData();
-  // todo: versioning info
+  m_versionRange = require->getDictValue("versionRange")->getStringData();
 }
 
 KLRequire::~KLRequire()
@@ -19,5 +19,10 @@ KLRequire::~KLRequire()
 const std::string & KLRequire::getRequiredExtension() const
 {
   return m_requiredExtension;
+}
+
+const std::string & KLRequire::getVersionRange() const
+{
+  return m_versionRange;
 }
 

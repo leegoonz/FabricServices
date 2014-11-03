@@ -5,7 +5,7 @@
 using namespace FabricServices::ASTWrapper;
 
 KLAlias::KLAlias(JSONData data)
-: KLDecl(data)
+: KLCommented(data)
 {
   m_newUserName = getStringDictValue("newUserName");
   m_oldUserName = getStringDictValue("oldUserName");

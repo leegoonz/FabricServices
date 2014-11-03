@@ -20,6 +20,11 @@ KLParameter::~KLParameter()
 {
 }
 
+const std::string & KLParameter::getUsage() const
+{
+  return m_usage;
+}
+
 const std::string & KLParameter::getName() const
 {
   return m_name;

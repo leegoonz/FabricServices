@@ -17,6 +17,8 @@ namespace FabricServices
 
     class KLType : public KLCommented
     {
+      friend class KLFile;
+
     public:
 
       virtual ~KLType();

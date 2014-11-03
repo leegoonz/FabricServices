@@ -15,6 +15,8 @@ namespace FabricServices
 
     class KLStruct : public KLType
     {
+      friend class KLFile;
+
     public:
 
       virtual ~KLStruct();

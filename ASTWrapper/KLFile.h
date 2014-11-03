@@ -16,7 +16,7 @@ namespace FabricServices
     {
     public:
 
-      KLFile(const char * extension, const char * filePath, const char * klCode);
+      KLFile(const FabricCore::Client * client, const char * extension, const char * filePath, const char * klCode);
       virtual ~KLFile();
 
       const char * getExtension() const;

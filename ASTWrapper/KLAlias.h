@@ -3,7 +3,7 @@
 #ifndef __ASTWrapper_KLAlias__
 #define __ASTWrapper_KLAlias__
 
-#include "KLDecl.h"
+#include "KLCommented.h"
 
 #include <string>
 #include <map>
@@ -15,8 +15,10 @@ namespace FabricServices
   namespace ASTWrapper
   {
 
-    class KLAlias : public KLDecl
+    class KLAlias : public KLCommented
     {
+      friend class KLFile;
+
     public:
 
       virtual ~KLAlias();
