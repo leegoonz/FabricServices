@@ -10,6 +10,7 @@ using namespace FabricServices::ASTWrapper;
 KLComment::KLComment(JSONData data)
 : KLDecl(data)
 {
+  gatherDoxygenContent();
 }
 
 KLComment::~KLComment()
@@ -33,6 +34,7 @@ void KLComment::gatherDoxygenContent() const
     const char * content = getStringArrayElement(i);
     if(!content)
       continue;
+
     boost::split(lines, content, boost::is_any_of("\n"));
     for(uint32_t j=0;j<lines.size();j++)
     {
@@ -62,14 +64,30 @@ void KLComment::gatherDoxygenContent() const
 
 bool KLComment::isEmpty() const
 {
-  gatherDoxygenContent();
   return m_content.size() == 0;
 }
 
 bool KLComment::hasQualifier(const char * qualifier) const
 {
-  std::string result = getQualifier(qualifier);
-  return result.length() > 0;
+  std::string q;
+  if(qualifier)
+  {
+    q = qualifier;
+    boost::to_lower(q);
+    boost::trim(q);
+  }
+
+  if(q.length() == 0)
+    return true;
+
+  for(uint32_t i=0;i<m_content.size();i++)
+  {
+    std::string l = m_content[i];
+    boost::trim(l);
+    if(l.substr(0, q.length()+1) == "\\"+q)
+      return true;
+  }
+  return false;
 }
 
 std::string KLComment::getQualifier(const char * qualifier, const char * defaultResult) const
@@ -85,8 +103,6 @@ std::string KLComment::getQualifier(const char * qualifier, const char * default
   std::map<std::string, std::string>::iterator it = m_qualifiers.find(q);
   if(it != m_qualifiers.end())
     return it->second;
-
-  gatherDoxygenContent();
 
   std::vector<std::string> content;
   std::string insideQualifier;
@@ -171,8 +187,6 @@ std::string KLComment::getQualifierBracket(const char * qualifier, const char * 
   bool inBlock = false;
   uint32_t blockIndentation = UINT_MAX;
 
-  gatherDoxygenContent();
-
   for(uint32_t i=0;i<m_content.size();i++)
   {
     std::string l = m_content[i];
@@ -198,10 +212,13 @@ std::string KLComment::getQualifierBracket(const char * qualifier, const char * 
         }
       }
     }
-    else if(l.substr(q1.length() + 1) == "\\" + q1)
+    else
     {
-      inBlock = true;
-      blockIndentation = UINT_MAX;
+      if(l.substr(0, q1.length() + 1) == "\\" + q1)
+      {
+        inBlock = true;
+        blockIndentation = UINT_MAX;
+      }
     }
   }
 
@@ -221,3 +238,27 @@ std::string KLComment::getQualifierBracket(const char * qualifier, const char * 
   return result;
 }
 
+std::string KLComment::getPlainText() const
+{
+  return getQualifier(NULL, "");
+}
+
+std::string KLComment::getBrief() const
+{
+  return getSingleQualifier("brief", "");
+}
+
+std::string KLComment::getCategory() const
+{
+  return getSingleQualifier("category", "");
+}
+
+std::string KLComment::getRst() const
+{
+  return getQualifierBracket("rst", "");
+}
+
+std::string KLComment::getExample() const
+{
+  return getQualifierBracket("example", "");
+}

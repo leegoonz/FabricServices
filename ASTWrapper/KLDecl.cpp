@@ -82,7 +82,6 @@ const char * KLDecl::getStringArrayElement(uint32_t index) const
   if(!value->isString())
     return NULL;
   return value->getStringData();
-
 }
 
 const char * KLDecl::getStringDictValue(const char * key) const

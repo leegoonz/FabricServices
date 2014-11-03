@@ -30,6 +30,12 @@ namespace FabricServices
       std::string getSingleQualifier(const char * qualifier, const char * defaultResult = 0) const;
       std::string getQualifierBracket(const char * qualifier, const char * defaultResult = 0) const;
 
+      std::string getPlainText() const;
+      std::string getBrief() const;
+      std::string getCategory() const;
+      std::string getRst() const;
+      std::string getExample() const;
+
     protected:
 
       KLComment(JSONData data);
