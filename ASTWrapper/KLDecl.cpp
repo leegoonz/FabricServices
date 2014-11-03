@@ -4,6 +4,13 @@
 
 #include <map>
 
+#include <boost/thread/locks.hpp>
+#include <boost/thread/shared_mutex.hpp>
+typedef boost::shared_mutex Lock;
+typedef boost::unique_lock< Lock >  WriteLock;
+typedef boost::shared_lock< Lock >  ReadLock;
+Lock gKLDeclLock;
+
 using namespace FabricServices::ASTWrapper;
 
 unsigned int gNumKLDeclInstances = 0;
@@ -11,12 +18,11 @@ std::map<unsigned int, KLDecl*> s_allDecls;
 
 KLDecl::KLDecl(JSONData data)
 {
-  m_data = data;
+  WriteLock w_lock(gKLDeclLock);
 
-  // todo: thread safety
+  m_data = data;
   m_id = gNumKLDeclInstances++;
 
-  // todo: thread safety
   if(s_allDecls.find(m_id) == s_allDecls.end())
     s_allDecls.insert(std::pair<unsigned int, KLDecl*>(m_id, this));
 
@@ -27,7 +33,8 @@ KLDecl::KLDecl(JSONData data)
 
 KLDecl::~KLDecl()
 {
-  // todo: thread safety
+  WriteLock w_lock(gKLDeclLock);
+
   std::map<unsigned int, KLDecl*>::iterator it = s_allDecls.find(m_id);
   if(it != s_allDecls.end())
     s_allDecls.erase(it);

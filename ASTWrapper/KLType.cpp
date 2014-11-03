@@ -4,6 +4,13 @@
 
 #include <map>
 
+#include <boost/thread/locks.hpp>
+#include <boost/thread/shared_mutex.hpp>
+typedef boost::shared_mutex Lock;
+typedef boost::unique_lock< Lock >  WriteLock;
+typedef boost::shared_lock< Lock >  ReadLock;
+Lock gKLTypeLock;
+
 using namespace FabricServices::ASTWrapper;
 
 std::map<std::string, KLType*> s_allTypes;
@@ -11,24 +18,26 @@ std::map<std::string, KLType*> s_allTypes;
 KLType::KLType(JSONData data)
 : KLCommented(data)
 {
+  WriteLock w_lock(gKLTypeLock);
+
   const char * name = getStringDictValue("name");
   if(name)
     m_name = name;
 
-  // todo: thread safety
   if(s_allTypes.find(m_name) == s_allTypes.end())
     s_allTypes.insert(std::pair<std::string, KLType*>(m_name, this));
 }
 
 KLType::~KLType()
 {
+  WriteLock w_lock(gKLTypeLock);
+
   for(unsigned int i=0;i<m_methods.size();i++)
   {
     if(m_methods[i])
       delete(m_methods[i]);
   }
 
-  // todo: thread safety
   std::map<std::string, KLType*>::iterator it = s_allTypes.find(m_name);
   if(it != s_allTypes.end())
     s_allTypes.erase(it);
