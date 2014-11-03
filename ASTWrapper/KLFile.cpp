@@ -50,6 +50,11 @@ KLFile::KLFile(const FabricCore::Client * client, const char * extension, const 
       KLAlias * e = new KLAlias(element);
       m_aliases.push_back(e);
     }
+    else if(et == "GlobalConstDecl")
+    {
+      KLConstant * e = new KLConstant(element);
+      m_constants.push_back(e);
+    }
     else
     {
       std::string message = "Unknown AST token '"+et+"'.";

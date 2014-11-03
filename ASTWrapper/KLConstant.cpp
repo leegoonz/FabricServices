@@ -5,7 +5,7 @@
 using namespace FabricServices::ASTWrapper;
 
 KLConstant::KLConstant(JSONData data)
-: KLDecl(data)
+: KLCommented(data)
 {
   m_name = getDictValue("constDecl")->getDictValue("name")->getStringData();
   m_type = getDictValue("constDecl")->getDictValue("type")->getStringData();

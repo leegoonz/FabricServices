@@ -3,7 +3,7 @@
 #ifndef __ASTWrapper_KLConstant__
 #define __ASTWrapper_KLConstant__
 
-#include "KLDecl.h"
+#include "KLCommented.h"
 
 #include <string>
 #include <map>
@@ -15,7 +15,7 @@ namespace FabricServices
   namespace ASTWrapper
   {
 
-    class KLConstant : public KLDecl
+    class KLConstant : public KLCommented
     {
       friend class KLFile;
 
