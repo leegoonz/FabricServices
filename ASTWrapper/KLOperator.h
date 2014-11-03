@@ -18,6 +18,7 @@ namespace FabricServices
     public:
 
       virtual ~KLOperator();
+      virtual const char * getKLType() const;
 
     protected:
 

@@ -12,3 +12,8 @@ KLOperator::KLOperator(JSONData data)
 KLOperator::~KLOperator()
 {
 }
+
+const char * KLOperator::getKLType() const
+{
+  return "operator";
+}
