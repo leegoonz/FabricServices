@@ -190,14 +190,11 @@ const KLFunction* KLFile::getFunction(const char * name) const
 
 const KLOperator* KLFile::getOperator(const char * name) const
 {
-  for(uint32_t i=0;i<m_functions.size();i++)
+  for(uint32_t i=0;i<m_operators.size();i++)
   {
-    if(m_functions[i]->getName() == name)
+    if(m_operators[i]->getName() == name)
     {
-      if(m_functions[i]->getKLType() == std::string("operator"))
-      {
-        return (const KLOperator*)m_functions[i];
-      }
+      return m_operators[i];
     }
   }
   return NULL;
