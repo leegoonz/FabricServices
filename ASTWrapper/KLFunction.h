@@ -17,7 +17,7 @@ namespace FabricServices
     class KLFunction : public KLCommented
     {
       friend class KLFile;
-      
+
     public:
 
       virtual ~KLFunction();
@@ -27,6 +27,7 @@ namespace FabricServices
 
       const std::string & getName() const;
       const std::string & getReturnType() const;
+      const std::string & getSymbolName() const;
       uint32_t getParameterCount() const;
       const KLParameter * getParameter(uint32_t index) const;
 
@@ -45,6 +46,7 @@ namespace FabricServices
       
       std::string m_name;
       std::string m_returnType;
+      std::string m_symbolName;
       std::vector<KLParameter*> m_params;
     };
 

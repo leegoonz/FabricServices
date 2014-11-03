@@ -60,6 +60,11 @@ KLFile::KLFile(const FabricCore::Client * client, const char * extension, const 
       KLFunction * e = new KLFunction(element);
       m_functions.push_back(e);
     }
+    else if(et == "Operator")
+    {
+      KLOperator * e = new KLOperator(element);
+      m_operators.push_back(e);
+    }
     else
     {
       std::string message = "Unknown AST token '"+et+"'.";
@@ -81,6 +86,8 @@ KLFile::~KLFile()
     delete(m_types[i]);
   for(uint32_t i=0;i<m_functions.size();i++)
     delete(m_functions[i]);
+  for(uint32_t i=0;i<m_operators.size();i++)
+    delete(m_operators[i]);
 }
 
 std::vector<const KLRequire*> KLFile::getRequires() const
@@ -143,13 +150,7 @@ std::vector<const KLObject*> KLFile::getObjects() const
 
 std::vector<const KLOperator*> KLFile::getOperators() const
 {
-  std::vector<const KLOperator*> result;
-  for(uint32_t i=0;i<m_functions.size();i++)
-  {
-    if(m_functions[i]->getKLType() == std::string("operator"))
-      result.push_back((const KLOperator*)m_functions[i]);
-  }
-  return result;
+  return m_operators;
 }
 
 const KLConstant* KLFile::getConstant(const char * name) const

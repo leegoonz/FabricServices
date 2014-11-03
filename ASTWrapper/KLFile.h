@@ -30,12 +30,12 @@ namespace FabricServices
       virtual std::vector<const KLConstant*> getConstants() const;
       virtual std::vector<const KLType*> getTypes() const;
       virtual std::vector<const KLFunction*> getFunctions() const;
+      virtual std::vector<const KLOperator*> getOperators() const;
 
       // decl vector getter overloads
       virtual std::vector<const KLInterface*> getInterfaces() const;
       virtual std::vector<const KLStruct*> getStructs() const;
       virtual std::vector<const KLObject*> getObjects() const;
-      virtual std::vector<const KLOperator*> getOperators() const;
 
       // single decl getters
       virtual const KLConstant* getConstant(const char * name) const;
@@ -52,6 +52,7 @@ namespace FabricServices
       std::vector<const KLConstant*> m_constants;
       std::vector<const KLType*> m_types;
       std::vector<const KLFunction*> m_functions;
+      std::vector<const KLOperator*> m_operators;
     };
 
   };

@@ -12,11 +12,18 @@ using namespace FabricServices::ASTWrapper;
 KLFunction::KLFunction(JSONData data)
 : KLCommented(data)
 {
+
+  printf("function AST '%s'\n", data->getJSONEncoding().getStringData());
+
+  m_name = getStringDictValue("name");
+
   const char * returnType = getStringDictValue("returnType");
   if(returnType)
     m_returnType = returnType;
 
-  m_name = getStringDictValue("name");
+  const char * symbolName = getStringDictValue("symbolName");
+  if(symbolName)
+    m_symbolName = symbolName;
 
   JSONData params = getArrayDictValue("params");
   if(params)
@@ -59,6 +66,11 @@ const std::string & KLFunction::getName() const
 const std::string & KLFunction::getReturnType() const
 {
   return m_returnType;
+}
+
+const std::string & KLFunction::getSymbolName() const
+{
+  return m_symbolName;
 }
 
 uint32_t KLFunction::getParameterCount() const
