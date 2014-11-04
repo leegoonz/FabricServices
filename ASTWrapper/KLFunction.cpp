@@ -12,7 +12,9 @@ using namespace FabricServices::ASTWrapper;
 KLFunction::KLFunction(JSONData data)
 : KLCommented(data)
 {
-  m_name = getStringDictValue("name");
+  const char * name = getStringDictValue("name");
+  if(name)
+    m_name = name;
 
   const char * returnType = getStringDictValue("returnType");
   if(returnType)

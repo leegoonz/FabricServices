@@ -5,6 +5,7 @@
 
 #include "KLCommented.h"
 #include "KLMethod.h"
+#include "KLTypeOp.h"
 
 #include <string>
 #include <map>
@@ -34,14 +35,22 @@ namespace FabricServices
       const KLMethod * getMethod(const char * labelOrName) const;
       std::vector<const KLMethod*> getMethods(bool includeInherited = false, bool includeInternal = true, const char * category = 0) const;
 
+      uint32_t getTypeOpCount() const;
+      const KLTypeOp * getTypeOp(uint32_t index) const;
+      const KLTypeOp * getTypeOp(const char * labelOrName) const;
+      std::vector<const KLTypeOp*> getTypeOps() const;
+
       static const KLType * getKLTypeByName(const char * name);
 
     protected:
 
       KLType(JSONData data);
       void pushMethod(KLMethod * method) const;
+      void pushTypeOp(KLTypeOp * typeOp) const;
       mutable std::vector<KLMethod*> m_methods;
       mutable std::map<std::string, uint32_t> m_methodLabelToId;
+      mutable std::vector<const KLTypeOp*> m_typeOps;
+      mutable std::map<std::string, uint32_t> m_typeOpLabelToId;
 
     private:
       

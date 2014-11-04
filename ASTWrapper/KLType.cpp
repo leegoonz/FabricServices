@@ -134,6 +134,40 @@ std::vector<const KLMethod*> KLType::getMethods(bool includeInherited, bool incl
   return methods;
 }
 
+uint32_t KLType::getTypeOpCount() const
+{
+  return m_typeOps.size();
+}
+
+const KLTypeOp* KLType::getTypeOp(uint32_t index) const
+{
+  return m_typeOps[index];
+}
+
+const KLTypeOp* KLType::getTypeOp(const char * labelOrName) const
+{
+  if(!labelOrName)
+    return NULL;
+
+  std::map<std::string, uint32_t>::const_iterator it = m_typeOpLabelToId.find(labelOrName);
+  if(it != m_typeOpLabelToId.end())
+    return m_typeOps[it->second];
+
+  for(uint32_t i=0;i<m_typeOps.size();i++)
+  {
+    if(m_typeOps[i]->getName() == labelOrName)
+      return m_typeOps[i];
+    if(m_typeOps[i]->getLabel() == labelOrName)
+      return m_typeOps[i];
+  }
+  return NULL;
+}
+
+std::vector<const KLTypeOp*> KLType::getTypeOps() const
+{
+  return m_typeOps;
+}
+
 const KLType * KLType::getKLTypeByName(const char * name)
 {
   std::map<std::string, KLType*>::iterator it = s_allTypes.find(name);
@@ -144,8 +178,12 @@ const KLType * KLType::getKLTypeByName(const char * name)
 
 void KLType::pushMethod(KLMethod * method) const
 {
-  WriteLock w_lock(gKLTypeLock);
-
   m_methodLabelToId.insert(std::pair<std::string, uint32_t>(method->getLabel(), (uint32_t)m_methods.size()));
   m_methods.push_back(method);
+}
+
+void KLType::pushTypeOp(KLTypeOp * typeOp) const
+{
+  m_typeOpLabelToId.insert(std::pair<std::string, uint32_t>(typeOp->getLabel(), (uint32_t)m_typeOps.size()));
+  m_typeOps.push_back(typeOp);
 }

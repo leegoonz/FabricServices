@@ -12,6 +12,7 @@
 #include "KLObject.h"
 #include "KLFunction.h"
 #include "KLOperator.h"
+#include "KLTypeOp.h"
 
 #include <string>
 

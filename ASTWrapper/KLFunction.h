@@ -25,11 +25,11 @@ namespace FabricServices
       virtual void setExtension(const std::string & extension);
       virtual void setKLFile(const std::string & klFile);
 
-      const std::string & getName() const;
-      const std::string & getReturnType() const;
-      const std::string & getSymbolName() const;
-      uint32_t getParameterCount() const;
-      const KLParameter * getParameter(uint32_t index) const;
+      virtual const std::string & getName() const;
+      virtual const std::string & getReturnType() const;
+      virtual const std::string & getSymbolName() const;
+      virtual uint32_t getParameterCount() const;
+      virtual const KLParameter * getParameter(uint32_t index) const;
 
       virtual bool isMethod() const;
       virtual std::string getPrefix() const; // the prefix of the function *may* be something like 'Vec3.'

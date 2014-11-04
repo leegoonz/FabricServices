@@ -82,6 +82,20 @@ KLFile::KLFile(const FabricCore::Client * client, const char * extension, const 
       KLObject * e = new KLObject(element);
       m_types.push_back(e);
     }
+    else if(et == "ComparisonOpImpl" ||
+      et == "AssignOpImpl" ||
+      et == "BinOpImpl" ||
+      et == "ASTUniOpDecl")
+    {
+      KLTypeOp * e = new KLTypeOp(element);
+
+      std::string thisType = e->getLhs();
+      const KLType * klType = KLType::getKLTypeByName(thisType.c_str());
+      if(klType)
+        klType->pushTypeOp(e);
+      else
+        m_functions.push_back(e);
+    }
     else
     {
       std::string message = "Unknown AST token '"+et+"'.";
