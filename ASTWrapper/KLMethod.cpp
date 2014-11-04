@@ -2,6 +2,7 @@
 
 #include "KLMethod.h"
 #include "KLType.h"
+#include "KLASTManager.h"
 
 using namespace FabricServices::ASTWrapper;
 
@@ -48,7 +49,7 @@ bool KLMethod::isVirtual() const
   {
     m_isVirtual = 0;
 
-    const KLType* thisType = KLType::getKLTypeByName(m_thisType.c_str());
+    const KLType* thisType = getASTManager()->getKLTypeByName(m_thisType.c_str(), this);
     if(thisType)
     {
       if(std::string(thisType->getKLType()) == "interface")
@@ -106,7 +107,7 @@ const KLComment * KLMethod::getComments() const
   if(comments)
     return comments;
 
-  const KLType* thisType = KLType::getKLTypeByName(m_thisType.c_str());
+  const KLType* thisType = getASTManager()->getKLTypeByName(m_thisType.c_str(), this);
   if(thisType)
   {
     std::vector<const KLType*> parents = thisType->getParents();

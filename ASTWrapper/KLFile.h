@@ -43,8 +43,10 @@ namespace FabricServices
     protected:
       
       KLFile(const KLExtension* extension, const char * filePath, const char * klCode);
+      void parse();
 
     private:
+      bool m_parsed;
       const KLExtension* m_extension;
       std::string m_filePath;
       std::string m_fileName;

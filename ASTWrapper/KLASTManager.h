@@ -40,6 +40,18 @@ namespace FabricServices
       virtual std::vector<const KLStruct*> getStructs() const;
       virtual std::vector<const KLObject*> getObjects() const;
 
+      // returns the KLType of a given name. If the KLDecl is passed,
+      // we will try to resolve this within the same extension, or if the
+      // extension doesn't define the type, we'll base it off the requires
+      // of th extension.
+      virtual const KLType* getKLTypeByName(const char * name, const KLDecl* decl = NULL) const;
+      virtual const KLType* getKLTypeByName(const char * name, const char * extension, const char * versionRequirement = "*") const;
+
+      // returns an extension matching a given version requirement string (for ex: ">1.2.0")
+      // if there are multiple resolved versions, we'll use the highest one
+      virtual const KLExtension* getExtension(const char * name, const char * versionRequirement = "*") const;
+      virtual const KLExtension* getExtension(const KLRequire* require) const;
+
     private:
       const FabricCore::Client * m_client;
       std::vector<const KLExtension*> m_extensions;

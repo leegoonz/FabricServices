@@ -17,14 +17,27 @@ namespace FabricServices
     class KLExtension : public KLDeclContainer
     {
       friend class KLASTManager;
+      friend class KLFile;
 
     public:
+
+      struct Version
+      {
+        uint32_t major;
+        uint32_t minor;
+        uint32_t revision;
+
+        bool operator < (const Version & other) const;
+        bool operator > (const Version & other) const;
+        bool operator == (const Version & other) const;
+        bool operator != (const Version & other) const;
+      };
 
       virtual ~KLExtension();
 
       const KLASTManager * getASTManager() const;
       const char * getName() const;
-      const char * getVersion() const;
+      const Version & getVersion() const;
 
       std::vector<const KLFile*> getFiles() const;
 
@@ -45,15 +58,17 @@ namespace FabricServices
       
       KLExtension(const KLASTManager* astManager, const char * jsonFilePath);
       KLExtension(const KLASTManager* astManager, const char * name, const char * jsonContent, uint32_t numKLFiles, const char ** klContent);
+      void parse();
 
     private:
 
       void init(const char * jsonContent, uint32_t numKLFiles, const char ** klContent);
       std::vector<std::string> extractKLFilePaths(JSONData data, const char * extensionName);
 
+      bool m_parsed;
       const KLASTManager* m_astManager;
       std::string m_name;
-      std::string m_version;
+      Version m_version;
       std::vector<const KLFile*> m_files;
     };
 

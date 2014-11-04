@@ -2,10 +2,39 @@
 
 #include "KLExtension.h"
 
+#include <boost/algorithm/string.hpp>
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/operations.hpp>
 
 using namespace FabricServices::ASTWrapper;
+
+bool KLExtension::Version::operator <(const KLExtension::Version & other) const
+{
+  if(major < other.major)
+    return true;
+  if(minor < other.minor)
+    return true;
+  return revision < other.revision;
+}
+
+bool KLExtension::Version::operator >(const KLExtension::Version & other) const
+{
+  if(major > other.major)
+    return true;
+  if(minor > other.minor)
+    return true;
+  return revision > other.revision;
+}
+
+bool KLExtension::Version::operator ==(const KLExtension::Version & other) const
+{
+  return major == other.major && minor == other.minor && revision == other.revision;
+}
+
+bool KLExtension::Version::operator !=(const KLExtension::Version & other) const
+{
+  return major != other.major || minor != other.minor || revision != other.revision;
+}
 
 KLExtension::KLExtension(const KLASTManager* astManager, const char * jsonFilePath)
 {
@@ -13,6 +42,13 @@ KLExtension::KLExtension(const KLASTManager* astManager, const char * jsonFilePa
 
   boost::filesystem::path jsonPath = jsonFilePath;
   m_name = jsonPath.filename().string();
+  if(m_name.length() > 9)
+  {
+    if(m_name.substr(m_name.length()-9, 9) == ".fpm.json")
+    {
+      m_name = m_name.substr(0, m_name.length()-9);
+    }
+  }
 
   FILE * jsonFile = fopen(jsonFilePath, "rb");
   if(!jsonFile)
@@ -90,6 +126,8 @@ KLExtension::~KLExtension()
 
 void KLExtension::init(const char * jsonContent, uint32_t numKLFiles, const char ** klContent)
 {
+  m_parsed = false;
+
   const FabricCore::Client * client = m_astManager->getClient();
 
   FabricCore::Variant jsonVar = FabricCore::Variant::CreateFromJSON(jsonContent);
@@ -107,7 +145,21 @@ void KLExtension::init(const char * jsonContent, uint32_t numKLFiles, const char
   {
     if(versionVar->isString())
     {
-      m_version = versionVar->getStringData();
+      std::string version = versionVar->getStringData();
+      std::vector<std::string> strParts;
+      boost::split(strParts, version, boost::is_any_of("."));
+
+      std::vector<int> intParts;
+      for(uint32_t i=0;i<strParts.size();i++)
+        intParts.push_back(atoi(strParts[i].c_str()));
+
+      if(intParts.size() < 1) intParts.push_back(1);
+      if(intParts.size() < 2) intParts.push_back(0);
+      if(intParts.size() < 3) intParts.push_back(0);
+
+      m_version.major = intParts[0];
+      m_version.minor = intParts[1];
+      m_version.revision = intParts[2];
     }
     else
     {
@@ -118,7 +170,11 @@ void KLExtension::init(const char * jsonContent, uint32_t numKLFiles, const char
     }
   }
   else
-    m_version = "1.0.0";
+  {
+    m_version.major = 1;
+    m_version.minor = 0;
+    m_version.revision = 0;
+  }
 
   std::vector<std::string> klFilePaths = extractKLFilePaths(&jsonVar, m_name.c_str());
   if(klFilePaths.size() != numKLFiles)
@@ -133,6 +189,19 @@ void KLExtension::init(const char * jsonContent, uint32_t numKLFiles, const char
   {
     KLFile * klFile = new KLFile(this, klFilePaths[i].c_str(), klContent[i]);
     m_files.push_back(klFile);
+  }
+}
+
+void KLExtension::parse()
+{
+  if(m_parsed)
+    return;
+  m_parsed = true;
+
+  for(uint32_t i=0;i<m_files.size();i++)
+  {
+    KLFile * klFile = (KLFile *)m_files[i];
+    klFile->parse();
   }
 }
 
@@ -200,9 +269,9 @@ const char * KLExtension::getName() const
   return m_name.c_str();
 }
 
-const char * KLExtension::getVersion() const
+const KLExtension::Version & KLExtension::getVersion() const
 {
-  return m_version.c_str();
+  return m_version;
 }
 
 std::vector<const KLFile*> KLExtension::getFiles() const

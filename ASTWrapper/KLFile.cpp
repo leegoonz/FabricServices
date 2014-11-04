@@ -11,13 +11,21 @@ KLFile::KLFile(const KLExtension* extension, const char * filePath, const char *
   m_extension = extension;
   m_filePath = filePath;
   m_klCode = klCode;
+  m_parsed = false;
+}
+
+void KLFile::parse()
+{
+  if(m_parsed)
+    return;
+  m_parsed = true;
 
   const FabricCore::Client * client = m_extension->getASTManager()->getClient();
 
   boost::filesystem::path path = m_filePath;
   m_fileName = path.stem().string() + ".kl";
 
-  FabricCore::RTVal jsonVal = GetKLJSONAST(*client, klCode, false);
+  FabricCore::RTVal jsonVal = GetKLJSONAST(*client, m_klCode.c_str(), false);
   std::string jsonStr = jsonVal.getStringCString();
 
   FabricCore::Variant variant = FabricCore::Variant::CreateFromJSON(jsonStr.c_str());
@@ -38,6 +46,12 @@ KLFile::KLFile(const KLExtension* extension, const char * filePath, const char *
     {
       KLRequire * e = new KLRequire(this, element);
       m_requires.push_back(e);
+
+      // ensure to parse extensions in the right order,
+      // so that we can add methods to types for example.
+      KLExtension * extension = (KLExtension *)getExtension()->getASTManager()->getExtension(e);
+      if(extension)
+        extension->parse();
     }
     else if(et == "Alias")
     {
@@ -68,7 +82,7 @@ KLFile::KLFile(const KLExtension* extension, const char * filePath, const char *
     {
       KLMethod * e = new KLMethod(this, element);
       std::string thisType = e->getThisType();
-      const KLType * klType = KLType::getKLTypeByName(thisType.c_str());
+      const KLType * klType = m_extension->getASTManager()->getKLTypeByName(thisType.c_str(), e);
       if(klType)
         klType->pushMethod(e);
       else
@@ -92,7 +106,7 @@ KLFile::KLFile(const KLExtension* extension, const char * filePath, const char *
       KLTypeOp * e = new KLTypeOp(this, element);
 
       std::string thisType = e->getLhs();
-      const KLType * klType = KLType::getKLTypeByName(thisType.c_str());
+      const KLType * klType = m_extension->getASTManager()->getKLTypeByName(thisType.c_str(), e);
       if(klType)
         klType->pushTypeOp(e);
       else

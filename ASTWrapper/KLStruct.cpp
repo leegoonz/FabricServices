@@ -1,6 +1,7 @@
 // Copyright 2010-2014 Fabric Engine Inc. All rights reserved.
 
 #include "KLStruct.h"
+#include "KLASTManager.h"
 
 using namespace FabricServices::ASTWrapper;
 
@@ -39,7 +40,7 @@ std::vector<const KLType*> KLStruct::getParents() const
   std::vector<const KLType*> parents; 
   if(m_parentStructName.length() > 0)
   {
-    const KLType * parent = getKLTypeByName(m_parentStructName.c_str());
+    const KLType * parent = getASTManager()->getKLTypeByName(m_parentStructName.c_str(), this);
     if(parent)
     {
       parents.push_back(parent);

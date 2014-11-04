@@ -4,13 +4,6 @@
 
 #include <map>
 
-#include <boost/thread/locks.hpp>
-#include <boost/thread/shared_mutex.hpp>
-typedef boost::shared_mutex Lock;
-typedef boost::unique_lock< Lock >  WriteLock;
-typedef boost::shared_lock< Lock >  ReadLock;
-Lock gKLTypeLock;
-
 using namespace FabricServices::ASTWrapper;
 
 std::map<std::string, KLType*> s_allTypes;
@@ -18,8 +11,6 @@ std::map<std::string, KLType*> s_allTypes;
 KLType::KLType(const KLFile* klFile, JSONData data)
 : KLCommented(klFile, data)
 {
-  WriteLock w_lock(gKLTypeLock);
-
   const char * name = getStringDictValue("name");
   if(name)
     m_name = name;
@@ -30,8 +21,6 @@ KLType::KLType(const KLFile* klFile, JSONData data)
 
 KLType::~KLType()
 {
-  WriteLock w_lock(gKLTypeLock);
-
   for(uint32_t i=0;i<m_methods.size();i++)
   {
     delete(m_methods[i]);
@@ -152,14 +141,6 @@ const KLTypeOp* KLType::getTypeOp(const char * labelOrName) const
 std::vector<const KLTypeOp*> KLType::getTypeOps() const
 {
   return m_typeOps;
-}
-
-const KLType * KLType::getKLTypeByName(const char * name)
-{
-  std::map<std::string, KLType*>::iterator it = s_allTypes.find(name);
-  if(it != s_allTypes.end())
-    return it->second;
-  return NULL;
 }
 
 void KLType::pushMethod(KLMethod * method) const

@@ -1,7 +1,10 @@
 // Copyright 2010-2014 Fabric Engine Inc. All rights reserved.
 
 #include "KLASTManager.h"
+#include "KLTypeOp.h"
 
+#include <boost/algorithm/string.hpp>
+#include <boost/range/algorithm/remove_if.hpp>
 #include <boost/filesystem/path.hpp>
 #include <boost/filesystem/operations.hpp>
 
@@ -27,6 +30,7 @@ const KLExtension* KLASTManager::loadExtension(const char * name, const char * j
 {
   KLExtension * extension = new KLExtension(this, name, jsonContent, numKlFiles, klContent);
   m_extensions.push_back(extension);
+  extension->parse();
   return extension;
 }
 
@@ -34,6 +38,7 @@ const KLExtension* KLASTManager::loadExtension(const char * jsonFilePath)
 {
   KLExtension * extension = new KLExtension(this, jsonFilePath);
   m_extensions.push_back(extension);
+  extension->parse();
   return extension;
 }
 
@@ -55,11 +60,14 @@ void KLASTManager::loadAllExtensionsInFolder(const char * extensionFolder)
         }
         else
         {
+          if(fileName.length() <=9)
+            continue;
           if(fileName.substr(fileName.length()-9, 9) == ".fpm.json")
           {
             try
             {
               KLExtension * extension = new KLExtension(this, dir->path().string().c_str());
+              m_extensions.push_back(extension);
             }
             catch(FabricCore::Exception e)
             {
@@ -69,6 +77,12 @@ void KLASTManager::loadAllExtensionsInFolder(const char * extensionFolder)
         }
       }
     }
+  }
+
+  for(uint32_t i=0;i<m_extensions.size();i++)
+  {
+    KLExtension * klExtension = (KLExtension *)m_extensions[i];
+    klExtension->parse();
   }
 }
 
@@ -176,4 +190,181 @@ std::vector<const KLOperator*> KLASTManager::getOperators() const
   return result;
 }
 
+const KLType* KLASTManager::getKLTypeByName(const char * name, const KLDecl* decl) const
+{
+  // first check withinour own extension
+  if(decl)
+  {
+    std::vector<const KLType*> types = decl->getExtension()->getTypes();
+    for(uint32_t i=0;i<types.size();i++)
+    {
+      if(types[i]->getName() == name)
+        return types[i];
+    }
 
+    // if the type isn't inside our own extension,
+    // get all requires and find the corresponding matching extensions
+    std::vector<const KLRequire*> requires = decl->getExtension()->getRequires();
+    for(uint32_t i=0;i<requires.size();i++)
+    {
+      const KLExtension* extension = getExtension(requires[i]);
+      if(extension)
+      {
+        std::vector<const KLType*> types = extension->getTypes();
+        for(uint32_t j=0;j<types.size();j++)
+        {
+          if(types[j]->getName() == name)
+            return types[j];
+        }
+      }
+    }
+  }
+  
+  // if we don't have it in the provided extension, check the global map
+  // go backwards since we want to check highest extension versions first
+  std::vector<const KLType*> types = getTypes();
+  for(long int i=types.size()-1;i>=0;i--)
+  {
+    if(types[i]->getName() == name)
+      return types[i];
+  }
+
+  return NULL;
+}
+
+const KLType* KLASTManager::getKLTypeByName(const char * name, const char * extension, const char * versionRequirement) const
+{
+  const KLExtension* ext = getExtension(extension, versionRequirement);
+  if(ext)
+  {
+    std::vector<const KLType*> types = ext->getTypes();
+    for(uint32_t j=0;j<types.size();j++)
+    {
+      if(types[j]->getName() == name)
+        return types[j];
+    }
+  }
+  return NULL;
+}
+
+const KLExtension* KLASTManager::getExtension(const char * name, const char * versionRequirement) const
+{
+  std::map<KLExtension::Version, const KLExtension*> extensions;
+  for(uint32_t i=0;i<m_extensions.size();i++) {
+    if(std::string(m_extensions[i]->getName()) != name)
+      continue;
+    if(extensions.find(m_extensions[i]->getVersion()) != extensions.end())
+      continue;
+    extensions.insert(std::pair<KLExtension::Version, const KLExtension*>(m_extensions[i]->getVersion(), m_extensions[i]));
+  }
+  
+  std::string r = versionRequirement;
+  r.erase(boost::remove_if(r, boost::is_any_of(" \t")), r.end());
+
+  KLTypeOp::OpType op = KLTypeOp::OpType_Equal;
+  if(r.substr(0, 2) == "==")
+  {
+    op = KLTypeOp::OpType_Equal;
+    r = r.substr(2, 10000);
+  }
+  else if(r.substr(0, 2) == "!=")
+  {
+    op = KLTypeOp::OpType_NotEqual;
+    r = r.substr(2, 10000);
+  }
+  else if(r.substr(0, 2) == ">=")
+  {
+    op = KLTypeOp::OpType_GreaterEquals;
+    r = r.substr(2, 10000);
+  }
+  else if(r.substr(0, 2) == "<=")
+  {
+    op = KLTypeOp::OpType_LessEquals;
+    r = r.substr(2, 10000);
+  }
+  else if(r.substr(0, 1) == ">")
+  {
+    op = KLTypeOp::OpType_GreaterThan;
+    r = r.substr(1, 10000);
+  }
+  else if(r.substr(0, 1) == "<")
+  {
+    op = KLTypeOp::OpType_LessThan;
+    r = r.substr(1, 10000);
+  }
+
+  KLExtension::Version rVersion;
+  if(r.length() > 1)
+  {
+    std::vector<std::string> strParts;
+    boost::split(strParts, r, boost::is_any_of("."));
+
+    std::vector<int> intParts;
+    for(uint32_t i=0;i<strParts.size();i++)
+      intParts.push_back(atoi(strParts[i].c_str()));
+
+    if(intParts.size() < 1) intParts.push_back(1);
+    if(intParts.size() < 2) intParts.push_back(0);
+    if(intParts.size() < 3) intParts.push_back(0);
+
+    rVersion.major = intParts[0];
+    rVersion.minor = intParts[1];
+    rVersion.revision = intParts[2];
+  }
+
+  std::map<KLExtension::Version, const KLExtension*>::const_reverse_iterator it;
+  for(it = extensions.rbegin(); it != extensions.rend(); it++)
+  {
+    if(r == "*")
+      return it->second;
+
+    switch(op)
+    {
+      case KLTypeOp::OpType_Equal:
+      {
+        if(it->second->getVersion() == rVersion)
+          return it->second;
+        break;
+      }
+      case KLTypeOp::OpType_NotEqual:
+      {
+        if(it->second->getVersion() != rVersion)
+          return it->second;
+        break;
+      }
+      case KLTypeOp::OpType_GreaterThan:
+      {
+        if(it->second->getVersion() > rVersion)
+          return it->second;
+        break;
+      }
+      case KLTypeOp::OpType_LessThan:
+      {
+        if(it->second->getVersion() < rVersion)
+          return it->second;
+        break;
+      }
+      case KLTypeOp::OpType_GreaterEquals:
+      {
+        if(it->second->getVersion() > rVersion || it->second->getVersion() == rVersion)
+          return it->second;
+        break;
+      }
+      case KLTypeOp::OpType_LessEquals:
+      {
+        if(it->second->getVersion() < rVersion || it->second->getVersion() == rVersion)
+          return it->second;
+        break;
+      }
+      default:
+        break;
+    }
+  }
+
+  return NULL;
+}
+
+const KLExtension* KLASTManager::getExtension(const KLRequire* require) const
+{
+  return getExtension(require->getRequiredExtension().c_str(), require->getVersionRange().c_str());
+}

@@ -38,8 +38,6 @@ namespace FabricServices
       const KLTypeOp * getTypeOp(const char * labelOrName) const;
       std::vector<const KLTypeOp*> getTypeOps() const;
 
-      static const KLType * getKLTypeByName(const char * name);
-
     protected:
 
       KLType(const KLFile* klFile, JSONData data);
