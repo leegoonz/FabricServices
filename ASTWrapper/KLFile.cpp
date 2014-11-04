@@ -72,6 +72,11 @@ KLFile::KLFile(const FabricCore::Client * client, const char * extension, const 
       else
         m_functions.push_back(e);
     }
+    else if(et == "ASTInterface")
+    {
+      KLInterface * e = new KLInterface(element);
+      m_types.push_back(e);
+    }
     else
     {
       std::string message = "Unknown AST token '"+et+"'.";
