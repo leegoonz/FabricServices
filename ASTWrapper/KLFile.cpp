@@ -3,19 +3,11 @@
 #include "KLFile.h"
 
 #include <boost/filesystem/path.hpp>
-#include <boost/thread/locks.hpp>
-#include <boost/thread/shared_mutex.hpp>
-typedef boost::shared_mutex Lock;
-typedef boost::unique_lock< Lock >  WriteLock;
-typedef boost::shared_lock< Lock >  ReadLock;
-Lock gKLFileLock;
 
 using namespace FabricServices::ASTWrapper;
 
 KLFile::KLFile(const FabricCore::Client * client, const char * extension, const char * filePath, const char * klCode)
 {
-  WriteLock w_lock(gKLFileLock);
-
   m_extension = extension;
   m_filePath = filePath;
   m_klCode = klCode;
