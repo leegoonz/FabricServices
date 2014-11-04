@@ -42,8 +42,6 @@ namespace FabricServices
       JSONData getDictValue(const char * key) const;
       JSONData getArrayDictValue(const char * key) const;
 
-      static const KLDecl * getKLDeclByID(uint32_t id);
-
     private:
 
       uint32_t m_id;

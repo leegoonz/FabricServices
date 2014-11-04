@@ -7,38 +7,18 @@
 
 #include <map>
 
-#include <boost/thread/locks.hpp>
-#include <boost/thread/shared_mutex.hpp>
-typedef boost::shared_mutex Lock;
-typedef boost::unique_lock< Lock >  WriteLock;
-typedef boost::shared_lock< Lock >  ReadLock;
-Lock gKLDeclLock;
-
 using namespace FabricServices::ASTWrapper;
-
-uint32_t gNumKLDeclInstances = 0;
-std::map<uint32_t, KLDecl*> s_allDecls;
 
 KLDecl::KLDecl(const KLFile* klFile, JSONData data)
 {
-  WriteLock w_lock(gKLDeclLock);
-
   m_data = data;
-  m_id = gNumKLDeclInstances++;
   m_klFile = klFile;
-
-  if(s_allDecls.find(m_id) == s_allDecls.end())
-    s_allDecls.insert(std::pair<uint32_t, KLDecl*>(m_id, this));
-
+  KLASTManager * manager = (KLASTManager *)getASTManager();
+  m_id = manager->generateDeclId();
 }
 
 KLDecl::~KLDecl()
 {
-  WriteLock w_lock(gKLDeclLock);
-
-  std::map<uint32_t, KLDecl*>::iterator it = s_allDecls.find(m_id);
-  if(it != s_allDecls.end())
-    s_allDecls.erase(it);
 }
 
 uint32_t KLDecl::getID() const
@@ -110,12 +90,4 @@ JSONData KLDecl::getArrayDictValue(const char * key) const
   if(!result->isArray())
     throw(FabricCore::Exception("KLDecl::getArrayDictValue called on non-array dict element."));
   return result;
-}
-
-const KLDecl * KLDecl::getKLDeclByID(uint32_t id)
-{
-  std::map<uint32_t, KLDecl*>::iterator it = s_allDecls.find(id);
-  if(it != s_allDecls.end())
-    return it->second;
-  return NULL;
 }

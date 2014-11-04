@@ -6,17 +6,12 @@
 
 using namespace FabricServices::ASTWrapper;
 
-std::map<std::string, KLType*> s_allTypes;
-
 KLType::KLType(const KLFile* klFile, JSONData data)
 : KLCommented(klFile, data)
 {
   const char * name = getStringDictValue("name");
   if(name)
     m_name = name;
-
-  if(s_allTypes.find(m_name) == s_allTypes.end())
-    s_allTypes.insert(std::pair<std::string, KLType*>(m_name, this));
 }
 
 KLType::~KLType()
@@ -25,10 +20,6 @@ KLType::~KLType()
   {
     delete(m_methods[i]);
   }
-
-  std::map<std::string, KLType*>::iterator it = s_allTypes.find(m_name);
-  if(it != s_allTypes.end())
-    s_allTypes.erase(it);
 }
 
 const std::string & KLType::getName() const

@@ -14,6 +14,8 @@ namespace FabricServices
 
     class KLASTManager : public KLDeclContainer
     {
+      friend class KLDecl;
+
     public:
 
       KLASTManager(const FabricCore::Client * client);
@@ -52,9 +54,13 @@ namespace FabricServices
       virtual const KLExtension* getExtension(const char * name, const char * versionRequirement = "*") const;
       virtual const KLExtension* getExtension(const KLRequire* require) const;
 
+    protected: 
+      uint32_t generateDeclId();
+
     private:
       const FabricCore::Client * m_client;
       std::vector<const KLExtension*> m_extensions;
+      uint32_t m_maxDeclId;
     };
 
   };

@@ -13,6 +13,7 @@ using namespace FabricServices::ASTWrapper;
 KLASTManager::KLASTManager(const FabricCore::Client * client)
 {
   m_client = client;
+  m_maxDeclId = 0;
 }
 
 KLASTManager::~KLASTManager()
@@ -367,4 +368,9 @@ const KLExtension* KLASTManager::getExtension(const char * name, const char * ve
 const KLExtension* KLASTManager::getExtension(const KLRequire* require) const
 {
   return getExtension(require->getRequiredExtension().c_str(), require->getVersionRange().c_str());
+}
+
+uint32_t KLASTManager::generateDeclId()
+{
+  return m_maxDeclId++;
 }
