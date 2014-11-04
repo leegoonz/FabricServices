@@ -12,9 +12,6 @@ using namespace FabricServices::ASTWrapper;
 KLFunction::KLFunction(JSONData data)
 : KLCommented(data)
 {
-
-  printf("function AST '%s'\n", data->getJSONEncoding().getStringData());
-
   m_name = getStringDictValue("name");
 
   const char * returnType = getStringDictValue("returnType");

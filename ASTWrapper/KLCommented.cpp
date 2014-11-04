@@ -8,7 +8,15 @@ KLCommented::KLCommented(JSONData data)
 : KLDecl(data)
 {
   JSONData preComments = getDictValue("preComments");
-  m_comments = new KLComment(preComments);
+  if(preComments)
+  {
+    m_comments = new KLComment(preComments);
+  }
+  else
+  {
+    FabricCore::Variant variant = FabricCore::Variant::CreateArray();
+    m_comments = new KLComment(&variant);
+  }
 }
 
 KLCommented::~KLCommented()

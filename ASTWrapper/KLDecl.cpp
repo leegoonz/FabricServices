@@ -67,8 +67,6 @@ void KLDecl::setKLFile(const std::string & klFile)
 
 uint32_t KLDecl::getArraySize() const
 {
-  if(!m_data)
-    return 0;
   if(!m_data->isArray())
     return 0;
   return m_data->getArraySize();
@@ -80,7 +78,7 @@ const char * KLDecl::getStringArrayElement(uint32_t index) const
   if(!value)
     return NULL;
   if(!value->isString())
-    return NULL;
+    throw(FabricCore::Exception("KLDecl::getStringArrayElement called on non-string array element."));
   return value->getStringData();
 }
 
@@ -89,29 +87,22 @@ const char * KLDecl::getStringDictValue(const char * key) const
   JSONData value = getDictValue(key);
   if(!value)
     return NULL;
-
   if(!value->isString())
-    return NULL;
-
+    throw(FabricCore::Exception("KLDecl::getStringDictValue called on non-string dict element."));
   return value->getStringData();
 }
 
 JSONData KLDecl::getArrayElement(uint32_t index) const
 {
-  if(!m_data)
-    return NULL;
   if(!m_data->isArray())
-    return NULL;
+    throw(FabricCore::Exception("KLDecl::getArrayElement called on non-array data."));
   return m_data->getArrayElement(index);
 }
 
 JSONData KLDecl::getDictValue(const char * key) const
 {
-  if(!m_data)
-    return NULL;
   if(!m_data->isDict())
     return NULL;
-
   return m_data->getDictValue(key);
 }
 
@@ -121,7 +112,7 @@ JSONData KLDecl::getArrayDictValue(const char * key) const
   if(!result)
     return NULL;
   if(!result->isArray())
-    return NULL;
+    throw(FabricCore::Exception("KLDecl::getArrayDictValue called on non-array dict element."));
   return result;
 }
 
