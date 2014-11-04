@@ -19,6 +19,8 @@ namespace FabricServices
       KLASTManager(const FabricCore::Client * client);
       virtual ~KLASTManager();
 
+      const FabricCore::Client* getClient() const;
+
       const KLExtension* loadExtension(const char * name, const char * jsonContent, uint32_t numKlFiles, const char ** klContent);
       const KLExtension* loadExtension(const char * jsonFilePath);
       void loadAllExtensionsInFolder(const char * extensionFolder);

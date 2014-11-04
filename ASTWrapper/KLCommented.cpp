@@ -4,18 +4,18 @@
 
 using namespace FabricServices::ASTWrapper;
 
-KLCommented::KLCommented(JSONData data)
-: KLDecl(data)
+KLCommented::KLCommented(const KLFile* klFile, JSONData data)
+: KLDecl(klFile, data)
 {
   JSONData preComments = getDictValue("preComments");
   if(preComments)
   {
-    m_comments = new KLComment(preComments);
+    m_comments = new KLComment(klFile, preComments);
   }
   else
   {
     FabricCore::Variant variant = FabricCore::Variant::CreateArray();
-    m_comments = new KLComment(&variant);
+    m_comments = new KLComment(klFile, &variant);
   }
 }
 
@@ -29,20 +29,6 @@ bool KLCommented::isInternal() const
   if(!m_comments)
     return false;
   return m_comments->hasQualifier("internal");
-}
-
-void KLCommented::setExtension(const std::string & extension)
-{
-  KLDecl::setExtension(extension);
-  if(m_comments)
-    m_comments->setExtension(extension);
-}
-
-void KLCommented::setKLFile(const std::string & klFile)
-{
-  KLDecl::setKLFile(klFile);
-  if(m_comments)
-    m_comments->setKLFile(klFile);
 }
 
 const KLComment * KLCommented::getComments() const

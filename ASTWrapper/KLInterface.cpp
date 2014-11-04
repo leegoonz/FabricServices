@@ -4,8 +4,8 @@
 
 using namespace FabricServices::ASTWrapper;
 
-KLInterface::KLInterface(JSONData data)
-: KLType(data)
+KLInterface::KLInterface(const KLFile* klFile, JSONData data)
+: KLType(klFile, data)
 {
 
   JSONData members = getArrayDictValue("members");
@@ -13,7 +13,7 @@ KLInterface::KLInterface(JSONData data)
   {
     for(uint32_t i=0;i<members->getArraySize();i++)
     {
-      KLMethod * m = new KLMethod(members->getArrayElement(i), getName());
+      KLMethod * m = new KLMethod(klFile, members->getArrayElement(i), getName());
       pushMethod(m);
     }
   }

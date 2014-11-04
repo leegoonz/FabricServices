@@ -11,6 +11,8 @@ namespace FabricServices
 
   namespace ASTWrapper
   {
+    // forward decl
+    class KLASTManager;
 
     class KLExtension : public KLDeclContainer
     {
@@ -20,6 +22,7 @@ namespace FabricServices
 
       virtual ~KLExtension();
 
+      const KLASTManager * getASTManager() const;
       const char * getName() const;
       const char * getVersion() const;
 
@@ -40,14 +43,15 @@ namespace FabricServices
 
     protected:
       
-      KLExtension(const FabricCore::Client * client, const char * jsonFilePath);
-      KLExtension(const FabricCore::Client * client, const char * name, const char * jsonContent, uint32_t numKLFiles, const char ** klContent);
+      KLExtension(const KLASTManager* astManager, const char * jsonFilePath);
+      KLExtension(const KLASTManager* astManager, const char * name, const char * jsonContent, uint32_t numKLFiles, const char ** klContent);
 
     private:
 
-      void init(const FabricCore::Client * client, const char * jsonContent, uint32_t numKLFiles, const char ** klContent);
+      void init(const char * jsonContent, uint32_t numKLFiles, const char ** klContent);
       std::vector<std::string> extractKLFilePaths(JSONData data, const char * extensionName);
 
+      const KLASTManager* m_astManager;
       std::string m_name;
       std::string m_version;
       std::vector<const KLFile*> m_files;
@@ -56,5 +60,7 @@ namespace FabricServices
   };
 
 };
+
+#include "KLASTManager.h"
 
 #endif // __ASTWrapper_KLExtension__

@@ -11,6 +11,8 @@ namespace FabricServices
 
   namespace ASTWrapper
   {
+    // forward decl
+    class KLExtension;
 
     class KLFile : public KLDeclContainer
     {
@@ -20,7 +22,7 @@ namespace FabricServices
 
       virtual ~KLFile();
 
-      const char * getExtension() const;
+      const KLExtension* getExtension() const;
       const char * getFilePath() const;
       const char * getFileName() const;
       const char * getKLCode() const;
@@ -40,10 +42,10 @@ namespace FabricServices
 
     protected:
       
-      KLFile(const FabricCore::Client * client, const char * extension, const char * filePath, const char * klCode);
+      KLFile(const KLExtension* extension, const char * filePath, const char * klCode);
 
     private:
-      std::string m_extension;
+      const KLExtension* m_extension;
       std::string m_filePath;
       std::string m_fileName;
       std::string m_klCode;
@@ -58,5 +60,7 @@ namespace FabricServices
   };
 
 };
+
+#include "KLExtension.h"
 
 #endif // __ASTWrapper_KLFile__

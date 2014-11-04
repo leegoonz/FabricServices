@@ -22,9 +22,6 @@ namespace FabricServices
 
       virtual ~KLFunction();
 
-      virtual void setExtension(const std::string & extension);
-      virtual void setKLFile(const std::string & klFile);
-
       virtual const std::string & getName() const;
       virtual const std::string & getReturnType() const;
       virtual const std::string & getSymbolName() const;
@@ -40,7 +37,7 @@ namespace FabricServices
 
     protected:
 
-      KLFunction(JSONData data);
+      KLFunction(const KLFile* klFile, JSONData data);
 
     private:
       

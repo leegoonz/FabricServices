@@ -23,8 +23,6 @@ namespace FabricServices
     public:
 
       virtual ~KLType();
-      virtual void setExtension(const std::string & extension);
-      virtual void setKLFile(const std::string & klFile);
 
       const std::string & getName() const;
       virtual const char * getKLType() const = 0;
@@ -44,7 +42,7 @@ namespace FabricServices
 
     protected:
 
-      KLType(JSONData data);
+      KLType(const KLFile* klFile, JSONData data);
       void pushMethod(KLMethod * method) const;
       void pushTypeOp(KLTypeOp * typeOp) const;
       mutable std::vector<KLMethod*> m_methods;

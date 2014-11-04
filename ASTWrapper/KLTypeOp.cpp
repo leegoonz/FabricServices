@@ -6,8 +6,8 @@
 
 using namespace FabricServices::ASTWrapper;
 
-KLTypeOp::KLTypeOp(JSONData data)
-: KLFunction(data)
+KLTypeOp::KLTypeOp(const KLFile* klFile, JSONData data)
+: KLFunction(klFile, data)
 {
   m_isUnary = false;
 

@@ -7,8 +7,8 @@
 
 using namespace FabricServices::ASTWrapper;
 
-KLComment::KLComment(JSONData data)
-: KLDecl(data)
+KLComment::KLComment(const KLFile* klFile, JSONData data)
+: KLDecl(klFile, data)
 {
   gatherDoxygenContent();
 }

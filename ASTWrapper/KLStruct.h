@@ -30,7 +30,7 @@ namespace FabricServices
 
     protected:
 
-      KLStruct(JSONData data);
+      KLStruct(const KLFile* klFile, JSONData data);
 
     private:
       std::string m_parentStructName;

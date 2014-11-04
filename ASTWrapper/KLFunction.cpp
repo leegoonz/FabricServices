@@ -9,8 +9,8 @@
 
 using namespace FabricServices::ASTWrapper;
 
-KLFunction::KLFunction(JSONData data)
-: KLCommented(data)
+KLFunction::KLFunction(const KLFile* klFile, JSONData data)
+: KLCommented(klFile, data)
 {
   const char * name = getStringDictValue("name");
   if(name)
@@ -29,7 +29,7 @@ KLFunction::KLFunction(JSONData data)
   {
     for(uint32_t i=0;i<params->getArraySize();i++)
     {
-      KLParameter * param = new KLParameter(params->getArrayElement(i));
+      KLParameter * param = new KLParameter(klFile, params->getArrayElement(i));
       m_params.push_back(param);
     }
   }
@@ -41,20 +41,6 @@ KLFunction::~KLFunction()
   {
     delete(m_params[i]);
   }
-}
-
-void KLFunction::setExtension(const std::string & extension)
-{
-  KLCommented::setExtension(extension);
-  for(uint32_t i=0;i<m_params.size();i++)
-    m_params[i]->setExtension(extension);
-}
-
-void KLFunction::setKLFile(const std::string & klFile)
-{
-  KLCommented::setKLFile(klFile);
-  for(uint32_t i=0;i<m_params.size();i++)
-    m_params[i]->setKLFile(klFile);
 }
 
 const std::string & KLFunction::getName() const

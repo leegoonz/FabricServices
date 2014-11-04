@@ -31,7 +31,7 @@ namespace FabricServices
 
     protected:
 
-      KLParameter(JSONData data);
+      KLParameter(const KLFile* klFile, JSONData data);
 
     private:
       

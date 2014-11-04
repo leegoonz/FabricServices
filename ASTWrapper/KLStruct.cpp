@@ -4,8 +4,8 @@
 
 using namespace FabricServices::ASTWrapper;
 
-KLStruct::KLStruct(JSONData data)
-: KLType(data)
+KLStruct::KLStruct(const KLFile* klFile, JSONData data)
+: KLType(klFile, data)
 {
   const char * parentStructName = getStringDictValue("parentStructName");
   if(parentStructName)
@@ -16,7 +16,7 @@ KLStruct::KLStruct(JSONData data)
   {
     for(uint32_t i=0;i<members->getArraySize();i++)
     {
-      KLMember * member = new KLMember(members->getArrayElement(i));
+      KLMember * member = new KLMember(klFile, members->getArrayElement(i));
       m_members.push_back(member);
     }
   }

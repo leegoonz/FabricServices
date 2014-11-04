@@ -26,7 +26,7 @@ namespace FabricServices
 
     protected:
 
-      KLMember(JSONData data);
+      KLMember(const KLFile* klFile, JSONData data);
 
     private:
       

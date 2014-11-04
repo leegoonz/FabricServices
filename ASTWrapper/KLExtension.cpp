@@ -7,8 +7,10 @@
 
 using namespace FabricServices::ASTWrapper;
 
-KLExtension::KLExtension(const FabricCore::Client * client, const char * jsonFilePath)
+KLExtension::KLExtension(const KLASTManager* astManager, const char * jsonFilePath)
 {
+  m_astManager = astManager;
+
   boost::filesystem::path jsonPath = jsonFilePath;
   m_name = jsonPath.filename().string();
 
@@ -70,13 +72,14 @@ KLExtension::KLExtension(const FabricCore::Client * client, const char * jsonFil
     free(klFileBuffer);
   }
 
-  init(client, jsonContent.c_str(), klContentCStr.size(), &klContentCStr[0]);
+  init(jsonContent.c_str(), klContentCStr.size(), &klContentCStr[0]);
 }
 
-KLExtension::KLExtension(const FabricCore::Client * client, const char * name, const char * jsonContent, uint32_t numKLFiles, const char ** klContent)
+KLExtension::KLExtension(const KLASTManager* astManager, const char * name, const char * jsonContent, uint32_t numKLFiles, const char ** klContent)
 {
+  m_astManager = astManager;
   m_name = name;
-  init(client, jsonContent, numKLFiles, klContent);
+  init(jsonContent, numKLFiles, klContent);
 }
 
 KLExtension::~KLExtension()
@@ -85,8 +88,10 @@ KLExtension::~KLExtension()
     delete(m_files[i]);
 }
 
-void KLExtension::init(const FabricCore::Client * client, const char * jsonContent, uint32_t numKLFiles, const char ** klContent)
+void KLExtension::init(const char * jsonContent, uint32_t numKLFiles, const char ** klContent)
 {
+  const FabricCore::Client * client = m_astManager->getClient();
+
   FabricCore::Variant jsonVar = FabricCore::Variant::CreateFromJSON(jsonContent);
 
   if(!jsonVar.isDict())
@@ -126,7 +131,7 @@ void KLExtension::init(const FabricCore::Client * client, const char * jsonConte
 
   for(uint32_t i=0;i<klFilePaths.size();i++)
   {
-    KLFile * klFile = new KLFile(client, m_name.c_str(), klFilePaths[i].c_str(), klContent[i]);
+    KLFile * klFile = new KLFile(this, klFilePaths[i].c_str(), klContent[i]);
     m_files.push_back(klFile);
   }
 }
@@ -183,6 +188,11 @@ std::vector<std::string> KLExtension::extractKLFilePaths(JSONData data, const ch
   }
 
   return result;
+}
+
+const KLASTManager * KLExtension::getASTManager() const
+{
+  return m_astManager;
 }
 
 const char * KLExtension::getName() const

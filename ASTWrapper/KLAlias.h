@@ -28,7 +28,7 @@ namespace FabricServices
 
     protected:
       
-      KLAlias(JSONData data);
+      KLAlias(const KLFile* klFile, JSONData data);
 
     private:
       

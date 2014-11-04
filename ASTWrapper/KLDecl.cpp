@@ -1,6 +1,9 @@
 // Copyright 2010-2014 Fabric Engine Inc. All rights reserved.
 
 #include "KLDecl.h"
+#include "KLASTManager.h"
+#include "KLExtension.h"
+#include "KLFile.h"
 
 #include <map>
 
@@ -16,19 +19,17 @@ using namespace FabricServices::ASTWrapper;
 uint32_t gNumKLDeclInstances = 0;
 std::map<uint32_t, KLDecl*> s_allDecls;
 
-KLDecl::KLDecl(JSONData data)
+KLDecl::KLDecl(const KLFile* klFile, JSONData data)
 {
   WriteLock w_lock(gKLDeclLock);
 
   m_data = data;
   m_id = gNumKLDeclInstances++;
+  m_klFile = klFile;
 
   if(s_allDecls.find(m_id) == s_allDecls.end())
     s_allDecls.insert(std::pair<uint32_t, KLDecl*>(m_id, this));
 
-  const char * owningExtName = getStringDictValue("owningExtName");
-  if(owningExtName)
-    m_extension = owningExtName;      
 }
 
 KLDecl::~KLDecl()
@@ -45,24 +46,19 @@ uint32_t KLDecl::getID() const
   return m_id;
 }
 
-const std::string & KLDecl::getExtension() const
+const KLASTManager* KLDecl::getASTManager() const
 {
-  return m_extension;
+  return getExtension()->getASTManager();
 }
 
-const std::string & KLDecl::getKLFile() const
+const KLExtension* KLDecl::getExtension() const
+{
+  return getKLFile()->getExtension();
+}
+
+const KLFile* KLDecl::getKLFile() const
 {
   return m_klFile;
-}
-
-void KLDecl::setExtension(const std::string & extension)
-{
-  m_extension = extension;
-}
-
-void KLDecl::setKLFile(const std::string & klFile)
-{
-  m_klFile = klFile;
 }
 
 uint32_t KLDecl::getArraySize() const

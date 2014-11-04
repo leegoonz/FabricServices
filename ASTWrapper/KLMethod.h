@@ -33,7 +33,7 @@ namespace FabricServices
 
     protected:
 
-      KLMethod(JSONData data, const std::string & thisType = "");
+      KLMethod(const KLFile* klFile, JSONData data, const std::string & thisType = "");
 
     private:
       

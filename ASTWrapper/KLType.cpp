@@ -15,8 +15,8 @@ using namespace FabricServices::ASTWrapper;
 
 std::map<std::string, KLType*> s_allTypes;
 
-KLType::KLType(JSONData data)
-: KLCommented(data)
+KLType::KLType(const KLFile* klFile, JSONData data)
+: KLCommented(klFile, data)
 {
   WriteLock w_lock(gKLTypeLock);
 
@@ -40,20 +40,6 @@ KLType::~KLType()
   std::map<std::string, KLType*>::iterator it = s_allTypes.find(m_name);
   if(it != s_allTypes.end())
     s_allTypes.erase(it);
-}
-
-void KLType::setExtension(const std::string & extension)
-{
-  KLCommented::setExtension(extension);
-  for(uint32_t i=0;i<m_methods.size();i++)
-    m_methods[i]->setExtension(extension);
-}
-
-void KLType::setKLFile(const std::string & klFile)
-{
-  KLCommented::setKLFile(klFile);
-  for(uint32_t i=0;i<m_methods.size();i++)
-    m_methods[i]->setKLFile(klFile);
 }
 
 const std::string & KLType::getName() const

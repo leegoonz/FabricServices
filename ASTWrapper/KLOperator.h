@@ -24,7 +24,7 @@ namespace FabricServices
 
     protected:
 
-      KLOperator(JSONData data);
+      KLOperator(const KLFile* klFile, JSONData data);
     };
 
   };

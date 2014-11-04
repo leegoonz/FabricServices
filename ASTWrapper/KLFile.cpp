@@ -6,11 +6,13 @@
 
 using namespace FabricServices::ASTWrapper;
 
-KLFile::KLFile(const FabricCore::Client * client, const char * extension, const char * filePath, const char * klCode)
+KLFile::KLFile(const KLExtension* extension, const char * filePath, const char * klCode)
 {
   m_extension = extension;
   m_filePath = filePath;
   m_klCode = klCode;
+
+  const FabricCore::Client * client = m_extension->getASTManager()->getClient();
 
   boost::filesystem::path path = m_filePath;
   m_fileName = path.stem().string() + ".kl";
@@ -34,37 +36,37 @@ KLFile::KLFile(const FabricCore::Client * client, const char * extension, const 
     std::string et = etVar->getStringData();
     if(et == "RequireGlobal")
     {
-      KLRequire * e = new KLRequire(element);
+      KLRequire * e = new KLRequire(this, element);
       m_requires.push_back(e);
     }
     else if(et == "Alias")
     {
-      KLAlias * e = new KLAlias(element);
+      KLAlias * e = new KLAlias(this, element);
       m_aliases.push_back(e);
     }
     else if(et == "GlobalConstDecl")
     {
-      KLConstant * e = new KLConstant(element);
+      KLConstant * e = new KLConstant(this, element);
       m_constants.push_back(e);
     }
     else if(et == "Function")
     {
-      KLFunction * e = new KLFunction(element);
+      KLFunction * e = new KLFunction(this, element);
       m_functions.push_back(e);
     }
     else if(et == "Operator")
     {
-      KLOperator * e = new KLOperator(element);
+      KLOperator * e = new KLOperator(this, element);
       m_operators.push_back(e);
     }
     else if(et == "ASTStructDecl")
     {
-      KLStruct * e = new KLStruct(element);
+      KLStruct * e = new KLStruct(this, element);
       m_types.push_back(e);
     }
     else if(et == "MethodOpImpl")
     {
-      KLMethod * e = new KLMethod(element);
+      KLMethod * e = new KLMethod(this, element);
       std::string thisType = e->getThisType();
       const KLType * klType = KLType::getKLTypeByName(thisType.c_str());
       if(klType)
@@ -74,12 +76,12 @@ KLFile::KLFile(const FabricCore::Client * client, const char * extension, const 
     }
     else if(et == "ASTInterface")
     {
-      KLInterface * e = new KLInterface(element);
+      KLInterface * e = new KLInterface(this, element);
       m_types.push_back(e);
     }
     else if(et == "ASTObjectDecl")
     {
-      KLObject * e = new KLObject(element);
+      KLObject * e = new KLObject(this, element);
       m_types.push_back(e);
     }
     else if(et == "ComparisonOpImpl" ||
@@ -87,7 +89,7 @@ KLFile::KLFile(const FabricCore::Client * client, const char * extension, const 
       et == "BinOpImpl" ||
       et == "ASTUniOpDecl")
     {
-      KLTypeOp * e = new KLTypeOp(element);
+      KLTypeOp * e = new KLTypeOp(this, element);
 
       std::string thisType = e->getLhs();
       const KLType * klType = KLType::getKLTypeByName(thisType.c_str());
@@ -121,9 +123,9 @@ KLFile::~KLFile()
     delete(m_operators[i]);
 }
 
-const char * KLFile::getExtension() const
+const KLExtension* KLFile::getExtension() const
 {
-  return m_extension.c_str();
+  return m_extension;
 }
 
 const char * KLFile::getFilePath() const

@@ -28,7 +28,7 @@ namespace FabricServices
 
     protected:
       
-      KLConstant(JSONData data);
+      KLConstant(const KLFile* klFile, JSONData data);
 
     private:
       

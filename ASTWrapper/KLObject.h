@@ -26,7 +26,7 @@ namespace FabricServices
 
     protected:
 
-      KLObject(JSONData data);
+      KLObject(const KLFile* klFile, JSONData data);
 
     private:
       std::vector<std::string> m_parentsAndInterfaces;

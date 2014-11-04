@@ -28,7 +28,7 @@ namespace FabricServices
 
     protected:
       
-      KLRequire(JSONData data);
+      KLRequire(const KLFile* klFile, JSONData data);
 
     private:
       

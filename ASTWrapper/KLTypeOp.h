@@ -58,7 +58,7 @@ namespace FabricServices
 
     protected:
 
-      KLTypeOp(JSONData data);
+      KLTypeOp(const KLFile* klFile, JSONData data);
 
     private:
 

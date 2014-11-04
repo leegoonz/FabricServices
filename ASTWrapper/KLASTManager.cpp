@@ -18,16 +18,21 @@ KLASTManager::~KLASTManager()
     delete(m_extensions[i]);
 }
 
+const FabricCore::Client* KLASTManager::getClient() const
+{
+  return m_client;
+}
+
 const KLExtension* KLASTManager::loadExtension(const char * name, const char * jsonContent, uint32_t numKlFiles, const char ** klContent)
 {
-  KLExtension * extension = new KLExtension(m_client, name, jsonContent, numKlFiles, klContent);
+  KLExtension * extension = new KLExtension(this, name, jsonContent, numKlFiles, klContent);
   m_extensions.push_back(extension);
   return extension;
 }
 
 const KLExtension* KLASTManager::loadExtension(const char * jsonFilePath)
 {
-  KLExtension * extension = new KLExtension(m_client, jsonFilePath);
+  KLExtension * extension = new KLExtension(this, jsonFilePath);
   m_extensions.push_back(extension);
   return extension;
 }
@@ -54,7 +59,7 @@ void KLASTManager::loadAllExtensionsInFolder(const char * extensionFolder)
           {
             try
             {
-              KLExtension * extension = new KLExtension(m_client, dir->path().string().c_str());
+              KLExtension * extension = new KLExtension(this, dir->path().string().c_str());
             }
             catch(FabricCore::Exception e)
             {
