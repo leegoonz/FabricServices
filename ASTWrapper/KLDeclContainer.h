@@ -41,11 +41,6 @@ namespace FabricServices
       virtual std::vector<const KLStruct*> getStructs() const = 0;
       virtual std::vector<const KLObject*> getObjects() const = 0;
       virtual std::vector<const KLOperator*> getOperators() const = 0;
-
-      // single decl getters
-      virtual const KLConstant* getConstant(const char * name) const = 0;
-      virtual const KLFunction* getFunction(const char * name) const = 0;
-      virtual const KLFunction* getOperator(const char * name) const = 0;
     };
 
   };

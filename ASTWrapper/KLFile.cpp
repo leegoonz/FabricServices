@@ -121,6 +121,26 @@ KLFile::~KLFile()
     delete(m_operators[i]);
 }
 
+const char * KLFile::getExtension() const
+{
+  return m_extension.c_str();
+}
+
+const char * KLFile::getFilePath() const
+{
+  return m_filePath.c_str();
+}
+
+const char * KLFile::getFileName() const
+{
+  return m_fileName.c_str();
+}
+
+const char * KLFile::getKLCode() const
+{
+  return m_klCode.c_str();
+}
+
 std::vector<const KLRequire*> KLFile::getRequires() const
 {
   return m_requires;
@@ -183,36 +203,3 @@ std::vector<const KLOperator*> KLFile::getOperators() const
 {
   return m_operators;
 }
-
-const KLConstant* KLFile::getConstant(const char * name) const
-{
-  for(uint32_t i=0;i<m_constants.size();i++)
-  {
-    if(m_constants[i]->getName() == name)
-      return m_constants[i];
-  }
-  return NULL;
-}
-
-const KLFunction* KLFile::getFunction(const char * name) const
-{
-  for(uint32_t i=0;i<m_functions.size();i++)
-  {
-    if(m_functions[i]->getName() == name)
-      return m_functions[i];
-  }
-  return NULL;
-}
-
-const KLOperator* KLFile::getOperator(const char * name) const
-{
-  for(uint32_t i=0;i<m_operators.size();i++)
-  {
-    if(m_operators[i]->getName() == name)
-    {
-      return m_operators[i];
-    }
-  }
-  return NULL;
-}
-

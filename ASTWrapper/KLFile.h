@@ -14,9 +14,10 @@ namespace FabricServices
 
     class KLFile : public KLDeclContainer
     {
+      friend class KLExtension;
+      
     public:
 
-      KLFile(const FabricCore::Client * client, const char * extension, const char * filePath, const char * klCode);
       virtual ~KLFile();
 
       const char * getExtension() const;
@@ -37,10 +38,9 @@ namespace FabricServices
       virtual std::vector<const KLStruct*> getStructs() const;
       virtual std::vector<const KLObject*> getObjects() const;
 
-      // single decl getters
-      virtual const KLConstant* getConstant(const char * name) const;
-      virtual const KLFunction* getFunction(const char * name) const;
-      virtual const KLOperator* getOperator(const char * name) const;
+    protected:
+      
+      KLFile(const FabricCore::Client * client, const char * extension, const char * filePath, const char * klCode);
 
     private:
       std::string m_extension;
