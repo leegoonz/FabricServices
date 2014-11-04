@@ -45,6 +45,7 @@ namespace FabricServices
     private:
       
       std::string m_name;
+      mutable std::string m_label;
       std::string m_returnType;
       std::string m_symbolName;
       std::vector<KLParameter*> m_params;

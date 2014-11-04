@@ -145,6 +145,7 @@ std::string KLFunction::getKLCode(bool includeReturnType, bool includeKeyWord, b
       const KLParameter * p = m_params[i];
       if(i > 0)
         code += ", ";
+
       code += p->getUsage();
       code += " ";
       code += p->getTypeNoArray();
@@ -152,6 +153,7 @@ std::string KLFunction::getKLCode(bool includeReturnType, bool includeKeyWord, b
       code += p->getName();
       code += p->getTypeArraySuffix();
     }
+
 
     code += " ";
   }
@@ -163,6 +165,8 @@ std::string KLFunction::getKLCode(bool includeReturnType, bool includeKeyWord, b
 
 std::string KLFunction::getLabel() const
 {
-  return getKLCode(false, false, false, true);
+  if(m_label.length() == 0)
+    m_label = getKLCode(false, false, false, true);
+  return m_label;
 }
 

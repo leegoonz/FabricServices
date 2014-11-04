@@ -54,8 +54,10 @@ bool KLMethod::isVirtual() const
       if(std::string(thisType->getKLType()) == "interface")
       {
         const KLMethod* method = thisType->getMethod(getLabel().c_str());
-        if(method == this)
+        if(method)
+        {
           m_isVirtual = 1;
+        }
       }
       else
       {
@@ -69,7 +71,7 @@ bool KLMethod::isVirtual() const
           if(std::string(parents[i]->getKLType()) == "interface")
           {
             const KLMethod* method = parents[i]->getMethod(getLabel().c_str());
-            if(method == this)
+            if(method)
             {
               m_isVirtual = 1;
               break;
@@ -104,8 +106,24 @@ const KLComment * KLMethod::getComments() const
   if(comments)
     return comments;
 
-  // todo... check the parents.... ideally walk up to the interface
+  const KLType* thisType = KLType::getKLTypeByName(m_thisType.c_str());
+  if(thisType)
+  {
+    std::vector<const KLType*> parents = thisType->getParents();
+    for(uint32_t i=0;i<parents.size();i++)
+    {
+      std::vector<const KLType*> granParents = parents[i]->getParents();
+      parents.insert(parents.end(), granParents.begin(), granParents.end());
 
+      const KLMethod* method = parents[i]->getMethod(getLabel().c_str());
+      if(method)
+      {
+        comments = method->getComments();
+        if(comments)
+          break;
+      }
+    }
+  }
   return NULL;
 }
 

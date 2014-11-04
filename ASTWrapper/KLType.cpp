@@ -84,6 +84,8 @@ const KLMethod * KLType::getMethod(const char * labelOrName) const
   {
     if(m_methods[i]->getName() == labelOrName)
       return m_methods[i];
+    if(m_methods[i]->getLabel() == labelOrName)
+      return m_methods[i];
   }
   return NULL;
 }
@@ -116,10 +118,10 @@ std::vector<const KLMethod*> KLType::getMethods(bool includeInherited, bool incl
       {
         if(!methods[j]->isVirtual())
           continue;
-        std::string key = m_methods[j]->getLabel();
+        std::string key = methods[j]->getLabel();
         if(lookup.find(key) != lookup.end())
-          continue;
-        lookup.insert(std::pair<std::string, const KLMethod*>(key,methods[j]));
+         continue;
+        lookup.insert(std::pair<std::string, const KLMethod*>(key, methods[j]));
       }
     }
   }

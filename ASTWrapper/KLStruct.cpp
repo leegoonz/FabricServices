@@ -57,7 +57,7 @@ uint32_t KLStruct::getMemberCount(bool includeInherited) const
   uint32_t result = 0;
   for(uint32_t i=0;i<parents.size();i++)
   {
-    if(parents[i]->getKLType() == std::string("struct"))
+    if(parents[i]->getKLType() == std::string("struct") || parents[i]->getKLType() == std::string("object"))
     {
       const KLStruct* parentStruct = (const KLStruct*)parents[i];
       result += parentStruct->getMemberCount(true);
