@@ -27,6 +27,7 @@ namespace FabricServices
       const KLExtension* loadExtension(const char * jsonFilePath);
       void loadAllExtensionsInFolder(const char * extensionFolder, bool parseExtensions = true);
       bool loadAllExtensionsFromExtsPath();
+      const KLExtension* loadExtensionFromExtsPath(const char * name);
       bool removeExtension(const char * name, const char * versionRequirement = "*");
 
       std::vector<const KLExtension*> getExtensions() const;

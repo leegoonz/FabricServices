@@ -36,8 +36,8 @@ void KLSyntaxHighlighter::initRules()
   addRule(HighlightRuleType_String, "'([^']|\\\\.)*'");
 
   // number rules
+  addRule(HighlightRuleType_Number, "\\b[0-9][0-9\\.]+\\b");
   addRule(HighlightRuleType_Number, "\\b[0-9x]+\\b");
-  addRule(HighlightRuleType_Number, "\\b[0-9]*\\.[0-9]+\\b");
 
   // keyword rules
   addRule(HighlightRuleType_Keyword, "<<<");
@@ -105,12 +105,10 @@ void KLSyntaxHighlighter::updateRulesFromCode(const std::string & code, const st
   {
     try
     {
-      if(m_manager->loadAllExtensionsFromExtsPath())
-      {
-        std::vector<const ASTWrapper::KLExtension*> extensions = m_manager->getExtensions();
-        for(size_t i=0;i<extensions.size();i++)
-          updateRulesFromExtension(extensions[i]);
-      }
+      m_manager->loadAllExtensionsFromExtsPath();
+      std::vector<const ASTWrapper::KLExtension*> extensions = m_manager->getExtensions();
+      for(size_t i=0;i<extensions.size();i++)
+        updateRulesFromExtension(extensions[i]);
       m_manager->removeExtension(fileName.c_str());
 
       std::string json = "{\n\"code\": \""+fileName+"\"\n}\n";

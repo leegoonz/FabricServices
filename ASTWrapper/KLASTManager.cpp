@@ -100,7 +100,11 @@ bool KLASTManager::loadAllExtensionsFromExtsPath()
     return false;
 
   std::vector<std::string> folders;
-  boost::split(folders, FABRIC_EXTS_PATH, boost::is_any_of(";:"));
+#ifdef _WIN32
+  boost::split(folders, FABRIC_EXTS_PATH, boost::is_any_of(";"));
+#else
+  boost::split(folders, FABRIC_EXTS_PATH, boost::is_any_of(":"));
+#endif
 
   for(size_t i=0;i<folders.size();i++)
   {
@@ -114,6 +118,59 @@ bool KLASTManager::loadAllExtensionsFromExtsPath()
   }
 
   return m_extensions.size() > 0;
+}
+
+const KLExtension* KLASTManager::loadExtensionFromExtsPath(const char * name)
+{
+  if(getExtension(name))
+    return NULL;
+
+  const char * FABRIC_EXTS_PATH = getenv("FABRIC_EXTS_PATH");
+  if(!FABRIC_EXTS_PATH)
+    return NULL;
+
+  std::vector<std::string> foldersStr;
+#ifdef _WIN32
+  boost::split(foldersStr, FABRIC_EXTS_PATH, boost::is_any_of(";"));
+#else
+  boost::split(foldersStr, FABRIC_EXTS_PATH, boost::is_any_of(":"));
+#endif
+
+  std::vector<boost::filesystem::path> folders;
+  for(size_t i=0;i<foldersStr.size();i++)
+    folders.push_back(foldersStr[i]);
+
+  for(uint32_t i=0;i<folders.size();i++)
+  {
+    if( boost::filesystem::exists(folders[i])) {
+      for ( boost::filesystem::directory_iterator end, dir(folders[i]); dir != end; ++dir ) {
+        std::string fileName = dir->path().filename().string();
+        if(fileName == "." || fileName == "..")
+          continue;
+        if(boost::filesystem::is_directory(dir->path()))
+        {
+          folders.push_back(dir->path().string());
+        }
+        else
+        {
+          if(fileName != std::string(name) + ".fpm.json")
+            continue;
+          try
+          {
+            KLExtension * extension = new KLExtension(this, dir->path().string().c_str());
+            m_extensions.push_back(extension);
+            extension->parse();
+            return extension;
+          }
+          catch(FabricCore::Exception e)
+          {
+            printf("[KLASTManager] Ignoring extension '%s': '%s'.\n", dir->path().string().c_str(), e.getDesc_cstr());
+          }
+        }
+      }
+    }
+  }
+  return NULL;
 }
 
 bool KLASTManager::removeExtension(const char * name, const char * versionRequirement)
