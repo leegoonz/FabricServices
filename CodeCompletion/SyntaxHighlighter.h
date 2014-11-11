@@ -30,13 +30,14 @@ namespace FabricServices
       virtual ~SyntaxHighlighter();
 
       // rule management
-      HighlightRule * addRule(HighlightRuleType type, const std::string & pattern, const std::string & formatPrefix, const std::string & formatSuffix);
+      HighlightRule * addRule(HighlightRuleType type, const std::string & pattern, const std::string & formatPrefix = "", const std::string & formatSuffix = "");
       uint32_t getRuleCount() const;
       const HighlightRule * getRule(uint32_t index) const;
+      const char * getRuleTypeName(HighlightRuleType type) const;
 
       // highlighting
-      std::vector<Format> getHighlightFormats(const std::string & text) const;
-      std::string getHighlightedText(const std::string & text) const;
+      virtual std::vector<Format> getHighlightFormats(const std::string & text, const std::string & fileName = "") const;
+      virtual std::string getHighlightedText(const std::string & text, const std::string & fileName = "") const;
 
     private:
 

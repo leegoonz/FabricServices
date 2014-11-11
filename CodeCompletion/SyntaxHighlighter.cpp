@@ -33,7 +33,27 @@ const HighlightRule * SyntaxHighlighter::getRule(uint32_t index) const
   return m_rules[index];
 }
 
-std::vector<SyntaxHighlighter::Format> SyntaxHighlighter::getHighlightFormats(const std::string & text) const
+const char * SyntaxHighlighter::getRuleTypeName(HighlightRuleType type) const
+{
+  switch(type)
+  {
+    case HighlightRuleType_Keyword:
+      return "Keyword";
+    case HighlightRuleType_Type:
+      return "Type";
+    case HighlightRuleType_Comment:
+      return "Comment";
+    case HighlightRuleType_String:
+      return "String";
+    case HighlightRuleType_Number:
+      return "Number";
+    case HighlightRuleType_NumItems:
+      return "";
+  }
+  return "";
+}
+
+std::vector<SyntaxHighlighter::Format> SyntaxHighlighter::getHighlightFormats(const std::string & text, const std::string & fileName) const
 {
   std::vector<Format> formats;
   uint32_t pos = 0;
@@ -86,9 +106,9 @@ std::vector<SyntaxHighlighter::Format> SyntaxHighlighter::getHighlightFormats(co
   return result;
 }
 
-std::string SyntaxHighlighter::getHighlightedText(const std::string & text) const
+std::string SyntaxHighlighter::getHighlightedText(const std::string & text, const std::string & fileName) const
 {
-  std::vector<Format> formats = getHighlightFormats(text);
+  std::vector<Format> formats = getHighlightFormats(text, fileName);
   if(formats.size() == 0)
     return text;
 
