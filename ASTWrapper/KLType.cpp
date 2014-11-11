@@ -134,14 +134,20 @@ std::vector<const KLTypeOp*> KLType::getTypeOps() const
   return m_typeOps;
 }
 
-void KLType::pushMethod(KLMethod * method) const
+bool KLType::pushMethod(KLMethod * method) const
 {
+  if(m_methodLabelToId.find(method->getLabel()) != m_methodLabelToId.end())
+    return false;
   m_methodLabelToId.insert(std::pair<std::string, uint32_t>(method->getLabel(), (uint32_t)m_methods.size()));
   m_methods.push_back(method);
+  return true;
 }
 
-void KLType::pushTypeOp(KLTypeOp * typeOp) const
+bool KLType::pushTypeOp(KLTypeOp * typeOp) const
 {
+  if(m_typeOpLabelToId.find(typeOp->getLabel()) != m_typeOpLabelToId.end())
+    return false;
   m_typeOpLabelToId.insert(std::pair<std::string, uint32_t>(typeOp->getLabel(), (uint32_t)m_typeOps.size()));
   m_typeOps.push_back(typeOp);
+  return true;
 }

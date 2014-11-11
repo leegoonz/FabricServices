@@ -5,6 +5,7 @@
 
 #include "SyntaxHighlighter.h"
 #include <ASTWrapper/KLASTManager.h>
+#include <map>
 
 namespace FabricServices
 {
@@ -20,14 +21,17 @@ namespace FabricServices
       KLSyntaxHighlighter(ASTWrapper::KLASTManager * manager);
       virtual ~KLSyntaxHighlighter();
 
-      virtual std::vector<Format> getHighlightFormats(const std::string & text, const std::string & fileName = "") const;
+      virtual void updateRulesFromCode(const std::string & code, const std::string & fileName);
 
     private:
 
       void initRules();
+      void updateRulesFromExtension(const ASTWrapper::KLExtension * extension);
 
       ASTWrapper::KLASTManager * m_manager;
       bool m_owningManager;
+      std::map<std::string, HighlightRule*> m_constantRules;
+      std::map<std::string, HighlightRule*> m_typeRules;
     };
 
   };

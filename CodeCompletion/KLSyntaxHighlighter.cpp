@@ -35,6 +35,10 @@ void KLSyntaxHighlighter::initRules()
   addRule(HighlightRuleType_String, "\\\"([^\\\"]|\\\\.)*\\\"");
   addRule(HighlightRuleType_String, "'([^']|\\\\.)*'");
 
+  // number rules
+  addRule(HighlightRuleType_Number, "\\b[0-9x]+\\b");
+  addRule(HighlightRuleType_Number, "\\b[0-9]*\\.[0-9]+\\b");
+
   // keyword rules
   addRule(HighlightRuleType_Keyword, "<<<");
   addRule(HighlightRuleType_Keyword, ">>>");
@@ -73,6 +77,9 @@ void KLSyntaxHighlighter::initRules()
   addRule(HighlightRuleType_Keyword, "\\bValueProducer\\b");
   addRule(HighlightRuleType_Keyword, "\\bwhile\\b");
 
+  // method rules
+  addRule(HighlightRuleType_Method, "\\.\\b[a-zA-Z0-9_]+\\b");
+
   // ask the ast manager for all basic types
   const FabricCore::Client * client = m_manager->getClient();
   FabricCore::Variant registeredTypes = FabricCore::GetRegisteredTypes_Variant(*client);
@@ -87,12 +94,67 @@ void KLSyntaxHighlighter::initRules()
       continue;
     if(GetRegisteredTypeIsInterface(*client, key.c_str()))
       continue;
-    addRule(HighlightRuleType_Type, "\\b"+key+"\\b");
+    HighlightRule * rule = addRule(HighlightRuleType_Type, "\\b"+key+"\\b");
+    m_typeRules.insert(std::pair<std::string, HighlightRule*>(key, rule));
   }
 }
 
-std::vector<SyntaxHighlighter::Format> KLSyntaxHighlighter::getHighlightFormats(const std::string & text, const std::string & fileName) const
+void KLSyntaxHighlighter::updateRulesFromCode(const std::string & code, const std::string & fileName)
 {
-  // todo: feed the text through the ast, and look for requires....
-  return SyntaxHighlighter::getHighlightFormats(text);
+  if(fileName.length() > 0)
+  {
+    try
+    {
+      if(m_manager->loadAllExtensionsFromExtsPath())
+      {
+        std::vector<const ASTWrapper::KLExtension*> extensions = m_manager->getExtensions();
+        for(size_t i=0;i<extensions.size();i++)
+          updateRulesFromExtension(extensions[i]);
+      }
+      m_manager->removeExtension(fileName.c_str());
+
+      std::string json = "{\n\"code\": \""+fileName+"\"\n}\n";
+      const char * codeCstr = code.c_str();
+      const ASTWrapper::KLExtension* extension = m_manager->loadExtension(fileName.c_str(), json.c_str(), 1, &codeCstr);
+      updateRulesFromExtension(extension);
+    }
+    catch(FabricCore::Exception e)
+    {
+    }
+  }
+
+}
+
+void KLSyntaxHighlighter::updateRulesFromExtension(const ASTWrapper::KLExtension * extension)
+{
+  if(extension)
+  {
+    std::vector<const ASTWrapper::KLConstant*> constants = extension->getConstants();
+    std::vector<const ASTWrapper::KLType*> types = extension->getTypes();
+    std::vector<const ASTWrapper::KLAlias*> aliases = extension->getAliases();
+
+    for(size_t i=0;i<constants.size();i++)
+    {
+      if(m_constantRules.find(constants[i]->getName()) != m_constantRules.end())
+        continue;
+      HighlightRule * rule = addRule(HighlightRuleType_Constant, "\\b"+constants[i]->getName()+"\\b");
+      m_constantRules.insert(std::pair<std::string, HighlightRule*>(constants[i]->getName(), rule));
+    }
+
+    for(size_t i=0;i<types.size();i++)
+    {
+      if(m_typeRules.find(types[i]->getName()) != m_typeRules.end())
+        continue;
+      HighlightRule * rule = addRule(HighlightRuleType_Type, "\\b"+types[i]->getName()+"\\b");
+      m_typeRules.insert(std::pair<std::string, HighlightRule*>(types[i]->getName(), rule));
+    }
+
+    for(size_t i=0;i<aliases.size();i++)
+    {
+      if(m_typeRules.find(aliases[i]->getNewUserName()) != m_typeRules.end())
+        continue;
+      HighlightRule * rule = addRule(HighlightRuleType_Type, "\\b"+aliases[i]->getNewUserName()+"\\b");
+      m_typeRules.insert(std::pair<std::string, HighlightRule*>(aliases[i]->getNewUserName(), rule));
+    }
+  }
 }

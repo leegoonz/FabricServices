@@ -13,11 +13,12 @@ namespace FabricServices
   {
     enum HighlightRuleType
     {
-      HighlightRuleType_Keyword,
-      HighlightRuleType_Type,
       HighlightRuleType_Comment,
       HighlightRuleType_String,
       HighlightRuleType_Number,
+      HighlightRuleType_Keyword,
+      HighlightRuleType_Type,
+      HighlightRuleType_Constant,
       HighlightRuleType_Method,
       HighlightRuleType_NumItems
     };

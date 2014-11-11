@@ -43,7 +43,7 @@ const KLExtension* KLASTManager::loadExtension(const char * jsonFilePath)
   return extension;
 }
 
-void KLASTManager::loadAllExtensionsInFolder(const char * extensionFolder)
+void KLASTManager::loadAllExtensionsInFolder(const char * extensionFolder, bool parseExtensions)
 {
   std::vector<boost::filesystem::path> folders;
   folders.push_back(extensionFolder);
@@ -80,11 +80,58 @@ void KLASTManager::loadAllExtensionsInFolder(const char * extensionFolder)
     }
   }
 
+  if(parseExtensions)
+  {
+    for(uint32_t i=0;i<m_extensions.size();i++)
+    {
+      KLExtension * klExtension = (KLExtension *)m_extensions[i];
+      klExtension->parse();
+    }
+  }
+}
+
+bool KLASTManager::loadAllExtensionsFromExtsPath()
+{
+  if(m_extensions.size() >  0)
+    return false;
+
+  const char * FABRIC_EXTS_PATH = getenv("FABRIC_EXTS_PATH");
+  if(!FABRIC_EXTS_PATH)
+    return false;
+
+  std::vector<std::string> folders;
+  boost::split(folders, FABRIC_EXTS_PATH, boost::is_any_of(";:"));
+
+  for(size_t i=0;i<folders.size();i++)
+  {
+    loadAllExtensionsInFolder(folders[i].c_str(), false);
+  }
+
   for(uint32_t i=0;i<m_extensions.size();i++)
   {
     KLExtension * klExtension = (KLExtension *)m_extensions[i];
     klExtension->parse();
   }
+
+  return m_extensions.size() > 0;
+}
+
+bool KLASTManager::removeExtension(const char * name, const char * versionRequirement)
+{
+  const KLExtension * extension = getExtension(name, versionRequirement);
+  if(extension)
+  {
+    for(size_t i=0;i<m_extensions.size();i++)
+    {
+      if(m_extensions[i] == extension)
+      {
+        delete(m_extensions[i]);
+        m_extensions.erase(m_extensions.begin() + i);
+        return true;
+      }
+    }
+  }
+  return false;
 }
 
 std::vector<const KLExtension*> KLASTManager::getExtensions() const

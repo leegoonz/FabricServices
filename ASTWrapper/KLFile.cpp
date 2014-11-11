@@ -3,6 +3,7 @@
 #include "KLFile.h"
 
 #include <boost/filesystem/path.hpp>
+#include <boost/algorithm/string.hpp>
 
 using namespace FabricServices::ASTWrapper;
 
@@ -84,7 +85,25 @@ void KLFile::parse()
       std::string thisType = e->getThisType();
       const KLType * klType = m_extension->getASTManager()->getKLTypeByName(thisType.c_str(), e);
       if(klType)
-        klType->pushMethod(e);
+      {
+        if(!klType->pushMethod(e))
+          m_functions.push_back(e);
+      }
+      else
+        m_functions.push_back(e);
+    }
+    else if(et == "Destructor")
+    {
+      KLFunction function(this, element);
+      std::string thisType = function.getName();
+      boost::trim_left_if(thisType, boost::is_any_of("~"));
+      KLMethod * e = new KLMethod(this, element, thisType);
+      const KLType * klType = m_extension->getASTManager()->getKLTypeByName(thisType.c_str(), e);
+      if(klType)
+      {
+        if(!klType->pushMethod(e))
+          m_functions.push_back(e);
+      }
       else
         m_functions.push_back(e);
     }

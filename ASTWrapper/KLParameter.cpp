@@ -53,7 +53,7 @@ std::string KLParameter::getTypeArraySuffix() const
   {
     std::vector<std::string> parts;
     boost::split(parts, m_type, boost::is_any_of("["));
-    return parts[1] + parts[2];
+    return "[" + parts[1];
   }
   return "";
 }
