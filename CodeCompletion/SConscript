@@ -1,0 +1,26 @@
+#
+# Copyright 2010-2014 Fabric Software Inc. All rights reserved.
+#
+
+Import('parentEnv', 'capiIncludeDir', 'boostFlags')
+
+env = parentEnv.CloneSubStage('CodeCompletion')
+
+env.MergeFlags(boostFlags)
+env.Append(CPPDEFINES = ['FEC_SHARED'])
+env.Append(CPPPATH = [capiIncludeDir])
+
+sources = Glob('*.cpp')
+
+codeCompletionLib = env.StaticLibrary('Fabric-CodeCompletion', sources)
+
+codeCompletionIncludeDir = env.Dir('.').dir.srcnode()
+
+codeCompletionFlags = {
+  'CPPPATH': [codeCompletionIncludeDir],
+  'LIBS': [codeCompletionLib]
+}
+
+Export('codeCompletionLib', 'codeCompletionIncludeDir', 'codeCompletionFlags')
+Alias('codeCompletion', codeCompletionLib)
+Return('codeCompletionLib')
