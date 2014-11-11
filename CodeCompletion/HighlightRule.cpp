@@ -40,6 +40,11 @@ const std::string & HighlightRule::getFormatSuffix() const
 
 uint32_t HighlightRule::getIndexIn(const std::string & text, uint32_t startIndex) const
 {
+  if(startIndex >= text.length())
+  {
+    m_matchedLength = 0;
+    return UINT_MAX;
+  }
   boost::match_results<std::string::const_iterator> what;
   boost::match_flag_type flags = boost::match_default;
   std::string::const_iterator s = text.begin() + startIndex;

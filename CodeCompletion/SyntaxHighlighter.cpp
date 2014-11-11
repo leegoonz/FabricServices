@@ -52,7 +52,9 @@ std::vector<SyntaxHighlighter::Format> SyntaxHighlighter::getHighlightFormats(co
       f.length = m_rules[i]->getMatchedLength();
 
       if(f.length == 0)
+      {
         index = m_rules[i]->getIndexIn(text, index + 1);
+      }
       else
       {
         formats.push_back(f);
