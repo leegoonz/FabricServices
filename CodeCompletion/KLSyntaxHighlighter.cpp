@@ -60,7 +60,9 @@ void KLSyntaxHighlighter::initRules()
   addRule(HighlightRuleType_Keyword, "\\bif\\b");
   addRule(HighlightRuleType_Keyword, "\\bin\\b");
   addRule(HighlightRuleType_Keyword, "\\bio\\b");
+  addRule(HighlightRuleType_Keyword, "\\block\\b");
   addRule(HighlightRuleType_Keyword, "\\boperator\\b");
+  addRule(HighlightRuleType_Keyword, "\\bparent\\b");
   addRule(HighlightRuleType_Keyword, "\\breport\\b");
   addRule(HighlightRuleType_Keyword, "\\breturn\\b");
   addRule(HighlightRuleType_Keyword, "\\bsetError\\b");

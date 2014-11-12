@@ -33,6 +33,13 @@ KLFunction::KLFunction(const KLFile* klFile, JSONData data)
       m_params.push_back(param);
     }
   }
+
+  JSONData body = getDictValue("body");
+  if(body)
+    m_body = new KLFunctionBody(klFile, body);
+  else
+    m_body = NULL;
+
 }
 
 KLFunction::~KLFunction()
@@ -41,6 +48,8 @@ KLFunction::~KLFunction()
   {
     delete(m_params[i]);
   }
+  if(m_body)
+    delete(m_body);
 }
 
 const std::string & KLFunction::getName() const
@@ -66,6 +75,11 @@ uint32_t KLFunction::getParameterCount() const
 const KLParameter * KLFunction::getParameter(uint32_t index) const
 {
   return m_params[index];
+}
+
+const KLFunctionBody * KLFunction::getBody() const
+{
+  return m_body;
 }
 
 bool KLFunction::isMethod() const
