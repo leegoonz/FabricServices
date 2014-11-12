@@ -26,7 +26,6 @@ namespace FabricServices
     private:
 
       void initRules();
-      void updateRulesFromExtension(const ASTWrapper::KLExtension * extension);
 
       ASTWrapper::KLASTManager * m_manager;
       bool m_owningManager;

@@ -90,7 +90,7 @@ void KLASTManager::loadAllExtensionsInFolder(const char * extensionFolder, bool 
   }
 }
 
-bool KLASTManager::loadAllExtensionsFromExtsPath()
+bool KLASTManager::loadAllExtensionsFromExtsPath(bool parseExtensions)
 {
   if(m_extensions.size() >  0)
     return false;
@@ -111,10 +111,13 @@ bool KLASTManager::loadAllExtensionsFromExtsPath()
     loadAllExtensionsInFolder(folders[i].c_str(), false);
   }
 
-  for(uint32_t i=0;i<m_extensions.size();i++)
+  if(parseExtensions)
   {
-    KLExtension * klExtension = (KLExtension *)m_extensions[i];
-    klExtension->parse();
+    for(uint32_t i=0;i<m_extensions.size();i++)
+    {
+      KLExtension * klExtension = (KLExtension *)m_extensions[i];
+      klExtension->parse();
+    }
   }
 
   return m_extensions.size() > 0;
