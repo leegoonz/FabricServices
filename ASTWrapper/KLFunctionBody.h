@@ -32,6 +32,12 @@ namespace FabricServices
       KLFunctionBody(const KLFile* klFile, JSONData data);
 
     private:
+
+      void parseStatement(JSONData data);
+      void parseCompoundStatement(JSONData data);
+      void parseSwitchStatement(JSONData data);
+      void parseConditionalStatement(JSONData data);
+      void parseLoopStatement(JSONData data);
       
       std::vector<KLVariable*> m_variables;
     };
