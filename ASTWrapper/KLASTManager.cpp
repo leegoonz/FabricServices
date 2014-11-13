@@ -300,10 +300,17 @@ std::vector<const KLOperator*> KLASTManager::getOperators() const
 
 const KLType* KLASTManager::getKLTypeByName(const char * name, const KLDecl* decl) const
 {
-  // first check withinour own extension
   if(decl)
+    return getKLTypeByName(name, decl->getKLFile());
+  return getKLTypeByName(name);
+}
+
+const KLType* KLASTManager::getKLTypeByName(const char * name, const KLFile* file) const
+{
+  // first check withinour own extension
+  if(file)
   {
-    std::vector<const KLType*> types = decl->getExtension()->getTypes();
+    std::vector<const KLType*> types = file->getExtension()->getTypes();
     for(uint32_t i=0;i<types.size();i++)
     {
       if(types[i]->getName() == name)
@@ -312,7 +319,7 @@ const KLType* KLASTManager::getKLTypeByName(const char * name, const KLDecl* dec
 
     // if the type isn't inside our own extension,
     // get all requires and find the corresponding matching extensions
-    std::vector<const KLRequire*> requires = decl->getExtension()->getRequires();
+    std::vector<const KLRequire*> requires = file->getExtension()->getRequires();
     for(uint32_t i=0;i<requires.size();i++)
     {
       const KLExtension* extension = getExtension(requires[i]);

@@ -13,7 +13,7 @@ namespace FabricServices
 
     class KLStatementSearch
     {
-      virtual const KLStatement * getStatementFromCursor(uint32_t line, uint32_t column) const = 0;
+      virtual const KLStatement * getStatementAtCursor(uint32_t line, uint32_t column) const = 0;
     };
     
   };

@@ -27,6 +27,7 @@ namespace FabricServices
 
       virtual uint32_t getMemberCount(bool includeInherited = true) const;
       virtual const KLMember * getMember(uint32_t index, bool includeInherited = true) const;
+      virtual const KLMember * getMember(const char *, bool includeInherited = true) const;
 
     protected:
 

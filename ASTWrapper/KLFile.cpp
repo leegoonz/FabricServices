@@ -240,14 +240,14 @@ std::vector<const KLOperator*> KLFile::getOperators() const
   return m_operators;
 }
 
-const KLStatement * KLFile::getStatementFromCursor(uint32_t line, uint32_t column) const
+const KLStatement * KLFile::getStatementAtCursor(uint32_t line, uint32_t column) const
 {
   uint32_t minDistance = UINT_MAX;
   const KLStatement * result = NULL;
 
   for(size_t i=0;i<m_functions.size();i++)
   {
-    const KLStatement * statement = m_functions[i]->getStatementFromCursor(line, column);
+    const KLStatement * statement = m_functions[i]->getStatementAtCursor(line, column);
     if(statement)
     {
       uint32_t distance = statement->getCursorDistance(line, column);
@@ -262,7 +262,7 @@ const KLStatement * KLFile::getStatementFromCursor(uint32_t line, uint32_t colum
 
   for(size_t i=0;i<m_operators.size();i++)
   {
-    const KLStatement * statement = m_operators[i]->getStatementFromCursor(line, column);
+    const KLStatement * statement = m_operators[i]->getStatementAtCursor(line, column);
     if(statement)
     {
       uint32_t distance = statement->getCursorDistance(line, column);
@@ -279,7 +279,7 @@ const KLStatement * KLFile::getStatementFromCursor(uint32_t line, uint32_t colum
   {
     for(uint32_t j=0;j<m_types[i]->getMethodCount();j++)
     {
-      const KLStatement * statement = m_types[i]->getMethod(j)->getStatementFromCursor(line, column);
+      const KLStatement * statement = m_types[i]->getMethod(j)->getStatementAtCursor(line, column);
       if(statement)
       {
         uint32_t distance = statement->getCursorDistance(line, column);
@@ -293,7 +293,7 @@ const KLStatement * KLFile::getStatementFromCursor(uint32_t line, uint32_t colum
 
     for(uint32_t j=0;j<m_types[i]->getTypeOpCount();j++)
     {
-      const KLStatement * statement = m_types[i]->getTypeOp(j)->getStatementFromCursor(line, column);
+      const KLStatement * statement = m_types[i]->getTypeOp(j)->getStatementAtCursor(line, column);
       if(statement)
       {
         uint32_t distance = statement->getCursorDistance(line, column);

@@ -38,11 +38,12 @@ namespace FabricServices
       virtual uint32_t getChildCount() const;
       virtual const KLStatement * getChild(uint32_t index) const;
       virtual const KLStatement * getParent() const;
+      virtual const KLStatement * getTop() const;
       virtual uint32_t getDepth() const;
 
       virtual std::vector<const KLStatement*> getAllChildrenOfType(KLStatement_Type type, bool downwards = false, bool upwards = false) const;
 
-      virtual const KLStatement * getStatementFromCursor(uint32_t line, uint32_t column) const;
+      virtual const KLStatement * getStatementAtCursor(uint32_t line, uint32_t column) const;
       virtual uint32_t getCursorDistance(uint32_t line, uint32_t column) const;
 
     protected:

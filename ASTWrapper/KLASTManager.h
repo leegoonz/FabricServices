@@ -51,6 +51,7 @@ namespace FabricServices
       // extension doesn't define the type, we'll base it off the requires
       // of th extension.
       virtual const KLType* getKLTypeByName(const char * name, const KLDecl* decl = NULL) const;
+      virtual const KLType* getKLTypeByName(const char * name, const KLFile* file) const;
       virtual const KLType* getKLTypeByName(const char * name, const char * extension, const char * versionRequirement = "*") const;
 
       // returns an extension matching a given version requirement string (for ex: ">1.2.0")

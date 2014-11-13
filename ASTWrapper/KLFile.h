@@ -41,7 +41,7 @@ namespace FabricServices
       virtual std::vector<const KLStruct*> getStructs() const;
       virtual std::vector<const KLObject*> getObjects() const;
 
-      virtual const KLStatement * getStatementFromCursor(uint32_t line, uint32_t column) const;
+      virtual const KLStatement * getStatementAtCursor(uint32_t line, uint32_t column) const;
 
     protected:
       

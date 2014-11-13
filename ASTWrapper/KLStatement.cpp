@@ -76,7 +76,7 @@ std::vector<const KLStatement*> KLStatement::getAllChildrenOfType(KLStatement_Ty
   return result;
 }
 
-const KLStatement * KLStatement::getStatementFromCursor(uint32_t line, uint32_t column) const
+const KLStatement * KLStatement::getStatementAtCursor(uint32_t line, uint32_t column) const
 {
   uint32_t minDistance = UINT_MAX;
   const KLStatement * result = NULL;
@@ -89,7 +89,7 @@ const KLStatement * KLStatement::getStatementFromCursor(uint32_t line, uint32_t 
 
   for(size_t i=0;i<m_statements.size();i++)
   {
-    const KLStatement * statement = m_statements[i]->getStatementFromCursor(line, column);
+    const KLStatement * statement = m_statements[i]->getStatementAtCursor(line, column);
     if(statement)
     {
       uint32_t distance = statement->getCursorDistance(line, column);
@@ -108,6 +108,14 @@ const KLStatement * KLStatement::getParent() const
 {
   return m_parent;
 }
+
+const KLStatement * KLStatement::getTop() const
+{
+  if(!m_parent)
+    return this;
+  return m_parent->getTop();
+}
+
 
 uint32_t KLStatement::getDepth() const
 {

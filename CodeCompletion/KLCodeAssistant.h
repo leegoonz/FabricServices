@@ -4,6 +4,7 @@
 #define __CodeCompletion_KLCodeAssistant__
 
 #include "KLSyntaxHighlighter.h"
+#include "KLVariable.h"
 #include <ASTWrapper/KLASTManager.h>
 #include <map>
 #include <boost/regex.hpp>
@@ -25,7 +26,9 @@ namespace FabricServices
 
       ASTWrapper::KLASTManager * getASTManager();
       KLSyntaxHighlighter * getHighlighter();
+      const ASTWrapper::KLFile * getKLFile();
 
+      void updateCurrentKLFile(const ASTWrapper::KLFile * file);
       void updateCurrentCodeAndFile(const std::string & code, const std::string & fileName);
 
       void lineAndColumnToCursor(uint32_t line, uint32_t column, uint32_t & cursor) const;
@@ -33,13 +36,24 @@ namespace FabricServices
 
       bool isCursorInsideCommentOrString(uint32_t cursor) const;
       bool isCursorInsideCommentOrString(uint32_t line, uint32_t column) const;
-      const ASTWrapper::KLStatement * getStatementFromCursor(uint32_t cursor) const;
-      const ASTWrapper::KLStatement * getStatementFromCursor(uint32_t line, uint32_t column) const;
+
+      const ASTWrapper::KLStatement * getStatementAtCursor(uint32_t cursor) const;
+      const ASTWrapper::KLStatement * getStatementAtCursor(uint32_t line, uint32_t column) const;
       std::string getCodeForStatement(const ASTWrapper::KLStatement * statement) const;
+
+      std::string getWordAtCursor(uint32_t cursor) const;
+      std::string getWordAtCursor(uint32_t line, uint32_t column) const;
+
+      std::vector<KLVariable> getVariablesAtCursor(uint32_t cursor) const;
+      std::vector<KLVariable> getVariablesAtCursor(uint32_t line, uint32_t column) const;
+
+      const ASTWrapper::KLType * getTypeAtCursor(uint32_t cursor) const;
+      const ASTWrapper::KLType * getTypeAtCursor(uint32_t line, uint32_t column) const;
 
     private:
 
       void init();
+      const char * resolveAliases(const char * name) const;
 
       ASTWrapper::KLASTManager * m_manager;
       bool m_owningManager;
@@ -49,13 +63,7 @@ namespace FabricServices
       std::string m_code;
       std::vector<std::string> m_lines;
       std::string m_fileName;
-
-      boost::regex m_operatorExpr;
-      boost::regex m_functionExpr;
-      boost::regex m_ifExpr;
-      boost::regex m_elseExpr;
-      boost::regex m_forExpr;
-      boost::regex m_whileExpr;
+      const ASTWrapper::KLFile * m_file;
     };
 
   };

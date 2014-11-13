@@ -88,3 +88,15 @@ const KLMember * KLStruct::getMember(uint32_t index, bool includeInherited) cons
   }
   return m_members[offset];
 }
+
+const KLMember * KLStruct::getMember(const char * name, bool includeInherited) const
+{
+  uint32_t count = getMemberCount(includeInherited);
+  for(uint32_t i=0;i<count;i++)
+  {
+    const KLMember * member = getMember(i, includeInherited);
+    if(member->getName() == name)
+      return member;
+  }
+  return NULL;
+}
