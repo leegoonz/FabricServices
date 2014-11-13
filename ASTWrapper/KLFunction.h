@@ -5,7 +5,13 @@
 
 #include "KLCommented.h"
 #include "KLParameter.h"
-#include "KLFunctionBody.h"
+#include "KLCompoundStatement.h"
+#include "KLConditionalStatement.h"
+#include "KLCStyleLoopStatement.h"
+#include "KLSwitchStatement.h"
+#include "KLCaseStatement.h"
+#include "KLVarDeclStatement.h"
+#include "KLExprStatement.h"
 
 #include <string>
 
@@ -28,7 +34,7 @@ namespace FabricServices
       virtual const std::string & getSymbolName() const;
       virtual uint32_t getParameterCount() const;
       virtual const KLParameter * getParameter(uint32_t index) const;
-      virtual const KLFunctionBody * getBody() const;
+      virtual const KLCompoundStatement * getBody() const;
 
       virtual bool isMethod() const;
       virtual std::string getPrefix() const; // the prefix of the function *may* be something like 'Vec3.'
@@ -48,7 +54,7 @@ namespace FabricServices
       std::string m_returnType;
       std::string m_symbolName;
       std::vector<KLParameter*> m_params;
-      KLFunctionBody * m_body;
+      KLCompoundStatement * m_body;
     };
 
   };

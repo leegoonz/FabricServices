@@ -36,7 +36,7 @@ KLFunction::KLFunction(const KLFile* klFile, JSONData data)
 
   JSONData body = getDictValue("body");
   if(body)
-    m_body = new KLFunctionBody(klFile, body);
+    m_body = new KLCompoundStatement(klFile, body);
   else
     m_body = NULL;
 
@@ -77,7 +77,7 @@ const KLParameter * KLFunction::getParameter(uint32_t index) const
   return m_params[index];
 }
 
-const KLFunctionBody * KLFunction::getBody() const
+const KLCompoundStatement * KLFunction::getBody() const
 {
   return m_body;
 }

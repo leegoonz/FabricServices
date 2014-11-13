@@ -1,17 +1,17 @@
 // Copyright 2010-2014 Fabric Engine Inc. All rights reserved.
 
-#include "KLVariable.h"
+#include "KLVarDeclStatement.h"
 
 #include <vector>
 #include <string>
-#include <boost/algorithm/string.hpp>
 
 using namespace FabricServices::ASTWrapper;
 
-KLVariable::KLVariable(const KLFile* klFile, JSONData data)
-: KLCommented(klFile, data)
+KLVarDeclStatement::KLVarDeclStatement(const KLFile* klFile, JSONData data, KLStatement * parent)
+: KLStatement(klFile, data, parent)
 {
-  m_type = getStringDictValue("baseType");
+  m_baseType = getStringDictValue("baseType");
+
   JSONData varDecls = getArrayDictValue("varDecls");
   if(varDecls)
   {
@@ -24,26 +24,22 @@ KLVariable::KLVariable(const KLFile* klFile, JSONData data)
   }
 }
 
-KLVariable::~KLVariable()
+std::string KLVarDeclStatement::getBaseType() const
 {
+  return m_baseType;
 }
 
-const std::string & KLVariable::getType() const
-{
-  return m_type;
-}
-
-uint32_t KLVariable::getCount() const
+uint32_t KLVarDeclStatement::getCount() const
 {
   return m_names.size();
 }
 
-const std::string & KLVariable::getName(uint32_t index) const
+const std::string & KLVarDeclStatement::getName(uint32_t index) const
 {
   return m_names[index];
 }
 
-const std::string & KLVariable::getArrayModifier(uint32_t index) const
+const std::string & KLVarDeclStatement::getArrayModifier(uint32_t index) const
 {
   return m_arrayModifiers[index];
 }

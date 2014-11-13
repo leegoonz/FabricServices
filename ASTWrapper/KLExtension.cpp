@@ -197,7 +197,7 @@ void KLExtension::parse()
   if(m_parsed)
     return;
 
-  printf("parsing extension '%s'\n", getName());
+  // printf("parsing extension '%s'\n", getName());
   m_parsed = true;
 
   for(uint32_t i=0;i<m_files.size();i++)
