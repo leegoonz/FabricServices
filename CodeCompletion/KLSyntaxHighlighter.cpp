@@ -149,3 +149,8 @@ void KLSyntaxHighlighter::updateRulesFromCode(const std::string & code, const st
   }
 
 }
+
+ASTWrapper::KLASTManager * KLSyntaxHighlighter::getASTManager()
+{
+  return m_manager;
+}

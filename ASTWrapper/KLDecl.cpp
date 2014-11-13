@@ -4,6 +4,7 @@
 #include "KLASTManager.h"
 #include "KLExtension.h"
 #include "KLFile.h"
+#include "KLLocation.h"
 
 #include <map>
 
@@ -15,10 +16,26 @@ KLDecl::KLDecl(const KLFile* klFile, JSONData data)
   m_klFile = klFile;
   KLASTManager * manager = (KLASTManager *)getASTManager();
   m_id = manager->generateDeclId();
+
+  m_location = NULL;
+  m_endLocation = NULL;
+  if(m_data->isDict())
+  {
+    JSONData location = m_data->getDictValue("location");
+    if(location)
+      m_location = new KLLocation(location);
+    JSONData endLocation = m_data->getDictValue("endLocation");
+    if(endLocation)
+      m_endLocation = new KLLocation(endLocation);
+  }
 }
 
 KLDecl::~KLDecl()
 {
+  if(m_location)
+    delete(m_location);
+  if(m_endLocation)
+    delete(m_endLocation);
 }
 
 uint32_t KLDecl::getID() const
@@ -39,6 +56,16 @@ const KLExtension* KLDecl::getExtension() const
 const KLFile* KLDecl::getKLFile() const
 {
   return m_klFile;
+}
+
+const KLLocation * KLDecl::getLocation() const
+{
+  return m_location;
+}
+
+const KLLocation * KLDecl::getEndLocation() const
+{
+  return m_endLocation;
 }
 
 uint32_t KLDecl::getArraySize() const

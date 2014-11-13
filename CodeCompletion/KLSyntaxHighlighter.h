@@ -21,6 +21,8 @@ namespace FabricServices
       KLSyntaxHighlighter(ASTWrapper::KLASTManager * manager);
       virtual ~KLSyntaxHighlighter();
 
+      ASTWrapper::KLASTManager * getASTManager();
+
       virtual void updateRulesFromCode(const std::string & code, const std::string & fileName);
 
     private:

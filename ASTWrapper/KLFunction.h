@@ -3,8 +3,7 @@
 #ifndef __ASTWrapper_KLFunction__
 #define __ASTWrapper_KLFunction__
 
-#include "KLCommented.h"
-#include "KLParameter.h"
+#include "KLStatement.h"
 #include "KLCompoundStatement.h"
 #include "KLConditionalStatement.h"
 #include "KLCStyleLoopStatement.h"
@@ -12,6 +11,7 @@
 #include "KLCaseStatement.h"
 #include "KLVarDeclStatement.h"
 #include "KLExprStatement.h"
+#include "KLParameter.h"
 
 #include <string>
 
@@ -21,7 +21,7 @@ namespace FabricServices
   namespace ASTWrapper
   {
 
-    class KLFunction : public KLCommented
+    class KLFunction : public KLStatement
     {
       friend class KLFile;
 

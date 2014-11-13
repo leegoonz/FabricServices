@@ -20,6 +20,7 @@ HighlightRule * SyntaxHighlighter::addRule(HighlightRuleType type, const std::st
 {
   HighlightRule * rule = new HighlightRule(type, pattern, formatPrefix, formatSuffix);
   m_rules.push_back(rule);
+  m_lastText = "";
   return rule;
 }
 
@@ -57,8 +58,11 @@ const char * SyntaxHighlighter::getRuleTypeName(HighlightRuleType type) const
   return "";
 }
 
-std::vector<SyntaxHighlighter::Format> SyntaxHighlighter::getHighlightFormats(const std::string & text) const
+const std::vector<SyntaxHighlighter::Format> & SyntaxHighlighter::getHighlightFormats(const std::string & text) const
 {
+  if(m_lastText == text)
+    return m_lastFormats;
+
   std::vector<Format> formats;
   uint32_t pos = 0;
   
@@ -95,7 +99,8 @@ std::vector<SyntaxHighlighter::Format> SyntaxHighlighter::getHighlightFormats(co
       sortedIndices.insert(std::pair<uint32_t, size_t>(formats[i].start, i));
   }
 
-  std::vector<Format> result;
+  m_lastText = text;
+  m_lastFormats.clear();
   uint32_t end = 0;
   for(std::map<uint32_t, size_t>::iterator it = sortedIndices.begin(); it != sortedIndices.end(); it++)
   {
@@ -103,16 +108,16 @@ std::vector<SyntaxHighlighter::Format> SyntaxHighlighter::getHighlightFormats(co
     Format f = formats[it->second];
     if(f.start < end)
       continue;
-    result.push_back(f);
+    m_lastFormats.push_back(f);
     end = f.start + f.length - 1;
   }
 
-  return result;
+  return m_lastFormats;
 }
 
 std::string SyntaxHighlighter::getHighlightedText(const std::string & text) const
 {
-  std::vector<Format> formats = getHighlightFormats(text);
+  const std::vector<Format> & formats = getHighlightFormats(text);
   if(formats.size() == 0)
     return text;
 

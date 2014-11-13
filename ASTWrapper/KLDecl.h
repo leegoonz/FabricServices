@@ -16,6 +16,7 @@ namespace FabricServices
     class KLASTManager;
     class KLExtension;
     class KLFile;
+    class KLLocation;
 
     typedef const FabricCore::Variant * JSONData;
 
@@ -29,6 +30,8 @@ namespace FabricServices
       virtual const KLASTManager* getASTManager() const;
       virtual const KLExtension* getExtension() const;
       virtual const KLFile* getKLFile() const;
+      virtual const KLLocation * getLocation() const;
+      virtual const KLLocation * getEndLocation() const;
 
     protected:
 
@@ -47,6 +50,8 @@ namespace FabricServices
       uint32_t m_id;
       JSONData m_data;
       const KLFile* m_klFile;
+      KLLocation * m_location;
+      KLLocation * m_endLocation;
     };
 
   };

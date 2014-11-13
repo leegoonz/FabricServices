@@ -10,7 +10,7 @@
 using namespace FabricServices::ASTWrapper;
 
 KLFunction::KLFunction(const KLFile* klFile, JSONData data)
-: KLCommented(klFile, data)
+: KLStatement(klFile, data)
 {
   const char * name = getStringDictValue("name");
   if(name)
@@ -36,7 +36,7 @@ KLFunction::KLFunction(const KLFile* klFile, JSONData data)
 
   JSONData body = getDictValue("body");
   if(body)
-    m_body = new KLCompoundStatement(klFile, body);
+    m_body = (KLCompoundStatement *)constructChild(body);
   else
     m_body = NULL;
 
@@ -48,8 +48,6 @@ KLFunction::~KLFunction()
   {
     delete(m_params[i]);
   }
-  if(m_body)
-    delete(m_body);
 }
 
 const std::string & KLFunction::getName() const

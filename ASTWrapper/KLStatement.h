@@ -14,6 +14,7 @@ namespace FabricServices
   {
     enum KLStatement_Type
     {
+      KLStatement_Function,
       KLStatement_Compound,
       KLStatement_Conditional,
       KLStatement_CStyleLoop,

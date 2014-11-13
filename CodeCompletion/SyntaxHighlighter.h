@@ -36,12 +36,14 @@ namespace FabricServices
       const char * getRuleTypeName(HighlightRuleType type) const;
 
       // highlighting
-      virtual std::vector<Format> getHighlightFormats(const std::string & text) const;
+      virtual const std::vector<Format> & getHighlightFormats(const std::string & text) const;
       virtual std::string getHighlightedText(const std::string & text) const;
 
     private:
 
       std::vector<HighlightRule*> m_rules;
+      mutable std::string m_lastText;
+      mutable std::vector<Format> m_lastFormats;
     };
 
   };

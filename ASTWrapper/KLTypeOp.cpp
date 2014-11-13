@@ -315,7 +315,7 @@ bool KLTypeOp::isUnary() const
   return m_isUnary;
 }
 
-KLTypeOp::OpType KLTypeOp::getType() const
+KLTypeOp::OpType KLTypeOp::getOpType() const
 {
   return m_op;
 }

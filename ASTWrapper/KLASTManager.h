@@ -4,6 +4,7 @@
 #define __ASTWrapper_KLASTManager__
 
 #include "KLDeclContainer.h"
+#include "KLLocation.h"
 #include "KLExtension.h"
 
 namespace FabricServices
