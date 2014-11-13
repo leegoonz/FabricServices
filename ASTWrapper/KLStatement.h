@@ -4,6 +4,7 @@
 #define __ASTWrapper_KLStatement__
 
 #include "KLCommented.h"
+#include "KLStatementSearch.h"
 
 #include <string>
 
@@ -25,7 +26,7 @@ namespace FabricServices
       KLStatement_Unknown
     };
 
-    class KLStatement : public KLCommented
+    class KLStatement : public KLCommented, public KLStatementSearch
     {
     public:
 
@@ -40,6 +41,9 @@ namespace FabricServices
       virtual uint32_t getDepth() const;
 
       virtual std::vector<const KLStatement*> getAllChildrenOfType(KLStatement_Type type, bool downwards = false, bool upwards = false) const;
+
+      virtual const KLStatement * getStatementFromCursor(uint32_t line, uint32_t column) const;
+      virtual uint32_t getCursorDistance(uint32_t line, uint32_t column) const;
 
     protected:
 

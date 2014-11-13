@@ -31,7 +31,6 @@ namespace FabricServices
       virtual const KLExtension* getExtension() const;
       virtual const KLFile* getKLFile() const;
       virtual const KLLocation * getLocation() const;
-      virtual const KLLocation * getEndLocation() const;
 
     protected:
 
@@ -51,7 +50,6 @@ namespace FabricServices
       JSONData m_data;
       const KLFile* m_klFile;
       KLLocation * m_location;
-      KLLocation * m_endLocation;
     };
 
   };

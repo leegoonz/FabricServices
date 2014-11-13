@@ -8,6 +8,7 @@
 #include "KLCaseStatement.h"
 #include "KLVarDeclStatement.h"
 #include "KLExprStatement.h"
+#include "KLLocation.h"
 
 #include <vector>
 #include <string>
@@ -75,6 +76,34 @@ std::vector<const KLStatement*> KLStatement::getAllChildrenOfType(KLStatement_Ty
   return result;
 }
 
+const KLStatement * KLStatement::getStatementFromCursor(uint32_t line, uint32_t column) const
+{
+  uint32_t minDistance = UINT_MAX;
+  const KLStatement * result = NULL;
+
+  if(getCursorDistance(line, column) < minDistance)
+  {
+    result = this;
+    minDistance = getCursorDistance(line, column);
+  }
+
+  for(size_t i=0;i<m_statements.size();i++)
+  {
+    const KLStatement * statement = m_statements[i]->getStatementFromCursor(line, column);
+    if(statement)
+    {
+      uint32_t distance = statement->getCursorDistance(line, column);
+      if(distance < minDistance)
+      {
+        result = statement;
+        minDistance = distance;
+      }
+    }
+  }
+
+  return result;
+}
+
 const KLStatement * KLStatement::getParent() const
 {
   return m_parent;
@@ -128,4 +157,19 @@ const KLStatement * KLStatement::constructChild(JSONData data)
 
   m_statements.push_back(result);
   return result;
+}
+
+uint32_t KLStatement::getCursorDistance(uint32_t line, uint32_t column) const
+{
+  if(getLocation()->getLine() > line || getLocation()->getEndLine() < line)
+    return UINT_MAX;
+  if(getLocation()->getLine() == line && getLocation()->getColumn() > column)
+    return UINT_MAX;
+  if(getLocation()->getEndLine() == line && getLocation()->getEndColumn() < column)
+    return UINT_MAX;
+
+  uint32_t startDistance = 1000 * (line - getLocation()->getLine()) + column - getLocation()->getColumn();
+  uint32_t endDistance = 1000 * (getLocation()->getEndLine() - line) + getLocation()->getEndColumn() - column;
+
+  return startDistance > endDistance ? endDistance : startDistance;
 }

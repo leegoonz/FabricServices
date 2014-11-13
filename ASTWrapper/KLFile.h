@@ -4,6 +4,7 @@
 #define __ASTWrapper_KLFile__
 
 #include "KLDeclContainer.h"
+#include "KLStatementSearch.h"
 #include <vector>
 
 namespace FabricServices
@@ -14,7 +15,7 @@ namespace FabricServices
     // forward decl
     class KLExtension;
 
-    class KLFile : public KLDeclContainer
+    class KLFile : public KLDeclContainer, public KLStatementSearch
     {
       friend class KLExtension;
       
@@ -39,6 +40,8 @@ namespace FabricServices
       virtual std::vector<const KLInterface*> getInterfaces() const;
       virtual std::vector<const KLStruct*> getStructs() const;
       virtual std::vector<const KLObject*> getObjects() const;
+
+      virtual const KLStatement * getStatementFromCursor(uint32_t line, uint32_t column) const;
 
     protected:
       

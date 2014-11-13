@@ -21,6 +21,8 @@ namespace FabricServices
 
       uint32_t getLine() const;
       uint32_t getColumn() const;
+      uint32_t getEndLine() const;
+      uint32_t getEndColumn() const;
 
     protected:
       
@@ -30,6 +32,8 @@ namespace FabricServices
       
       uint32_t m_line;
       uint32_t m_column;
+      uint32_t m_endLine;
+      uint32_t m_endColumn;
     };
 
   };

@@ -1,6 +1,7 @@
 // Copyright 2010-2014 Fabric Engine Inc. All rights reserved.
 
 #include "KLFile.h"
+#include "KLLocation.h"
 
 #include <boost/filesystem/path.hpp>
 #include <boost/algorithm/string.hpp>
@@ -237,4 +238,73 @@ std::vector<const KLObject*> KLFile::getObjects() const
 std::vector<const KLOperator*> KLFile::getOperators() const
 {
   return m_operators;
+}
+
+const KLStatement * KLFile::getStatementFromCursor(uint32_t line, uint32_t column) const
+{
+  uint32_t minDistance = UINT_MAX;
+  const KLStatement * result = NULL;
+
+  for(size_t i=0;i<m_functions.size();i++)
+  {
+    const KLStatement * statement = m_functions[i]->getStatementFromCursor(line, column);
+    if(statement)
+    {
+      uint32_t distance = statement->getCursorDistance(line, column);
+      if(distance < minDistance)
+      {
+        result = statement;
+        minDistance = distance;
+      }
+      
+    }
+  }
+
+  for(size_t i=0;i<m_operators.size();i++)
+  {
+    const KLStatement * statement = m_operators[i]->getStatementFromCursor(line, column);
+    if(statement)
+    {
+      uint32_t distance = statement->getCursorDistance(line, column);
+      if(distance < minDistance)
+      {
+        result = statement;
+        minDistance = distance;
+      }
+      
+    }
+  }
+
+  for(size_t i=0;i<m_types.size();i++)
+  {
+    for(uint32_t j=0;j<m_types[i]->getMethodCount();j++)
+    {
+      const KLStatement * statement = m_types[i]->getMethod(j)->getStatementFromCursor(line, column);
+      if(statement)
+      {
+        uint32_t distance = statement->getCursorDistance(line, column);
+        if(distance < minDistance)
+        {
+          result = statement;
+          minDistance = distance;
+        }
+      }
+    }
+
+    for(uint32_t j=0;j<m_types[i]->getTypeOpCount();j++)
+    {
+      const KLStatement * statement = m_types[i]->getTypeOp(j)->getStatementFromCursor(line, column);
+      if(statement)
+      {
+        uint32_t distance = statement->getCursorDistance(line, column);
+        if(distance < minDistance)
+        {
+          result = statement;
+          minDistance = distance;
+        }
+      }
+    }
+  }
+
+  return result;
 }
