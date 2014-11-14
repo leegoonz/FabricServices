@@ -22,6 +22,9 @@ namespace FabricServices
 
       virtual ~KLMethod();
 
+      virtual KLDeclType getDeclType() const;
+      virtual bool isOfDeclType(KLDeclType type) const;
+
       const std::string & getThisType() const;
       const std::string & getThisUsage() const;
 

@@ -20,6 +20,10 @@ namespace FabricServices
     public:
 
       virtual ~KLOperator();
+
+      virtual KLDeclType getDeclType() const;
+      virtual bool isOfDeclType(KLDeclType type) const;
+
       virtual const char * getKLType() const;
 
     protected:

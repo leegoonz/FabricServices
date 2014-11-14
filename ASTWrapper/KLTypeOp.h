@@ -39,6 +39,10 @@ namespace FabricServices
 
       virtual ~KLTypeOp();
 
+      virtual KLDeclType getDeclType() const;
+      virtual bool isOfDeclType(KLDeclType type) const;
+
+
       const std::string & getName() const;
       const std::string & getReturnType() const;
       uint32_t getParameterCount() const;

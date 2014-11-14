@@ -50,6 +50,18 @@ KLFunction::~KLFunction()
   }
 }
 
+KLDeclType KLFunction::getDeclType() const
+{
+  return KLDeclType_Function;
+}
+
+bool KLFunction::isOfDeclType(KLDeclType type) const
+{
+  if(type == getDeclType())
+    return true;
+  return KLStatement::isOfDeclType(type);
+}
+
 const std::string & KLFunction::getName() const
 {
   return m_name;

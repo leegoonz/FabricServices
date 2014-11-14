@@ -18,6 +18,18 @@ KLConditionalStatement::KLConditionalStatement(const KLFile* klFile, JSONData da
     constructChild(falseStatement);
 }
 
+KLDeclType KLConditionalStatement::getDeclType() const
+{
+  return KLDeclType_ConditionalStatement;
+}
+
+bool KLConditionalStatement::isOfDeclType(KLDeclType type) const
+{
+  if(type == getDeclType())
+    return true;
+  return KLStatement::isOfDeclType(type);
+}
+
 const KLStatement * KLConditionalStatement::getTrueStatement() const
 {
   if(getChildCount() > 0)

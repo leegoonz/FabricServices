@@ -14,3 +14,15 @@ KLCStyleLoopStatement::KLCStyleLoopStatement(const KLFile* klFile, JSONData data
   if(body)
     constructChild(body);
 }
+
+KLDeclType KLCStyleLoopStatement::getDeclType() const
+{
+  return KLDeclType_CStyleLoopStatement;
+}
+
+bool KLCStyleLoopStatement::isOfDeclType(KLDeclType type) const
+{
+  if(type == getDeclType())
+    return true;
+  return KLStatement::isOfDeclType(type);
+}

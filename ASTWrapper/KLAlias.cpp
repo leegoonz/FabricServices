@@ -15,6 +15,18 @@ KLAlias::~KLAlias()
 {
 }
 
+KLDeclType KLAlias::getDeclType() const
+{
+  return KLDeclType_Alias;
+}
+
+bool KLAlias::isOfDeclType(KLDeclType type) const
+{
+  if(type == getDeclType())
+    return true;
+  return KLCommented::isOfDeclType(type);
+}
+
 const std::string & KLAlias::getNewUserName() const
 {
   return m_newUserName;

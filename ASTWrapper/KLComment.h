@@ -23,6 +23,9 @@ namespace FabricServices
       
       virtual ~KLComment();
 
+      virtual KLDeclType getDeclType() const;
+      virtual bool isOfDeclType(KLDeclType type) const;
+
       virtual bool isInternal() const;
       bool isEmpty() const;
       bool hasQualifier(const char * qualifier) const;

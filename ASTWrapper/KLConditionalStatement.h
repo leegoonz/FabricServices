@@ -21,7 +21,9 @@ namespace FabricServices
 
       virtual ~KLConditionalStatement() {}
 
-      virtual KLStatement_Type getType() const { return KLStatement_Conditional; }
+      virtual KLDeclType getDeclType() const;
+      virtual bool isOfDeclType(KLDeclType type) const;
+
       const KLStatement * getTrueStatement() const;
       const KLStatement * getFalseStatement() const;
 

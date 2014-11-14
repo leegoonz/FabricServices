@@ -13,18 +13,6 @@ namespace FabricServices
 
   namespace ASTWrapper
   {
-    enum KLStatement_Type
-    {
-      KLStatement_Function,
-      KLStatement_Compound,
-      KLStatement_Conditional,
-      KLStatement_CStyleLoop,
-      KLStatement_VarDecl,
-      KLStatement_Switch,
-      KLStatement_Case,
-      KLStatement_Expr,
-      KLStatement_Unknown
-    };
 
     class KLStatement : public KLCommented, public KLStatementSearch
     {
@@ -32,7 +20,9 @@ namespace FabricServices
 
       virtual ~KLStatement();
 
-      virtual KLStatement_Type getType() const { return KLStatement_Unknown; }
+      virtual KLDeclType getDeclType() const;
+      virtual bool isOfDeclType(KLDeclType type) const;
+
       std::string getTypeName() const;
 
       virtual uint32_t getChildCount() const;
@@ -41,7 +31,7 @@ namespace FabricServices
       virtual const KLStatement * getTop() const;
       virtual uint32_t getDepth() const;
 
-      virtual std::vector<const KLStatement*> getAllChildrenOfType(KLStatement_Type type, bool downwards = false, bool upwards = false) const;
+      virtual std::vector<const KLStatement*> getAllChildrenOfType(KLDeclType type, bool downwards = false, bool upwards = false) const;
 
       virtual const KLStatement * getStatementAtCursor(uint32_t line, uint32_t column) const;
       virtual uint32_t getCursorDistance(uint32_t line, uint32_t column) const;

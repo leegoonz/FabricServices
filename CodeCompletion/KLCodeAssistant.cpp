@@ -238,12 +238,12 @@ std::vector<KLVariable> KLCodeAssistant::getVariablesAtCursor(uint32_t line, uin
   const KLStatement * statement = getStatementAtCursor(line, column);
   if(statement)
   {
-    if(statement->getType() == KLStatement_Function)
+    if(statement->isOfDeclType(KLDeclType_Function))
       statement = ((KLFunction*)statement)->getBody();
   }
   if(statement)
   {
-    std::vector<const KLStatement *> varDecls = statement->getAllChildrenOfType(KLStatement_VarDecl, false, true);
+    std::vector<const KLStatement *> varDecls = statement->getAllChildrenOfType(KLDeclType_VarDeclStatement, false, true);
     for(size_t i=0;i<varDecls.size();i++)
     {
       const KLVarDeclStatement * varDecl = (const KLVarDeclStatement *)varDecls[i];
@@ -255,7 +255,7 @@ std::vector<KLVariable> KLCodeAssistant::getVariablesAtCursor(uint32_t line, uin
 
     statement = statement->getTop();
 
-    if(statement->getType() == KLStatement_Function)
+    if(statement->isOfDeclType(KLDeclType_Function))
     {
       KLFunction * function = (KLFunction *)statement;
       for(uint32_t i=0;i<function->getParameterCount();i++)
@@ -269,14 +269,14 @@ std::vector<KLVariable> KLCodeAssistant::getVariablesAtCursor(uint32_t line, uin
   return result;
 }
 
-const KLType * KLCodeAssistant::getTypeAtCursor(uint32_t cursor) const
+const KLDecl * KLCodeAssistant::getDeclAtCursor(uint32_t cursor) const
 {
   uint32_t line, column;
   cursorToLineAndColumn(cursor, line, column);
-  return getTypeAtCursor(line, column);
+  return getDeclAtCursor(line, column);
 }
 
-const KLType * KLCodeAssistant::getTypeAtCursor(uint32_t line, uint32_t column) const
+const KLDecl * KLCodeAssistant::getDeclAtCursor(uint32_t line, uint32_t column) const
 {
   if(line > m_lines.size() || line == 0)
     return NULL;
@@ -381,6 +381,9 @@ const KLType * KLCodeAssistant::getTypeAtCursor(uint32_t line, uint32_t column) 
       {
         if(functions[i]->getName() == word)
         {
+          if(delegates.size() == 0)
+            return functions[i];
+
           KLTypeDesc returnType(functions[i]->getReturnType());
           type = m_manager->getKLTypeByName(resolveAliases(returnType.getBaseType().c_str()), m_file);
           if(type)
@@ -403,6 +406,10 @@ const KLType * KLCodeAssistant::getTypeAtCursor(uint32_t line, uint32_t column) 
           continue;
         if(method->getName() != delegates[i])
           continue;
+
+        if(i == delegates.size()-1)
+          return method;
+
         KLTypeDesc returnType(method->getReturnType());
         type = m_manager->getKLTypeByName(resolveAliases(returnType.getBaseType().c_str()), m_file);
         if(type == NULL)
@@ -430,6 +437,31 @@ const KLType * KLCodeAssistant::getTypeAtCursor(uint32_t line, uint32_t column) 
   }
 
   return type;
+}
+
+const KLType * KLCodeAssistant::getTypeAtCursor(uint32_t cursor) const
+{
+  uint32_t line, column;
+  cursorToLineAndColumn(cursor, line, column);
+  return getTypeAtCursor(line, column);
+}
+
+const KLType * KLCodeAssistant::getTypeAtCursor(uint32_t line, uint32_t column) const
+{
+  const KLDecl * decl = getDeclAtCursor(line, column);
+  if(decl)
+  {
+    if(decl->isOfDeclType(KLDeclType_Type))
+    {
+      return (const KLType *)decl;
+    }
+    else if(decl->isOfDeclType(KLDeclType_Function))
+    {
+      KLTypeDesc returnType(((const KLFunction*)decl)->getReturnType());
+      return m_manager->getKLTypeByName(resolveAliases(returnType.getBaseType().c_str()), m_file);
+    }
+  }
+  return NULL;
 }
 
 const char * KLCodeAssistant::resolveAliases(const char * name) const

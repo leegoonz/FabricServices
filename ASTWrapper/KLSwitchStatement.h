@@ -21,7 +21,8 @@ namespace FabricServices
 
       virtual ~KLSwitchStatement() {}
 
-      virtual KLStatement_Type getType() const { return KLStatement_Switch; }
+      virtual KLDeclType getDeclType() const;
+      virtual bool isOfDeclType(KLDeclType type) const;
 
     protected:
 

@@ -13,6 +13,18 @@ KLOperator::~KLOperator()
 {
 }
 
+KLDeclType KLOperator::getDeclType() const
+{
+  return KLDeclType_Operator;
+}
+
+bool KLOperator::isOfDeclType(KLDeclType type) const
+{
+  if(type == getDeclType())
+    return true;
+  return KLFunction::isOfDeclType(type);
+}
+
 const char * KLOperator::getKLType() const
 {
   return "operator";

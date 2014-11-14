@@ -19,3 +19,15 @@ KLCompoundStatement::KLCompoundStatement(const KLFile* klFile, JSONData data, KL
     }
   }
 }
+
+KLDeclType KLCompoundStatement::getDeclType() const
+{
+  return KLDeclType_CompoundStatement;
+}
+
+bool KLCompoundStatement::isOfDeclType(KLDeclType type) const
+{
+  if(type == getDeclType())
+    return true;
+  return KLStatement::isOfDeclType(type);
+}

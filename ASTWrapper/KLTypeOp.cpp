@@ -111,6 +111,18 @@ KLTypeOp::~KLTypeOp()
 {
 }
 
+KLDeclType KLTypeOp::getDeclType() const
+{
+  return KLDeclType_TypeOp;
+}
+
+bool KLTypeOp::isOfDeclType(KLDeclType type) const
+{
+  if(type == getDeclType())
+    return true;
+  return KLFunction::isOfDeclType(type);
+}
+
 const std::string & KLTypeOp::getName() const
 {
   if(m_name.length() == 0)

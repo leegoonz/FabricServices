@@ -12,3 +12,15 @@ KLExprStatement::KLExprStatement(const KLFile* klFile, JSONData data, KLStatemen
 {
 }
 
+KLDeclType KLExprStatement::getDeclType() const
+{
+  return KLDeclType_ExprStatement;
+}
+
+bool KLExprStatement::isOfDeclType(KLDeclType type) const
+{
+  if(type == getDeclType())
+    return true;
+  return KLStatement::isOfDeclType(type);
+}
+

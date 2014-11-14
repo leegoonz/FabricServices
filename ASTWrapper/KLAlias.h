@@ -23,6 +23,9 @@ namespace FabricServices
 
       virtual ~KLAlias();
 
+      virtual KLDeclType getDeclType() const;
+      virtual bool isOfDeclType(KLDeclType type) const;
+
       const std::string & getNewUserName() const;
       const std::string & getOldUserName() const;
 

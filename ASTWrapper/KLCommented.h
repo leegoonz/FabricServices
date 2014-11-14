@@ -20,6 +20,9 @@ namespace FabricServices
 
       virtual ~KLCommented();
 
+      virtual KLDeclType getDeclType() const;
+      virtual bool isOfDeclType(KLDeclType type) const;
+
       virtual bool isInternal() const;
       virtual const KLComment * getComments() const;
 

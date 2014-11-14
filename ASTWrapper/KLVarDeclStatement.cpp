@@ -24,6 +24,18 @@ KLVarDeclStatement::KLVarDeclStatement(const KLFile* klFile, JSONData data, KLSt
   }
 }
 
+KLDeclType KLVarDeclStatement::getDeclType() const
+{
+  return KLDeclType_VarDeclStatement;
+}
+
+bool KLVarDeclStatement::isOfDeclType(KLDeclType type) const
+{
+  if(type == getDeclType())
+    return true;
+  return KLStatement::isOfDeclType(type);
+}
+
 std::string KLVarDeclStatement::getBaseType() const
 {
   return m_baseType;

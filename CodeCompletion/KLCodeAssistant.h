@@ -49,6 +49,8 @@ namespace FabricServices
       std::vector<KLVariable> getVariablesAtCursor(uint32_t cursor) const;
       std::vector<KLVariable> getVariablesAtCursor(uint32_t line, uint32_t column) const;
 
+      const ASTWrapper::KLDecl * getDeclAtCursor(uint32_t cursor) const;
+      const ASTWrapper::KLDecl * getDeclAtCursor(uint32_t line, uint32_t column) const;
       const ASTWrapper::KLType * getTypeAtCursor(uint32_t cursor) const;
       const ASTWrapper::KLType * getTypeAtCursor(uint32_t line, uint32_t column) const;
 

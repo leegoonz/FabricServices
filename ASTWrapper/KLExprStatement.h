@@ -21,7 +21,8 @@ namespace FabricServices
 
       virtual ~KLExprStatement() {}
 
-      virtual KLStatement_Type getType() const { return KLStatement_Expr; }
+      virtual KLDeclType getDeclType() const;
+      virtual bool isOfDeclType(KLDeclType type) const;
 
     protected:
 

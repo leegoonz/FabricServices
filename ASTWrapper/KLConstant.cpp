@@ -15,6 +15,18 @@ KLConstant::~KLConstant()
 {
 }
 
+KLDeclType KLConstant::getDeclType() const
+{
+  return KLDeclType_Constant;
+}
+
+bool KLConstant::isOfDeclType(KLDeclType type) const
+{
+  if(type == getDeclType())
+    return true;
+  return KLCommented::isOfDeclType(type);
+}
+
 const std::string & KLConstant::getName() const
 {
   return m_name;

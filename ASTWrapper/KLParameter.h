@@ -21,6 +21,9 @@ namespace FabricServices
 
       virtual ~KLParameter();
 
+      virtual KLDeclType getDeclType() const;
+      virtual bool isOfDeclType(KLDeclType type) const;
+
       virtual bool isInternal() const { return false; }
 
       const std::string & getUsage() const;

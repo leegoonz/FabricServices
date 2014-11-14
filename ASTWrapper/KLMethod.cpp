@@ -28,6 +28,18 @@ KLMethod::~KLMethod()
 {
 }
 
+KLDeclType KLMethod::getDeclType() const
+{
+  return KLDeclType_Method;
+}
+
+bool KLMethod::isOfDeclType(KLDeclType type) const
+{
+  if(type == getDeclType())
+    return true;
+  return KLFunction::isOfDeclType(type);
+}
+
 const std::string & KLMethod::getThisType() const
 {
   return m_thisType;

@@ -24,6 +24,18 @@ KLInterface::~KLInterface()
   // KLMethods are deleted by the KLType destructor
 }
 
+KLDeclType KLInterface::getDeclType() const
+{
+  return KLDeclType_Interface;
+}
+
+bool KLInterface::isOfDeclType(KLDeclType type) const
+{
+  if(type == getDeclType())
+    return true;
+  return KLType::isOfDeclType(type);
+}
+
 const char * KLInterface::getKLType() const
 {
   return "interface";

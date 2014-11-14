@@ -21,7 +21,8 @@ namespace FabricServices
 
       virtual ~KLCStyleLoopStatement() {}
 
-      virtual KLStatement_Type getType() const { return KLStatement_CStyleLoop; }
+      virtual KLDeclType getDeclType() const;
+      virtual bool isOfDeclType(KLDeclType type) const;
 
     protected:
 

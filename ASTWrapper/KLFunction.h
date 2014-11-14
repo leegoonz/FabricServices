@@ -29,6 +29,9 @@ namespace FabricServices
 
       virtual ~KLFunction();
 
+      virtual KLDeclType getDeclType() const;
+      virtual bool isOfDeclType(KLDeclType type) const;
+
       virtual const std::string & getName() const;
       virtual const std::string & getReturnType() const;
       virtual const std::string & getSymbolName() const;
@@ -42,8 +45,6 @@ namespace FabricServices
       virtual const char * getKLType() const;
       virtual std::string getKLCode(bool includeReturnType = true, bool includeKeyWord = true, bool includePrefix = true, bool includeName = true) const;
       virtual std::string getLabel() const;
-
-      virtual KLStatement_Type getType() const { return KLStatement_Function; }
 
     protected:
 

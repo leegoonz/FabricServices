@@ -20,6 +20,16 @@ KLParameter::~KLParameter()
 {
 }
 
+KLDeclType KLParameter::getDeclType() const
+{
+  return KLDeclType_Parameter;
+}
+
+bool KLParameter::isOfDeclType(KLDeclType type) const
+{
+  return type == getDeclType();
+}
+
 const std::string & KLParameter::getUsage() const
 {
   return m_usage;

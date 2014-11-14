@@ -16,6 +16,18 @@ KLRequire::~KLRequire()
 {
 }
 
+KLDeclType KLRequire::getDeclType() const
+{
+  return KLDeclType_Require;
+}
+
+bool KLRequire::isOfDeclType(KLDeclType type) const
+{
+  if(type == getDeclType())
+    return true;
+  return KLCommented::isOfDeclType(type);
+}
+
 const std::string & KLRequire::getRequiredExtension() const
 {
   return m_requiredExtension;

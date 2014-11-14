@@ -34,6 +34,18 @@ KLStatement::~KLStatement()
   }
 }
 
+KLDeclType KLStatement::getDeclType() const
+{
+  return KLDeclType_Statement;
+}
+
+bool KLStatement::isOfDeclType(KLDeclType type) const
+{
+  if(type == getDeclType())
+    return true;
+  return KLCommented::isOfDeclType(type);
+}
+
 std::string KLStatement::getTypeName() const
 {
   return m_type;  
@@ -49,12 +61,12 @@ const KLStatement * KLStatement::getChild(uint32_t index) const
   return m_statements[index];
 }
 
-std::vector<const KLStatement*> KLStatement::getAllChildrenOfType(KLStatement_Type type, bool downwards, bool upwards) const
+std::vector<const KLStatement*> KLStatement::getAllChildrenOfType(KLDeclType type, bool downwards, bool upwards) const
 {
   std::vector<const KLStatement*> result;
   for(size_t i=0;i<m_statements.size();i++)
   {
-    if(m_statements[i]->getType() == type)
+    if(m_statements[i]->isOfDeclType(type))
     {
       result.push_back(m_statements[i]);
     }

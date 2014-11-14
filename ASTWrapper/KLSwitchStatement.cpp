@@ -17,3 +17,15 @@ KLSwitchStatement::KLSwitchStatement(const KLFile* klFile, JSONData data, KLStat
       constructChild(cases->getArrayElement(i));
   }
 }
+
+KLDeclType KLSwitchStatement::getDeclType() const
+{
+  return KLDeclType_SwitchStatement;
+}
+
+bool KLSwitchStatement::isOfDeclType(KLDeclType type) const
+{
+  if(type == getDeclType())
+    return true;
+  return KLStatement::isOfDeclType(type);
+}

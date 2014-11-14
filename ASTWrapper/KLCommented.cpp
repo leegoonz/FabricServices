@@ -24,6 +24,16 @@ KLCommented::~KLCommented()
   delete(m_comments);
 }
 
+KLDeclType KLCommented::getDeclType() const
+{
+  return KLDeclType_Commented;
+}
+
+bool KLCommented::isOfDeclType(KLDeclType type) const
+{
+  return type == getDeclType();
+}
+
 bool KLCommented::isInternal() const
 {
   if(!m_comments)

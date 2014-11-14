@@ -17,6 +17,16 @@ KLComment::~KLComment()
 {
 }
 
+KLDeclType KLComment::getDeclType() const
+{
+  return KLDeclType_Comment;
+}
+
+bool KLComment::isOfDeclType(KLDeclType type) const
+{
+  return type == getDeclType();
+}
+
 bool KLComment::isInternal() const
 {
   return true;

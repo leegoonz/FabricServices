@@ -20,3 +20,14 @@ KLCaseStatement::KLCaseStatement(const KLFile* klFile, JSONData data, KLStatemen
   }
 }
 
+KLDeclType KLCaseStatement::getDeclType() const
+{
+  return KLDeclType_CaseStatement;
+}
+
+bool KLCaseStatement::isOfDeclType(KLDeclType type) const
+{
+  if(type == getDeclType())
+    return true;
+  return KLStatement::isOfDeclType(type);
+}

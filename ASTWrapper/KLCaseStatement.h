@@ -21,7 +21,8 @@ namespace FabricServices
 
       virtual ~KLCaseStatement() {}
 
-      virtual KLStatement_Type getType() const { return KLStatement_Case; }
+      virtual KLDeclType getDeclType() const;
+      virtual bool isOfDeclType(KLDeclType type) const;
 
     protected:
 

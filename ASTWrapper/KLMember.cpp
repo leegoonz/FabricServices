@@ -16,6 +16,18 @@ KLMember::~KLMember()
 {
 }
 
+KLDeclType KLMember::getDeclType() const
+{
+  return KLDeclType_Member;
+}
+
+bool KLMember::isOfDeclType(KLDeclType type) const
+{
+  if(type == getDeclType())
+    return true;
+  return KLCommented::isOfDeclType(type);
+}
+
 const std::string & KLMember::getName() const
 {
   return m_name;

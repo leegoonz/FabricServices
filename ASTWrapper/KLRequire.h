@@ -23,6 +23,9 @@ namespace FabricServices
 
       virtual ~KLRequire();
 
+      virtual KLDeclType getDeclType() const;
+      virtual bool isOfDeclType(KLDeclType type) const;
+
       const std::string & getRequiredExtension() const;
       const std::string & getVersionRange() const;
 

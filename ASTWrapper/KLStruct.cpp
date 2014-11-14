@@ -30,6 +30,18 @@ KLStruct::~KLStruct()
     delete(m_members[i]);
 }
 
+KLDeclType KLStruct::getDeclType() const
+{
+  return KLDeclType_Struct;
+}
+
+bool KLStruct::isOfDeclType(KLDeclType type) const
+{
+  if(type == getDeclType())
+    return true;
+  return KLType::isOfDeclType(type);
+}
+
 const char * KLStruct::getKLType() const
 {
   return "struct";

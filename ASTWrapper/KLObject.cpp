@@ -23,6 +23,18 @@ KLObject::~KLObject()
   // KLMethods are deleted by the KLType destructor
 }
 
+KLDeclType KLObject::getDeclType() const
+{
+  return KLDeclType_Object;
+}
+
+bool KLObject::isOfDeclType(KLDeclType type) const
+{
+  if(type == getDeclType())
+    return true;
+  return KLStruct::isOfDeclType(type);
+}
+
 const char * KLObject::getKLType() const
 {
   return "object";
