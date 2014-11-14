@@ -81,23 +81,26 @@ void KLCodeAssistant::updateCurrentKLFile(const KLFile * file)
   boost::split(m_lines, m_code, boost::is_any_of("\n"));
 }
 
-void KLCodeAssistant::updateCurrentCodeAndFile(const std::string & code, const std::string & fileName)
+void KLCodeAssistant::updateCurrentCodeAndFile(const std::string & code, const std::string & fileName, bool updateAST)
 {
   m_code = code;
   m_code.erase(boost::remove_if(m_code, boost::is_any_of("\r")), m_code.end());
   boost::split(m_lines, m_code, boost::is_any_of("\n"));
 
   m_fileName = fileName;
-  m_highlighter->updateRulesFromCode(code, fileName);
 
-  m_file = NULL;
-
-  const KLExtension * extension = m_manager->getExtension(m_fileName.c_str());
-  if(extension)
+  if(updateAST)
   {
-    std::vector<const KLFile*> files = extension->getFiles();
-    if(files.size() > 0)
-      m_file = files[0];
+    m_highlighter->updateRulesFromCode(code, fileName);
+    m_file = NULL;
+
+    const KLExtension * extension = m_manager->getExtension(m_fileName.c_str());
+    if(extension)
+    {
+      std::vector<const KLFile*> files = extension->getFiles();
+      if(files.size() > 0)
+        m_file = files[0];
+    }
   }
 }
 
@@ -235,6 +238,11 @@ std::vector<KLVariable> KLCodeAssistant::getVariablesAtCursor(uint32_t line, uin
   const KLStatement * statement = getStatementAtCursor(line, column);
   if(statement)
   {
+    if(statement->getType() == KLStatement_Function)
+      statement = ((KLFunction*)statement)->getBody();
+  }
+  if(statement)
+  {
     std::vector<const KLStatement *> varDecls = statement->getAllChildrenOfType(KLStatement_VarDecl, false, true);
     for(size_t i=0;i<varDecls.size();i++)
     {
@@ -274,8 +282,10 @@ const KLType * KLCodeAssistant::getTypeAtCursor(uint32_t line, uint32_t column) 
     return NULL;
 
   const std::string & l = m_lines[line-1];
-  if(column > l.length() || column == 0)
+  if(column == 0)
     return NULL;
+  if(column > l.length())
+    column = l.length();
 
   std::vector<std::string> delegates;
   uint32_t braces = 0;
