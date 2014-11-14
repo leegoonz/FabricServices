@@ -19,7 +19,7 @@ KLDeclType KLExprStatement::getDeclType() const
 
 bool KLExprStatement::isOfDeclType(KLDeclType type) const
 {
-  if(type == getDeclType())
+  if(type == KLDeclType_ExprStatement)
     return true;
   return KLStatement::isOfDeclType(type);
 }

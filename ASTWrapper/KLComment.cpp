@@ -4,6 +4,8 @@
 
 #include <boost/algorithm/string.hpp>
 #include <boost/range/algorithm/count.hpp>
+#include <boost/range/algorithm/remove_if.hpp>
+#include <boost/regex.hpp>
 
 using namespace FabricServices::ASTWrapper;
 
@@ -24,7 +26,7 @@ KLDeclType KLComment::getDeclType() const
 
 bool KLComment::isOfDeclType(KLDeclType type) const
 {
-  return type == getDeclType();
+  return type == KLDeclType_Comment;
 }
 
 bool KLComment::isInternal() const
@@ -122,7 +124,7 @@ std::string KLComment::getQualifier(const char * qualifier, const char * default
     std::string l = m_content[i];
     boost::trim(l);
 
-    if(l.substr(0, q.length()+1) == "\\"+q)
+    if(l.substr(0, q.length()+1) == "\\"+q && q != "")
     {
       std::string l2 = l.substr(q.length()+1, 10000);
       boost::trim(l2);
@@ -246,6 +248,14 @@ std::string KLComment::getQualifierBracket(const char * qualifier, const char * 
   m_qualifiers.insert(std::pair<std::string, std::string>(q1, result));
 
   return result;
+}
+
+std::string KLComment::removeRstRoles(const char * text)
+{
+  std::string r = text;
+  r.erase(boost::remove_if(r, boost::is_any_of("`")), r.end());
+  boost::regex re(":[a-zA-Z0-9\\-_]+:");
+  return boost::regex_replace(r, re, "");
 }
 
 std::string KLComment::getPlainText() const

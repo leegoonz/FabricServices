@@ -20,7 +20,7 @@ KLDeclType KLOperator::getDeclType() const
 
 bool KLOperator::isOfDeclType(KLDeclType type) const
 {
-  if(type == getDeclType())
+  if(type == KLDeclType_Operator)
     return true;
   return KLFunction::isOfDeclType(type);
 }

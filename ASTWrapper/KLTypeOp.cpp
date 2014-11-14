@@ -118,7 +118,7 @@ KLDeclType KLTypeOp::getDeclType() const
 
 bool KLTypeOp::isOfDeclType(KLDeclType type) const
 {
-  if(type == getDeclType())
+  if(type == KLDeclType_TypeOp)
     return true;
   return KLFunction::isOfDeclType(type);
 }

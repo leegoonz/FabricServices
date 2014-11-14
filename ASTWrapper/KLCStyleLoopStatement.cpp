@@ -22,7 +22,7 @@ KLDeclType KLCStyleLoopStatement::getDeclType() const
 
 bool KLCStyleLoopStatement::isOfDeclType(KLDeclType type) const
 {
-  if(type == getDeclType())
+  if(type == KLDeclType_CStyleLoopStatement)
     return true;
   return KLStatement::isOfDeclType(type);
 }

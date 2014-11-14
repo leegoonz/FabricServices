@@ -31,7 +31,7 @@ KLDeclType KLInterface::getDeclType() const
 
 bool KLInterface::isOfDeclType(KLDeclType type) const
 {
-  if(type == getDeclType())
+  if(type == KLDeclType_Interface)
     return true;
   return KLType::isOfDeclType(type);
 }

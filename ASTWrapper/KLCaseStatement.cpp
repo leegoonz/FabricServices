@@ -27,7 +27,7 @@ KLDeclType KLCaseStatement::getDeclType() const
 
 bool KLCaseStatement::isOfDeclType(KLDeclType type) const
 {
-  if(type == getDeclType())
+  if(type == KLDeclType_CaseStatement)
     return true;
   return KLStatement::isOfDeclType(type);
 }

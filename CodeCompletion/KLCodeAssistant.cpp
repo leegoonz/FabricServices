@@ -334,13 +334,37 @@ const KLDecl * KLCodeAssistant::getDeclAtCursor(uint32_t line, uint32_t column) 
     {
       if(word.length() > 0)
       {
+        if(delegates.size() == 0)
+        {
+          int i2 = column;
+          while(i2 < l.length())
+          {
+            c = l[i2++];
+            if(isalnum(c) || c == '_')
+              word = word + c;
+            else
+              break;
+          }
+        }
         delegates.insert(delegates.begin(), word);
         word = "";
       }
     }
     else if(c == ' ' || c == '\t')
     {
-      // pass
+      if(delegates.size() == 0 && word.length() > 0)
+      {
+        int i2 = column;
+        while(i2 < l.length())
+        {
+          c = l[i2++];
+          if(isalnum(c) || c == '_')
+            word = word + c;
+          else
+            break;
+        }
+        resolved = true;
+      }
     }
     else if(braces == 0 && brackets == 0 && singleQuotes == 0 && doubleQuotes == 0)
     {
@@ -388,6 +412,19 @@ const KLDecl * KLCodeAssistant::getDeclAtCursor(uint32_t line, uint32_t column) 
           type = m_manager->getKLTypeByName(resolveAliases(returnType.getBaseType().c_str()), m_file);
           if(type)
             break;
+        }
+      }
+    }
+
+    // maybe this is a constant
+    if(type == NULL)
+    {
+      std::vector<const KLConstant*> constants = m_manager->getConstants();
+      for(size_t i=0;i<constants.size();i++)
+      {
+        if(constants[i]->getName() == word)
+        {
+          return constants[i];
         }
       }
     }

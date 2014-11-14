@@ -27,7 +27,7 @@ KLDeclType KLCompoundStatement::getDeclType() const
 
 bool KLCompoundStatement::isOfDeclType(KLDeclType type) const
 {
-  if(type == getDeclType())
+  if(type == KLDeclType_CompoundStatement)
     return true;
   return KLStatement::isOfDeclType(type);
 }

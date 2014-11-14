@@ -25,7 +25,7 @@ KLDeclType KLConditionalStatement::getDeclType() const
 
 bool KLConditionalStatement::isOfDeclType(KLDeclType type) const
 {
-  if(type == getDeclType())
+  if(type == KLDeclType_ConditionalStatement)
     return true;
   return KLStatement::isOfDeclType(type);
 }

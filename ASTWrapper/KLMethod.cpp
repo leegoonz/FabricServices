@@ -35,7 +35,7 @@ KLDeclType KLMethod::getDeclType() const
 
 bool KLMethod::isOfDeclType(KLDeclType type) const
 {
-  if(type == getDeclType())
+  if(type == KLDeclType_Method)
     return true;
   return KLFunction::isOfDeclType(type);
 }

@@ -25,7 +25,7 @@ KLDeclType KLSwitchStatement::getDeclType() const
 
 bool KLSwitchStatement::isOfDeclType(KLDeclType type) const
 {
-  if(type == getDeclType())
+  if(type == KLDeclType_SwitchStatement)
     return true;
   return KLStatement::isOfDeclType(type);
 }

@@ -27,7 +27,7 @@ KLDeclType KLParameter::getDeclType() const
 
 bool KLParameter::isOfDeclType(KLDeclType type) const
 {
-  return type == getDeclType();
+  return type == KLDeclType_Parameter;
 }
 
 const std::string & KLParameter::getUsage() const

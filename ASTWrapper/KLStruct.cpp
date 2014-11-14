@@ -37,7 +37,7 @@ KLDeclType KLStruct::getDeclType() const
 
 bool KLStruct::isOfDeclType(KLDeclType type) const
 {
-  if(type == getDeclType())
+  if(type == KLDeclType_Struct)
     return true;
   return KLType::isOfDeclType(type);
 }

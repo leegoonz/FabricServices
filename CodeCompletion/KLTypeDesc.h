@@ -16,6 +16,8 @@ namespace FabricServices
       
     public:
 
+      KLTypeDesc(const std::string & type);
+      KLTypeDesc(const std::string & type, const std::string & arrayModifier);
       virtual ~KLTypeDesc();
 
       const std::string & getType() const;
@@ -24,11 +26,6 @@ namespace FabricServices
       bool isArray() const;
       bool isDict() const;
       bool isRef() const;
-
-    protected:
-
-      KLTypeDesc(const std::string & type);
-      KLTypeDesc(const std::string & type, const std::string & arrayModifier);
 
     private:
 

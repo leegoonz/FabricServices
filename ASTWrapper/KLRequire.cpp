@@ -23,7 +23,7 @@ KLDeclType KLRequire::getDeclType() const
 
 bool KLRequire::isOfDeclType(KLDeclType type) const
 {
-  if(type == getDeclType())
+  if(type == KLDeclType_Require)
     return true;
   return KLCommented::isOfDeclType(type);
 }

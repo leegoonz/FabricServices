@@ -22,7 +22,7 @@ KLDeclType KLAlias::getDeclType() const
 
 bool KLAlias::isOfDeclType(KLDeclType type) const
 {
-  if(type == getDeclType())
+  if(type == KLDeclType_Alias)
     return true;
   return KLCommented::isOfDeclType(type);
 }

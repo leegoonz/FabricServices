@@ -31,7 +31,7 @@ KLDeclType KLVarDeclStatement::getDeclType() const
 
 bool KLVarDeclStatement::isOfDeclType(KLDeclType type) const
 {
-  if(type == getDeclType())
+  if(type == KLDeclType_VarDeclStatement)
     return true;
   return KLStatement::isOfDeclType(type);
 }
