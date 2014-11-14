@@ -28,7 +28,8 @@ KLSyntaxHighlighter::~KLSyntaxHighlighter()
 void KLSyntaxHighlighter::initRules()
 {
   // comment rules
-  addRule(HighlightRuleType_Comment, "/\\*.*\\*/");
+  addRule(HighlightRuleType_Comment, "/\\*([^*]|[\\r\\n]|(\\*+([^*/]|[\\r\\n])))*\\*+/");
+  // addRule(HighlightRuleType_Comment, "/\\*.*\\*/");
   addRule(HighlightRuleType_Comment, "//[^\n]*");
 
   // string rules
@@ -153,4 +154,12 @@ void KLSyntaxHighlighter::updateRulesFromCode(const std::string & code, const st
 ASTWrapper::KLASTManager * KLSyntaxHighlighter::getASTManager()
 {
   return m_manager;
+}
+
+void KLSyntaxHighlighter::setASTManager(ASTWrapper::KLASTManager * manager)
+{
+  if(m_owningManager && m_manager)
+    delete(m_manager);
+  m_manager = manager;
+  m_owningManager = false;
 }

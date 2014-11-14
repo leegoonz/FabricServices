@@ -52,6 +52,16 @@ KLASTManager * KLCodeAssistant::getASTManager()
   return m_manager;
 }
 
+void KLCodeAssistant::setASTManager(KLASTManager * manager)
+{
+  if(m_owningManager && m_manager)
+    delete(m_manager);
+  m_manager = manager;
+  m_owningManager = false;
+  if(m_owningHighlighter && m_highlighter)
+    m_highlighter->setASTManager(manager);
+}
+
 KLSyntaxHighlighter * KLCodeAssistant::getHighlighter()
 {
   return m_highlighter;

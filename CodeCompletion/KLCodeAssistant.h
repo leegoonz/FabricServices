@@ -25,6 +25,8 @@ namespace FabricServices
       virtual ~KLCodeAssistant();
 
       ASTWrapper::KLASTManager * getASTManager();
+      void setASTManager(ASTWrapper::KLASTManager * manager);
+
       KLSyntaxHighlighter * getHighlighter();
       const ASTWrapper::KLFile * getKLFile();
 
