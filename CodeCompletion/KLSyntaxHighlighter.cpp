@@ -102,53 +102,35 @@ void KLSyntaxHighlighter::initRules()
   }
 }
 
-void KLSyntaxHighlighter::updateRulesFromCode(const std::string & code, const std::string & fileName)
+void KLSyntaxHighlighter::updateRules()
 {
-  if(fileName.length() > 0)
+  std::vector<const ASTWrapper::KLConstant*> constants = m_manager->getConstants();
+  std::vector<const ASTWrapper::KLType*> types = m_manager->getTypes();
+  std::vector<const ASTWrapper::KLAlias*> aliases = m_manager->getAliases();
+
+  for(size_t i=0;i<constants.size();i++)
   {
-    try
-    {
-      m_manager->loadAllExtensionsFromExtsPath(false);
-
-      m_manager->removeExtension(fileName.c_str());
-
-      std::string json = "{\n\"code\": \""+fileName+"\"\n}\n";
-      const char * codeCstr = code.c_str();
-      m_manager->loadExtension(fileName.c_str(), json.c_str(), 1, &codeCstr);
-
-      std::vector<const ASTWrapper::KLConstant*> constants = m_manager->getConstants();
-      std::vector<const ASTWrapper::KLType*> types = m_manager->getTypes();
-      std::vector<const ASTWrapper::KLAlias*> aliases = m_manager->getAliases();
-
-      for(size_t i=0;i<constants.size();i++)
-      {
-        if(m_constantRules.find(constants[i]->getName()) != m_constantRules.end())
-          continue;
-        HighlightRule * rule = addRule(HighlightRuleType_Constant, "\\b"+constants[i]->getName()+"\\b");
-        m_constantRules.insert(std::pair<std::string, HighlightRule*>(constants[i]->getName(), rule));
-      }
-
-      for(size_t i=0;i<types.size();i++)
-      {
-        if(m_typeRules.find(types[i]->getName()) != m_typeRules.end())
-          continue;
-        HighlightRule * rule = addRule(HighlightRuleType_Type, "\\b"+types[i]->getName()+"\\b");
-        m_typeRules.insert(std::pair<std::string, HighlightRule*>(types[i]->getName(), rule));
-      }
-
-      for(size_t i=0;i<aliases.size();i++)
-      {
-        if(m_typeRules.find(aliases[i]->getNewUserName()) != m_typeRules.end())
-          continue;
-        HighlightRule * rule = addRule(HighlightRuleType_Type, "\\b"+aliases[i]->getNewUserName()+"\\b");
-        m_typeRules.insert(std::pair<std::string, HighlightRule*>(aliases[i]->getNewUserName(), rule));
-      }
-    }
-    catch(FabricCore::Exception e)
-    {
-    }
+    if(m_constantRules.find(constants[i]->getName()) != m_constantRules.end())
+      continue;
+    HighlightRule * rule = addRule(HighlightRuleType_Constant, "\\b"+constants[i]->getName()+"\\b");
+    m_constantRules.insert(std::pair<std::string, HighlightRule*>(constants[i]->getName(), rule));
   }
 
+  for(size_t i=0;i<types.size();i++)
+  {
+    if(m_typeRules.find(types[i]->getName()) != m_typeRules.end())
+      continue;
+    HighlightRule * rule = addRule(HighlightRuleType_Type, "\\b"+types[i]->getName()+"\\b");
+    m_typeRules.insert(std::pair<std::string, HighlightRule*>(types[i]->getName(), rule));
+  }
+
+  for(size_t i=0;i<aliases.size();i++)
+  {
+    if(m_typeRules.find(aliases[i]->getNewUserName()) != m_typeRules.end())
+      continue;
+    HighlightRule * rule = addRule(HighlightRuleType_Type, "\\b"+aliases[i]->getNewUserName()+"\\b");
+    m_typeRules.insert(std::pair<std::string, HighlightRule*>(aliases[i]->getNewUserName(), rule));
+  }
 }
 
 ASTWrapper::KLASTManager * KLSyntaxHighlighter::getASTManager()

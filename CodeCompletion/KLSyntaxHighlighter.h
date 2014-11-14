@@ -24,7 +24,7 @@ namespace FabricServices
       ASTWrapper::KLASTManager * getASTManager();
       void setASTManager(ASTWrapper::KLASTManager * manager);
 
-      virtual void updateRulesFromCode(const std::string & code, const std::string & fileName);
+      virtual void updateRules();
 
     private:
 

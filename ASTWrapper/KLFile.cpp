@@ -27,121 +27,135 @@ void KLFile::parse()
   boost::filesystem::path path = m_filePath;
   m_fileName = path.stem().string() + ".kl";
 
-  FabricCore::RTVal jsonVal = GetKLJSONAST(*client, m_klCode.c_str(), false);
-  std::string jsonStr = jsonVal.getStringCString();
-
-  FabricCore::Variant variant = FabricCore::Variant::CreateFromJSON(jsonStr.c_str());
-
-  for(uint32_t i=0;i<variant.getArraySize();i++)
+  try
   {
-    const FabricCore::Variant * element = variant.getArrayElement(i);
-    if(!element->isDict())
-      continue;
-    const FabricCore::Variant * etVar = element->getDictValue("type");
-    if(!etVar)
-      continue;
-    if(!etVar->isString())
-      continue;
+    FabricCore::RTVal jsonVal = GetKLJSONAST(*client, m_klCode.c_str(), false, m_fileName.c_str());
+    std::string jsonStr = jsonVal.getStringCString();
 
-    std::string et = etVar->getStringData();
-    if(et == "RequireGlobal")
-    {
-      KLRequire * e = new KLRequire(this, element);
-      m_requires.push_back(e);
+    FabricCore::Variant variant = FabricCore::Variant::CreateFromJSON(jsonStr.c_str());
 
-      // ensure to parse extensions in the right order,
-      // so that we can add methods to types for example.
-      KLExtension * extension = (KLExtension *)getExtension()->getASTManager()->getExtension(e);
-      if(extension)
-        extension->parse();
-    }
-    else if(et == "Alias")
+    for(uint32_t i=0;i<variant.getArraySize();i++)
     {
-      KLAlias * e = new KLAlias(this, element);
-      m_aliases.push_back(e);
-    }
-    else if(et == "GlobalConstDecl")
-    {
-      KLConstant * e = new KLConstant(this, element);
-      m_constants.push_back(e);
-    }
-    else if(et == "Function")
-    {
-      KLFunction * e = new KLFunction(this, element);
-      m_functions.push_back(e);
-    }
-    else if(et == "Operator")
-    {
-      KLOperator * e = new KLOperator(this, element);
-      m_operators.push_back(e);
-    }
-    else if(et == "ASTStructDecl")
-    {
-      KLStruct * e = new KLStruct(this, element);
-      m_types.push_back(e);
-    }
-    else if(et == "MethodOpImpl")
-    {
-      KLMethod * e = new KLMethod(this, element);
-      std::string thisType = e->getThisType();
-      const KLType * klType = m_extension->getASTManager()->getKLTypeByName(thisType.c_str(), e);
-      if(klType)
+      const FabricCore::Variant * element = variant.getArrayElement(i);
+      if(!element->isDict())
+        continue;
+      const FabricCore::Variant * etVar = element->getDictValue("type");
+      if(!etVar)
+        continue;
+      if(!etVar->isString())
+        continue;
+
+      std::string et = etVar->getStringData();
+      if(et == "RequireGlobal")
       {
-        if(!klType->pushMethod(e))
+        KLRequire * e = new KLRequire(this, element);
+        m_requires.push_back(e);
+
+        // ensure to parse extensions in the right order,
+        // so that we can add methods to types for example.
+        KLExtension * extension = (KLExtension *)getExtension()->getASTManager()->getExtension(e);
+        if(extension)
+          extension->parse();
+      }
+      else if(et == "Alias")
+      {
+        KLAlias * e = new KLAlias(this, element);
+        m_aliases.push_back(e);
+      }
+      else if(et == "GlobalConstDecl")
+      {
+        KLConstant * e = new KLConstant(this, element);
+        m_constants.push_back(e);
+      }
+      else if(et == "Function")
+      {
+        KLFunction * e = new KLFunction(this, element);
+        m_functions.push_back(e);
+      }
+      else if(et == "Operator")
+      {
+        KLOperator * e = new KLOperator(this, element);
+        m_operators.push_back(e);
+      }
+      else if(et == "ASTStructDecl")
+      {
+        KLStruct * e = new KLStruct(this, element);
+        m_types.push_back(e);
+      }
+      else if(et == "MethodOpImpl")
+      {
+        KLMethod * e = new KLMethod(this, element);
+        std::string thisType = e->getThisType();
+        const KLType * klType = m_extension->getASTManager()->getKLTypeByName(thisType.c_str(), e);
+        if(klType)
+        {
+          if(!klType->pushMethod(e))
+            m_functions.push_back(e);
+        }
+        else
+          m_functions.push_back(e);
+      }
+      else if(et == "Destructor")
+      {
+        KLFunction function(this, element);
+        std::string thisType = function.getName();
+        boost::trim_left_if(thisType, boost::is_any_of("~"));
+        KLMethod * e = new KLMethod(this, element, thisType);
+        const KLType * klType = m_extension->getASTManager()->getKLTypeByName(thisType.c_str(), e);
+        if(klType)
+        {
+          if(!klType->pushMethod(e))
+            m_functions.push_back(e);
+        }
+        else
+          m_functions.push_back(e);
+      }
+      else if(et == "ASTInterface")
+      {
+        KLInterface * e = new KLInterface(this, element);
+        m_types.push_back(e);
+      }
+      else if(et == "ASTObjectDecl")
+      {
+        KLObject * e = new KLObject(this, element);
+        m_types.push_back(e);
+      }
+      else if(et == "ComparisonOpImpl" ||
+        et == "AssignOpImpl" ||
+        et == "BinOpImpl" ||
+        et == "ASTUniOpDecl")
+      {
+        KLTypeOp * e = new KLTypeOp(this, element);
+
+        std::string thisType = e->getLhs();
+        const KLType * klType = m_extension->getASTManager()->getKLTypeByName(thisType.c_str(), e);
+        if(klType)
+          klType->pushTypeOp(e);
+        else
           m_functions.push_back(e);
       }
       else
-        m_functions.push_back(e);
-    }
-    else if(et == "Destructor")
-    {
-      KLFunction function(this, element);
-      std::string thisType = function.getName();
-      boost::trim_left_if(thisType, boost::is_any_of("~"));
-      KLMethod * e = new KLMethod(this, element, thisType);
-      const KLType * klType = m_extension->getASTManager()->getKLTypeByName(thisType.c_str(), e);
-      if(klType)
       {
-        if(!klType->pushMethod(e))
-          m_functions.push_back(e);
+        std::string message = "Unknown AST token '"+et+"'.";
+        throw(FabricCore::Exception(message.c_str(), message.length()));
+        return;
       }
-      else
-        m_functions.push_back(e);
     }
-    else if(et == "ASTInterface")
-    {
-      KLInterface * e = new KLInterface(this, element);
-      m_types.push_back(e);
-    }
-    else if(et == "ASTObjectDecl")
-    {
-      KLObject * e = new KLObject(this, element);
-      m_types.push_back(e);
-    }
-    else if(et == "ComparisonOpImpl" ||
-      et == "AssignOpImpl" ||
-      et == "BinOpImpl" ||
-      et == "ASTUniOpDecl")
-    {
-      KLTypeOp * e = new KLTypeOp(this, element);
-
-      std::string thisType = e->getLhs();
-      const KLType * klType = m_extension->getASTManager()->getKLTypeByName(thisType.c_str(), e);
-      if(klType)
-        klType->pushTypeOp(e);
-      else
-        m_functions.push_back(e);
-    }
-    else
-    {
-      std::string message = "Unknown AST token '"+et+"'.";
-      throw(FabricCore::Exception(message.c_str(), message.length()));
-      return;
-    }
+  }
+  catch(FabricCore::Exception e)
+  {
+    m_errors.push_back(new KLError(e));
   }
 }
 
 KLFile::~KLFile()
+{
+  clear();
+  for(uint32_t i=0;i<m_errors.size();i++)
+    delete(m_errors[i]);
+}
+
+void KLFile::clear()
 {
   for(uint32_t i=0;i<m_requires.size();i++)
     delete(m_requires[i]);
@@ -155,6 +169,12 @@ KLFile::~KLFile()
     delete(m_functions[i]);
   for(uint32_t i=0;i<m_operators.size();i++)
     delete(m_operators[i]);
+  m_requires.clear();
+  m_aliases.clear();
+  m_constants.clear();
+  m_types.clear();
+  m_functions.clear();
+  m_operators.clear();
 }
 
 const KLExtension* KLFile::getExtension() const
@@ -175,6 +195,11 @@ const char * KLFile::getFileName() const
 const char * KLFile::getKLCode() const
 {
   return m_klCode.c_str();
+}
+
+bool KLFile::hasErrors() const
+{
+  return m_errors.size() > 0;
 }
 
 std::vector<const KLRequire*> KLFile::getRequires() const
@@ -238,6 +263,11 @@ std::vector<const KLObject*> KLFile::getObjects() const
 std::vector<const KLOperator*> KLFile::getOperators() const
 {
   return m_operators;
+}
+
+std::vector<const KLError*> KLFile::getErrors() const
+{
+  return m_errors;
 }
 
 const KLStatement * KLFile::getStatementAtCursor(uint32_t line, uint32_t column) const
@@ -307,4 +337,57 @@ const KLStatement * KLFile::getStatementAtCursor(uint32_t line, uint32_t column)
   }
 
   return result;
+}
+
+bool KLFile::updateKLCode(const char * code)
+{
+
+  std::vector<const KLRequire*> tempRequires = m_requires;
+  std::vector<const KLAlias*> tempAliases = m_aliases;
+  std::vector<const KLConstant*> tempConstants = m_constants;
+  std::vector<const KLType*> tempTypes = m_types;
+  std::vector<const KLFunction*> tempFunctions = m_functions;
+  std::vector<const KLOperator*> tempOperators = m_operators;
+
+  for(uint32_t i=0;i<m_errors.size();i++)
+    delete(m_errors[i]);
+  m_requires.clear();
+  m_aliases.clear();
+  m_constants.clear();
+  m_types.clear();
+  m_functions.clear();
+  m_operators.clear();
+  m_errors.clear();
+
+  m_klCode = code;
+  m_parsed = false;
+  parse();
+
+  if(hasErrors())
+  {
+    for(uint32_t i=0;i<m_requires.size();i++)
+      delete(tempRequires[i]);
+    for(uint32_t i=0;i<m_aliases.size();i++)
+      delete(tempAliases[i]);
+    for(uint32_t i=0;i<m_constants.size();i++)
+      delete(tempConstants[i]);
+    for(uint32_t i=0;i<m_types.size();i++)
+      delete(tempTypes[i]);
+    for(uint32_t i=0;i<m_functions.size();i++)
+      delete(tempFunctions[i]);
+    for(uint32_t i=0;i<m_operators.size();i++)
+      delete(tempOperators[i]);
+  }
+  else
+  {
+    clear();
+    m_requires = tempRequires;
+    m_aliases = tempAliases;
+    m_constants = tempConstants;
+    m_types = tempTypes;
+    m_functions = tempFunctions;
+    m_operators = tempOperators;
+  }
+
+  return hasErrors();
 }

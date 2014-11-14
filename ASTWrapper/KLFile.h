@@ -5,6 +5,7 @@
 
 #include "KLDeclContainer.h"
 #include "KLStatementSearch.h"
+#include "KLError.h"
 #include <vector>
 
 namespace FabricServices
@@ -18,6 +19,7 @@ namespace FabricServices
     class KLFile : public KLDeclContainer, public KLStatementSearch
     {
       friend class KLExtension;
+      friend class KLASTManager;
       
     public:
 
@@ -28,6 +30,8 @@ namespace FabricServices
       const char * getFileName() const;
       const char * getKLCode() const;
 
+      bool hasErrors() const;
+
       // decl vector getters
       virtual std::vector<const KLRequire*> getRequires() const;
       virtual std::vector<const KLAlias*> getAliases() const;
@@ -35,6 +39,7 @@ namespace FabricServices
       virtual std::vector<const KLType*> getTypes() const;
       virtual std::vector<const KLFunction*> getFunctions() const;
       virtual std::vector<const KLOperator*> getOperators() const;
+      virtual std::vector<const KLError*> getErrors() const;
 
       // decl vector getter overloads
       virtual std::vector<const KLInterface*> getInterfaces() const;
@@ -42,11 +47,13 @@ namespace FabricServices
       virtual std::vector<const KLObject*> getObjects() const;
 
       virtual const KLStatement * getStatementAtCursor(uint32_t line, uint32_t column) const;
+      virtual bool updateKLCode(const char * code);
 
     protected:
       
       KLFile(const KLExtension* extension, const char * filePath, const char * klCode);
       void parse();
+      void clear();
 
     private:
       bool m_parsed;
@@ -60,6 +67,7 @@ namespace FabricServices
       std::vector<const KLType*> m_types;
       std::vector<const KLFunction*> m_functions;
       std::vector<const KLOperator*> m_operators;
+      std::vector<const KLError*> m_errors;
     };
 
   };

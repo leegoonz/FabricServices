@@ -91,16 +91,13 @@ void KLCodeAssistant::updateCurrentCodeAndFile(const std::string & code, const s
 
   if(updateAST)
   {
-    m_highlighter->updateRulesFromCode(code, fileName);
-    m_file = NULL;
-
-    const KLExtension * extension = m_manager->getExtension(m_fileName.c_str());
-    if(extension)
-    {
-      std::vector<const KLFile*> files = extension->getFiles();
-      if(files.size() > 0)
-        m_file = files[0];
-    }
+    if(m_file == NULL)
+      m_file = m_manager->loadSingleKLFile(m_fileName.c_str(), m_code.c_str());
+    else if(m_file->getFilePath() != fileName)
+      m_file = m_manager->loadSingleKLFile(m_fileName.c_str(), m_code.c_str());
+    else
+      ((KLFile*)m_file)->updateKLCode(m_code.c_str());
+    m_highlighter->updateRules();
   }
 }
 

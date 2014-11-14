@@ -194,6 +194,26 @@ bool KLASTManager::removeExtension(const char * name, const char * versionRequir
   return false;
 }
 
+const KLFile* KLASTManager::loadSingleKLFile(const char * klFileName, const char * klContent)
+{
+  loadAllExtensionsFromExtsPath(false);
+
+  const KLExtension * extension = getExtension(klFileName);
+  if(!extension)
+  {
+    std::string json = "{\n\"code\": \"";
+    json += klFileName;
+    json += "\"\n}\n";
+    extension = loadExtension(klFileName, json.c_str(), 1, &klContent);
+    if(!extension)
+      return NULL;
+    return extension->getFiles()[0];
+  }
+  KLFile* file = (KLFile*)extension->getFiles()[0];
+  file->updateKLCode(klContent);
+  return file;
+}
+
 std::vector<const KLExtension*> KLASTManager::getExtensions() const
 {
   return m_extensions;

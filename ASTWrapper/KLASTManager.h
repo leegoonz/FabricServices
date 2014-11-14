@@ -30,6 +30,7 @@ namespace FabricServices
       bool loadAllExtensionsFromExtsPath(bool parseExtensions = true);
       const KLExtension* loadExtensionFromExtsPath(const char * name);
       bool removeExtension(const char * name, const char * versionRequirement = "*");
+      const KLFile* loadSingleKLFile(const char * klFileName, const char * klContent);
 
       std::vector<const KLExtension*> getExtensions() const;
 
