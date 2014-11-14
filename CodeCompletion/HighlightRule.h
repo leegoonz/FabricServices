@@ -20,6 +20,7 @@ namespace FabricServices
       HighlightRuleType_Type,
       HighlightRuleType_Constant,
       HighlightRuleType_Method,
+      HighlightRuleType_Error,
       HighlightRuleType_NumItems
     };
 

@@ -39,11 +39,16 @@ namespace FabricServices
       virtual const std::vector<Format> & getHighlightFormats(const std::string & text) const;
       virtual std::string getHighlightedText(const std::string & text) const;
 
+      // error reporting
+      virtual void reportError(uint32_t start, uint32_t length, const char * prefix = NULL, const char * suffix = NULL);
+      virtual void clearErrors();
+
     private:
 
       std::vector<HighlightRule*> m_rules;
       mutable std::string m_lastText;
       mutable std::vector<Format> m_lastFormats;
+      mutable std::vector<Format> m_errorFormats;
     };
 
   };

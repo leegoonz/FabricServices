@@ -72,6 +72,13 @@ const KLFile * KLCodeAssistant::getKLFile()
   return m_file;
 }
 
+std::vector<const KLError*> KLCodeAssistant::getKLErrors()
+{
+  if(m_file)
+    m_file->getErrors();
+  return std::vector<const KLError*>();
+}
+
 void KLCodeAssistant::updateCurrentKLFile(const KLFile * file)
 {
   m_file = file;
@@ -97,6 +104,23 @@ void KLCodeAssistant::updateCurrentCodeAndFile(const std::string & code, const s
       m_file = m_manager->loadSingleKLFile(m_fileName.c_str(), m_code.c_str());
     else
       ((KLFile*)m_file)->updateKLCode(m_code.c_str());
+
+    // update all error formats
+    m_highlighter->clearErrors();
+    if(m_file->hasErrors())
+    {
+      std::vector<const KLError*> errors = m_file->getErrors();
+      for(size_t i=0;i<errors.size();i++)
+      {
+        if(errors[i]->getLine() <= m_lines.size())
+        {
+          uint32_t cursor;
+          lineAndColumnToCursor(errors[i]->getLine(), 1, cursor);
+          m_highlighter->reportError(cursor, m_lines[errors[i]->getLine()-1].length());
+        }
+      }
+    }
+
     m_highlighter->updateRules();
   }
 }

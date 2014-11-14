@@ -144,7 +144,16 @@ void KLFile::parse()
   }
   catch(FabricCore::Exception e)
   {
-    m_errors.push_back(new KLError(e));
+    std::string message = e.getDesc_cstr();
+    std::vector<std::string> errors;
+    boost::split(errors, message, boost::is_any_of("\n"));
+
+    for(size_t i=0;i<errors.size();i++)
+    {
+      KLError error(errors[i].c_str());
+      if(error.isValid())
+        m_errors.push_back(new KLError(errors[i].c_str()));
+    }
   }
 }
 
@@ -365,6 +374,16 @@ bool KLFile::updateKLCode(const char * code)
 
   if(hasErrors())
   {
+    clear();
+    m_requires = tempRequires;
+    m_aliases = tempAliases;
+    m_constants = tempConstants;
+    m_types = tempTypes;
+    m_functions = tempFunctions;
+    m_operators = tempOperators;
+  }
+  else
+  {
     for(uint32_t i=0;i<m_requires.size();i++)
       delete(tempRequires[i]);
     for(uint32_t i=0;i<m_aliases.size();i++)
@@ -377,16 +396,6 @@ bool KLFile::updateKLCode(const char * code)
       delete(tempFunctions[i]);
     for(uint32_t i=0;i<m_operators.size();i++)
       delete(tempOperators[i]);
-  }
-  else
-  {
-    clear();
-    m_requires = tempRequires;
-    m_aliases = tempAliases;
-    m_constants = tempConstants;
-    m_types = tempTypes;
-    m_functions = tempFunctions;
-    m_operators = tempOperators;
   }
 
   return hasErrors();

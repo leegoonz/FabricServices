@@ -52,6 +52,8 @@ const char * SyntaxHighlighter::getRuleTypeName(HighlightRuleType type) const
       return "Constant";
     case HighlightRuleType_Method:
       return "Method";
+    case HighlightRuleType_Error:
+      return "Error";
     case HighlightRuleType_NumItems:
       return "";
   }
@@ -112,6 +114,8 @@ const std::vector<SyntaxHighlighter::Format> & SyntaxHighlighter::getHighlightFo
     end = f.start + f.length - 1;
   }
 
+  m_lastFormats.insert(m_lastFormats.end(), m_errorFormats.begin(), m_errorFormats.end());
+
   return m_lastFormats;
 }
 
@@ -138,3 +142,20 @@ std::string SyntaxHighlighter::getHighlightedText(const std::string & text) cons
 
   return result;
 }
+
+void SyntaxHighlighter::reportError(uint32_t start, uint32_t length, const char * prefix, const char * suffix)
+{
+  Format f;
+  f.type = HighlightRuleType_Error;
+  f.start = start;
+  f.length = length;
+  f.prefix = prefix;
+  f.suffix = suffix;
+  m_errorFormats.push_back(f);
+}
+
+void SyntaxHighlighter::clearErrors()
+{
+  m_errorFormats.clear();
+}
+

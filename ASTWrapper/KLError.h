@@ -4,7 +4,6 @@
 #define __ASTWrapper_KLError__
 
 #include <string>
-#include <FabricCore.h>
 
 namespace FabricServices
 {
@@ -20,16 +19,24 @@ namespace FabricServices
 
       virtual ~KLError();
 
-      // const std::string & getNewUserName() const;
-      // const std::string & getOldUserName() const;
+      bool isValid() const;
+
+      const char * getFileName() const;
+      int getLine() const;
+      int getColumn() const;
+      const char * getDescription() const;
 
     protected:
       
-      KLError(FabricCore::Exception e);
+      KLError(const char * message);
 
     private:
       
-      std::string m_message;
+      std::string m_fileName;
+      int m_line;
+      int m_column;
+      std::string m_description;
+      bool m_valid;
     };
 
   };

@@ -29,7 +29,8 @@ namespace FabricServices
 
       KLSyntaxHighlighter * getHighlighter();
       const ASTWrapper::KLFile * getKLFile();
-
+      std::vector<const ASTWrapper::KLError*> getKLErrors();
+      
       void updateCurrentKLFile(const ASTWrapper::KLFile * file);
       void updateCurrentCodeAndFile(const std::string & code, const std::string & fileName, bool updateAST = true);
 

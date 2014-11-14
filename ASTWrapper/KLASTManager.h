@@ -16,6 +16,7 @@ namespace FabricServices
     class KLASTManager : public KLDeclContainer
     {
       friend class KLDecl;
+      friend class KLFile;
 
     public:
 
