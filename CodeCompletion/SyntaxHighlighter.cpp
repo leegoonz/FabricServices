@@ -152,10 +152,12 @@ void SyntaxHighlighter::reportError(uint32_t start, uint32_t length, const char 
   f.prefix = prefix;
   f.suffix = suffix;
   m_errorFormats.push_back(f);
+  m_lastText = "";
 }
 
 void SyntaxHighlighter::clearErrors()
 {
   m_errorFormats.clear();
+  m_lastText = "";
 }
 

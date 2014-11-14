@@ -384,17 +384,17 @@ bool KLFile::updateKLCode(const char * code)
   }
   else
   {
-    for(uint32_t i=0;i<m_requires.size();i++)
+    for(uint32_t i=0;i<tempRequires.size();i++)
       delete(tempRequires[i]);
-    for(uint32_t i=0;i<m_aliases.size();i++)
+    for(uint32_t i=0;i<tempAliases.size();i++)
       delete(tempAliases[i]);
-    for(uint32_t i=0;i<m_constants.size();i++)
+    for(uint32_t i=0;i<tempConstants.size();i++)
       delete(tempConstants[i]);
-    for(uint32_t i=0;i<m_types.size();i++)
+    for(uint32_t i=0;i<tempTypes.size();i++)
       delete(tempTypes[i]);
-    for(uint32_t i=0;i<m_functions.size();i++)
+    for(uint32_t i=0;i<tempFunctions.size();i++)
       delete(tempFunctions[i]);
-    for(uint32_t i=0;i<m_operators.size();i++)
+    for(uint32_t i=0;i<tempOperators.size();i++)
       delete(tempOperators[i]);
   }
 
