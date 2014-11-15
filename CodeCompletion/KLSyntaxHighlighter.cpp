@@ -109,6 +109,7 @@ void KLSyntaxHighlighter::onFileParsed(const ASTWrapper::KLFile * file)
   std::vector<const ASTWrapper::KLConstant*> constants = file->getConstants();
   std::vector<const ASTWrapper::KLType*> types = file->getTypes();
   std::vector<const ASTWrapper::KLAlias*> aliases = file->getAliases();
+  std::vector<const ASTWrapper::KLFunction*> functions = file->getFunctions();
 
   for(size_t i=0;i<constants.size();i++)
   {
@@ -132,5 +133,15 @@ void KLSyntaxHighlighter::onFileParsed(const ASTWrapper::KLFile * file)
       continue;
     HighlightRule * rule = addRule(HighlightRuleType_Type, "\\b"+aliases[i]->getNewUserName()+"\\b");
     m_typeRules.insert(std::pair<std::string, HighlightRule*>(aliases[i]->getNewUserName(), rule));
+  }
+
+  for(size_t i=0;i<functions.size();i++)
+  {
+    if(functions[i]->getName().length() <= 2)
+      continue;
+    if(m_functionRules.find(functions[i]->getName()) != m_functionRules.end())
+      continue;
+    HighlightRule * rule = addRule(HighlightRuleType_Method, "\\b"+functions[i]->getName()+"\\b");
+    m_functionRules.insert(std::pair<std::string, HighlightRule*>(functions[i]->getName(), rule));
   }
 }

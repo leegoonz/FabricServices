@@ -29,6 +29,7 @@ namespace FabricServices
       bool m_basicTypesInitialized;
       std::map<std::string, HighlightRule*> m_constantRules;
       std::map<std::string, HighlightRule*> m_typeRules;
+      std::map<std::string, HighlightRule*> m_functionRules;
     };
 
   };
