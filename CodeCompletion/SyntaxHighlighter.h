@@ -46,6 +46,10 @@ namespace FabricServices
       virtual void reportError(uint32_t start, uint32_t length, const char * prefix = NULL, const char * suffix = NULL);
       virtual void clearErrors();
 
+      // highlighting
+      virtual void highlight(uint32_t start, uint32_t length, const char * prefix = NULL, const char * suffix = NULL);
+      virtual void clearHighlighting();
+
     private:
 
       bool m_enabled;
@@ -53,6 +57,7 @@ namespace FabricServices
       mutable std::string m_lastText;
       mutable std::vector<Format> m_lastFormats;
       mutable std::vector<Format> m_errorFormats;
+      mutable std::vector<Format> m_highlightFormats;
     };
 
   };
