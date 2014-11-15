@@ -13,16 +13,12 @@ namespace FabricServices
   namespace CodeCompletion
   {
 
-    class KLSyntaxHighlighter : public SyntaxHighlighter
+    class KLSyntaxHighlighter : public SyntaxHighlighter, public ASTWrapper::KLASTClient
     {
     public:
 
-      KLSyntaxHighlighter(const FabricCore::Client * client);
-      KLSyntaxHighlighter(ASTWrapper::KLASTManager * manager);
+      KLSyntaxHighlighter(ASTWrapper::KLASTManager * manager = NULL);
       virtual ~KLSyntaxHighlighter();
-
-      ASTWrapper::KLASTManager * getASTManager();
-      void setASTManager(ASTWrapper::KLASTManager * manager);
 
       virtual void updateRules();
 
@@ -30,8 +26,6 @@ namespace FabricServices
 
       void initRules();
 
-      ASTWrapper::KLASTManager * m_manager;
-      bool m_owningManager;
       std::map<std::string, HighlightRule*> m_constantRules;
       std::map<std::string, HighlightRule*> m_typeRules;
     };

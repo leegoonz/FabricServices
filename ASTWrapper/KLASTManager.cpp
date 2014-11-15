@@ -14,17 +14,48 @@ KLASTManager::KLASTManager(const FabricCore::Client * client)
 {
   m_client = client;
   m_maxDeclId = 0;
+  m_isUpdatingASTClients = false;
 }
 
 KLASTManager::~KLASTManager()
 {
   for(uint32_t i=0;i<m_extensions.size();i++)
     delete(m_extensions[i]);
+
+  m_isUpdatingASTClients = true;
+  for(uint32_t i=0;i<m_astClients.size();i++)
+    m_astClients[i]->setASTManager(NULL);
 }
 
 const FabricCore::Client* KLASTManager::getClient() const
 {
   return m_client;
+}
+
+void KLASTManager::registerASTClient(KLASTClient * client)
+{
+  if(m_isUpdatingASTClients)
+    return;
+  m_astClients.push_back(client);
+}
+
+void KLASTManager::unregisterASTClient(KLASTClient * client)
+{
+  if(m_isUpdatingASTClients)
+    return;
+
+  size_t index = m_astClients.size();
+  for(size_t i=0;i<m_astClients.size();i++)
+  {
+    if(m_astClients[i] == client)
+    {
+      index = i;
+      break;
+    }
+  }
+
+  if(index != m_astClients.size())
+    m_astClients.erase(m_astClients.begin() + index);
 }
 
 const KLExtension* KLASTManager::loadExtension(const char * name, const char * jsonContent, uint32_t numKlFiles, const char ** klContent)

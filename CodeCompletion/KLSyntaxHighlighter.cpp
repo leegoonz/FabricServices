@@ -5,24 +5,14 @@
 using namespace FabricServices;
 using namespace FabricServices::CodeCompletion;
 
-KLSyntaxHighlighter::KLSyntaxHighlighter(const FabricCore::Client * client)
-{
-  m_manager = new ASTWrapper::KLASTManager(client);
-  m_owningManager = true;
-  initRules();
-}
-
 KLSyntaxHighlighter::KLSyntaxHighlighter(ASTWrapper::KLASTManager * manager)
+: KLASTClient(manager)
 {
-  m_manager = manager;
-  m_owningManager = false;
   initRules();
 }
 
 KLSyntaxHighlighter::~KLSyntaxHighlighter()
 {
-  if(m_owningManager && m_manager)
-    delete(m_manager);
 }
 
 void KLSyntaxHighlighter::initRules()
@@ -85,22 +75,25 @@ void KLSyntaxHighlighter::initRules()
   // method rules
   addRule(HighlightRuleType_Method, "\\.\\b[a-zA-Z0-9_]+\\b");
 
-  // ask the ast manager for all basic types
-  const FabricCore::Client * client = m_manager->getClient();
-  FabricCore::Variant registeredTypes = FabricCore::GetRegisteredTypes_Variant(*client);
-  for(FabricCore::Variant::DictIter keyIter(registeredTypes); !keyIter.isDone(); keyIter.next())
+  if(hasASTManager())
   {
-    std::string key = keyIter.getKey()->getStringData();
-    if(key.substr(key.length()-1, 1) == ">")
-      continue;
-    if(GetRegisteredTypeIsStruct(*client, key.c_str()))
-      continue;
-    if(GetRegisteredTypeIsObject(*client, key.c_str()))
-      continue;
-    if(GetRegisteredTypeIsInterface(*client, key.c_str()))
-      continue;
-    HighlightRule * rule = addRule(HighlightRuleType_Type, "\\b"+key+"\\b");
-    m_typeRules.insert(std::pair<std::string, HighlightRule*>(key, rule));
+    // ask the ast manager for all basic types
+    const FabricCore::Client * client = getASTManager()->getClient();
+    FabricCore::Variant registeredTypes = FabricCore::GetRegisteredTypes_Variant(*client);
+    for(FabricCore::Variant::DictIter keyIter(registeredTypes); !keyIter.isDone(); keyIter.next())
+    {
+      std::string key = keyIter.getKey()->getStringData();
+      if(key.substr(key.length()-1, 1) == ">")
+        continue;
+      if(GetRegisteredTypeIsStruct(*client, key.c_str()))
+        continue;
+      if(GetRegisteredTypeIsObject(*client, key.c_str()))
+        continue;
+      if(GetRegisteredTypeIsInterface(*client, key.c_str()))
+        continue;
+      HighlightRule * rule = addRule(HighlightRuleType_Type, "\\b"+key+"\\b");
+      m_typeRules.insert(std::pair<std::string, HighlightRule*>(key, rule));
+    }
   }
 
   updateRules();
@@ -108,9 +101,12 @@ void KLSyntaxHighlighter::initRules()
 
 void KLSyntaxHighlighter::updateRules()
 {
-  std::vector<const ASTWrapper::KLConstant*> constants = m_manager->getConstants();
-  std::vector<const ASTWrapper::KLType*> types = m_manager->getTypes();
-  std::vector<const ASTWrapper::KLAlias*> aliases = m_manager->getAliases();
+  if(!hasASTManager())
+    return;
+
+  std::vector<const ASTWrapper::KLConstant*> constants = getASTManager()->getConstants();
+  std::vector<const ASTWrapper::KLType*> types = getASTManager()->getTypes();
+  std::vector<const ASTWrapper::KLAlias*> aliases = getASTManager()->getAliases();
 
   for(size_t i=0;i<constants.size();i++)
   {
@@ -135,17 +131,4 @@ void KLSyntaxHighlighter::updateRules()
     HighlightRule * rule = addRule(HighlightRuleType_Type, "\\b"+aliases[i]->getNewUserName()+"\\b");
     m_typeRules.insert(std::pair<std::string, HighlightRule*>(aliases[i]->getNewUserName(), rule));
   }
-}
-
-ASTWrapper::KLASTManager * KLSyntaxHighlighter::getASTManager()
-{
-  return m_manager;
-}
-
-void KLSyntaxHighlighter::setASTManager(ASTWrapper::KLASTManager * manager)
-{
-  if(m_owningManager && m_manager)
-    delete(m_manager);
-  m_manager = manager;
-  m_owningManager = false;
 }

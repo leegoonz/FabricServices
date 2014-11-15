@@ -15,17 +15,15 @@ namespace FabricServices
   namespace CodeCompletion
   {
 
-    class KLCodeAssistant
+    class KLCodeAssistant : public ASTWrapper::KLASTClient
     {
     public:
 
-      KLCodeAssistant(const FabricCore::Client * client);
-      KLCodeAssistant(ASTWrapper::KLASTManager * manager);
+      KLCodeAssistant(ASTWrapper::KLASTManager * manager = NULL);
       KLCodeAssistant(KLSyntaxHighlighter * highlighter);
       virtual ~KLCodeAssistant();
 
-      ASTWrapper::KLASTManager * getASTManager();
-      void setASTManager(ASTWrapper::KLASTManager * manager);
+      virtual bool setASTManager(ASTWrapper::KLASTManager * manager);
 
       KLSyntaxHighlighter * getHighlighter();
       const ASTWrapper::KLFile * getKLFile();
@@ -61,7 +59,6 @@ namespace FabricServices
       const char * resolveAliases(const char * name) const;
 
       ASTWrapper::KLASTManager * m_manager;
-      bool m_owningManager;
       KLSyntaxHighlighter * m_highlighter;
       bool m_owningHighlighter;
 

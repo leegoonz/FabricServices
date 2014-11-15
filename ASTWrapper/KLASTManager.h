@@ -6,6 +6,7 @@
 #include "KLDeclContainer.h"
 #include "KLLocation.h"
 #include "KLExtension.h"
+#include "KLASTClient.h"
 
 namespace FabricServices
 {
@@ -17,6 +18,7 @@ namespace FabricServices
     {
       friend class KLDecl;
       friend class KLFile;
+      friend class KLASTClient;
 
     public:
 
@@ -64,10 +66,15 @@ namespace FabricServices
     protected: 
       uint32_t generateDeclId();
 
+      void registerASTClient(KLASTClient * client);
+      void unregisterASTClient(KLASTClient * client);
+
     private:
       const FabricCore::Client * m_client;
       std::vector<const KLExtension*> m_extensions;
+      std::vector<KLASTClient*> m_astClients;
       uint32_t m_maxDeclId;
+      bool m_isUpdatingASTClients;
     };
 
   };

@@ -9,28 +9,17 @@
 using namespace FabricServices::ASTWrapper;
 using namespace FabricServices::CodeCompletion;
 
-KLCodeAssistant::KLCodeAssistant(const FabricCore::Client * client)
-{
-  m_manager = new KLASTManager(client);
-  m_owningManager = true;
-  m_highlighter = new KLSyntaxHighlighter(m_manager);
-  m_owningHighlighter = true;
-  init();
-}
-
 KLCodeAssistant::KLCodeAssistant(KLASTManager * manager)
+: ASTWrapper::KLASTClient(manager)
 {
-  m_manager = manager;
-  m_owningManager = false;
-  m_highlighter = new KLSyntaxHighlighter(m_manager);
+  m_highlighter = new KLSyntaxHighlighter(manager);
   m_owningHighlighter = true;
   init();
 }
 
 KLCodeAssistant::KLCodeAssistant(KLSyntaxHighlighter * highlighter)
+: ASTWrapper::KLASTClient(highlighter->getASTManager())
 {
-  m_manager = highlighter->getASTManager();
-  m_owningManager = false;
   m_highlighter = highlighter;
   m_owningHighlighter = false;
   init();
@@ -38,8 +27,6 @@ KLCodeAssistant::KLCodeAssistant(KLSyntaxHighlighter * highlighter)
 
 KLCodeAssistant::~KLCodeAssistant()
 {
-  if(m_owningManager && m_manager)
-    delete(m_manager);
 }
 
 void KLCodeAssistant::init()
@@ -47,19 +34,15 @@ void KLCodeAssistant::init()
   m_file = NULL;
 }
 
-KLASTManager * KLCodeAssistant::getASTManager()
+bool KLCodeAssistant::setASTManager(KLASTManager * manager)
 {
-  return m_manager;
-}
-
-void KLCodeAssistant::setASTManager(KLASTManager * manager)
-{
-  if(m_owningManager && m_manager)
-    delete(m_manager);
-  m_manager = manager;
-  m_owningManager = false;
-  if(m_owningHighlighter && m_highlighter)
-    m_highlighter->setASTManager(manager);
+  if(ASTWrapper::KLASTClient::setASTManager(manager))
+  {
+    if(m_owningHighlighter && m_highlighter)
+      m_highlighter->setASTManager(manager);
+    return true;
+  }
+  return false;
 }
 
 KLSyntaxHighlighter * KLCodeAssistant::getHighlighter()
@@ -81,6 +64,8 @@ std::vector<const KLError*> KLCodeAssistant::getKLErrors()
 
 bool KLCodeAssistant::updateCurrentKLFile(const KLFile * file)
 {
+  if(!hasASTManager())
+    return false;
   if(m_file == file)
     return false;
   m_file = file;
@@ -96,6 +81,9 @@ bool KLCodeAssistant::updateCurrentKLFile(const KLFile * file)
 
 bool KLCodeAssistant::updateCurrentCodeAndFile(const std::string & code, const std::string & fileName, bool updateAST)
 {
+  if(!hasASTManager())
+    return false;
+
   if(code.length() == 0 || fileName.length() == 0)
     return false;
 
@@ -112,9 +100,9 @@ bool KLCodeAssistant::updateCurrentCodeAndFile(const std::string & code, const s
   if(updateAST)
   {
     if(m_file == NULL)
-      m_file = m_manager->loadSingleKLFile(m_fileName.c_str(), m_code.c_str());
+      m_file = getASTManager()->loadSingleKLFile(m_fileName.c_str(), m_code.c_str());
     else if(m_file->getAbsoluteFilePath() != fileName)
-      m_file = m_manager->loadSingleKLFile(m_fileName.c_str(), m_code.c_str());
+      m_file = getASTManager()->loadSingleKLFile(m_fileName.c_str(), m_code.c_str());
     else
       ((KLFile*)m_file)->updateKLCode(m_code.c_str());
 
@@ -175,6 +163,8 @@ void KLCodeAssistant::cursorToLineAndColumn(uint32_t cursor,  uint32_t & line, u
 
 bool KLCodeAssistant::isCursorInsideCommentOrString(uint32_t cursor) const
 {
+  if(!hasASTManager())
+    return false;
   if(cursor >= m_code.length())
     return false;
 
@@ -208,6 +198,8 @@ const KLStatement * KLCodeAssistant::getStatementAtCursor(uint32_t cursor) const
 
 const KLStatement * KLCodeAssistant::getStatementAtCursor(uint32_t line, uint32_t column) const
 {
+  if(!hasASTManager())
+    return NULL;
   if(!m_file)
     return NULL;
   return m_file->getStatementAtCursor(line, column);
@@ -271,6 +263,8 @@ std::vector<KLVariable> KLCodeAssistant::getVariablesAtCursor(uint32_t cursor) c
 std::vector<KLVariable> KLCodeAssistant::getVariablesAtCursor(uint32_t line, uint32_t column) const
 {
   std::vector<KLVariable> result;
+  if(!hasASTManager())
+    return result;
   const KLStatement * statement = getStatementAtCursor(line, column);
   if(statement)
   {
@@ -314,6 +308,8 @@ const KLDecl * KLCodeAssistant::getDeclAtCursor(uint32_t cursor) const
 
 const KLDecl * KLCodeAssistant::getDeclAtCursor(uint32_t line, uint32_t column) const
 {
+  if(!hasASTManager())
+    return NULL;
   if(line > m_lines.size() || line == 0)
     return NULL;
 
@@ -420,7 +416,7 @@ const KLDecl * KLCodeAssistant::getDeclAtCursor(uint32_t line, uint32_t column) 
       {
         if(vars[i].getName() == word)
         {
-          type = m_manager->getKLTypeByName(resolveAliases(vars[i].getBaseType().c_str()), m_file);
+          type = getASTManager()->getKLTypeByName(resolveAliases(vars[i].getBaseType().c_str()), m_file);
           if(type)
             break;
         }
@@ -430,13 +426,13 @@ const KLDecl * KLCodeAssistant::getDeclAtCursor(uint32_t line, uint32_t column) 
     // maybe this is a type itself
     if(type == NULL)
     {
-      type = m_manager->getKLTypeByName(resolveAliases(word.c_str()), m_file);
+      type = getASTManager()->getKLTypeByName(resolveAliases(word.c_str()), m_file);
     }
 
     // maybe this is a function
     if(type == NULL)
     {
-      std::vector<const KLFunction*> functions = m_manager->getFunctions();
+      std::vector<const KLFunction*> functions = getASTManager()->getFunctions();
       for(size_t i=0;i<functions.size();i++)
       {
         if(functions[i]->getName() == word)
@@ -445,7 +441,7 @@ const KLDecl * KLCodeAssistant::getDeclAtCursor(uint32_t line, uint32_t column) 
             return functions[i];
 
           KLTypeDesc returnType(functions[i]->getReturnType());
-          type = m_manager->getKLTypeByName(resolveAliases(returnType.getBaseType().c_str()), m_file);
+          type = getASTManager()->getKLTypeByName(resolveAliases(returnType.getBaseType().c_str()), m_file);
           if(type)
             break;
         }
@@ -455,7 +451,7 @@ const KLDecl * KLCodeAssistant::getDeclAtCursor(uint32_t line, uint32_t column) 
     // maybe this is a constant
     if(type == NULL)
     {
-      std::vector<const KLConstant*> constants = m_manager->getConstants();
+      std::vector<const KLConstant*> constants = getASTManager()->getConstants();
       for(size_t i=0;i<constants.size();i++)
       {
         if(constants[i]->getName() == word)
@@ -484,7 +480,7 @@ const KLDecl * KLCodeAssistant::getDeclAtCursor(uint32_t line, uint32_t column) 
           return method;
 
         KLTypeDesc returnType(method->getReturnType());
-        type = m_manager->getKLTypeByName(resolveAliases(returnType.getBaseType().c_str()), m_file);
+        type = getASTManager()->getKLTypeByName(resolveAliases(returnType.getBaseType().c_str()), m_file);
         if(type == NULL)
           return NULL;
         found = true;
@@ -500,7 +496,7 @@ const KLDecl * KLCodeAssistant::getDeclAtCursor(uint32_t line, uint32_t column) 
           if(member)
           {
             KLTypeDesc memberType(member->getType());
-            type = m_manager->getKLTypeByName(memberType.getBaseType().c_str(), m_file);
+            type = getASTManager()->getKLTypeByName(memberType.getBaseType().c_str(), m_file);
             if(type == NULL)
               return NULL;
           }
@@ -531,7 +527,7 @@ const KLType * KLCodeAssistant::getTypeAtCursor(uint32_t line, uint32_t column) 
     else if(decl->isOfDeclType(KLDeclType_Function))
     {
       KLTypeDesc returnType(((const KLFunction*)decl)->getReturnType());
-      return m_manager->getKLTypeByName(resolveAliases(returnType.getBaseType().c_str()), m_file);
+      return getASTManager()->getKLTypeByName(resolveAliases(returnType.getBaseType().c_str()), m_file);
     }
   }
   return NULL;
@@ -539,7 +535,9 @@ const KLType * KLCodeAssistant::getTypeAtCursor(uint32_t line, uint32_t column) 
 
 const char * KLCodeAssistant::resolveAliases(const char * name) const
 {
-  std::vector<const KLAlias*> aliases = m_manager->getAliases();
+  if(!hasASTManager())
+    return name;
+  std::vector<const KLAlias*> aliases = getASTManager()->getAliases();
   const char * result = name;
 
   bool found = true;
