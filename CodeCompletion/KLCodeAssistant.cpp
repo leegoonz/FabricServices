@@ -226,8 +226,10 @@ std::string KLCodeAssistant::getWordAtCursor(uint32_t line, uint32_t column) con
     return "";
 
   const std::string & l = m_lines[line-1];
-  if(column > l.length() || column == 0)
+  if(column == 0)
     return "";
+  if(column > l.length())
+    column = l.length();
 
   uint32_t s = column - 1;
   uint32_t e = column - 1;
