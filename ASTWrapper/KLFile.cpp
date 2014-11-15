@@ -10,7 +10,7 @@ using namespace FabricServices::ASTWrapper;
 
 KLFile::KLFile(const KLExtension* extension, const char * filePath, const char * klCode)
 {
-  m_extension = extension;
+  m_extension = (KLExtension*)extension;
   m_filePath = filePath;
 
   boost::filesystem::path path = m_filePath;
@@ -406,6 +406,8 @@ bool KLFile::updateKLCode(const char * code)
       delete(tempFunctions[i]);
     for(uint32_t i=0;i<tempOperators.size();i++)
       delete(tempOperators[i]);
+
+    m_extension->getASTManager()->onFileParsed(this);
   }
 
   return hasErrors();

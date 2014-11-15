@@ -20,12 +20,13 @@ namespace FabricServices
       KLSyntaxHighlighter(ASTWrapper::KLASTManager * manager = NULL);
       virtual ~KLSyntaxHighlighter();
 
-      virtual void updateRules();
+      virtual void onFileParsed(const ASTWrapper::KLFile * file);
 
     private:
 
       void initRules();
 
+      bool m_basicTypesInitialized;
       std::map<std::string, HighlightRule*> m_constantRules;
       std::map<std::string, HighlightRule*> m_typeRules;
     };

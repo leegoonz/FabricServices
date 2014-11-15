@@ -58,11 +58,57 @@ void KLASTManager::unregisterASTClient(KLASTClient * client)
     m_astClients.erase(m_astClients.begin() + index);
 }
 
+void KLASTManager::onExtensionLoaded(const KLExtension * extension)
+{
+  for(size_t i=0;i<m_astClients.size();i++)
+  {
+    m_astClients[i]->onExtensionLoaded(extension);
+  }
+  onASTChanged();
+}
+
+void KLASTManager::onExtensionParsed(const KLExtension * extension)
+{
+  for(size_t i=0;i<m_astClients.size();i++)
+  {
+    m_astClients[i]->onExtensionParsed(extension);
+  }
+  onASTChanged();
+}
+
+void KLASTManager::onFileLoaded(const KLFile * file)
+{
+  for(size_t i=0;i<m_astClients.size();i++)
+  {
+    m_astClients[i]->onFileLoaded(file);
+  }
+  onASTChanged();
+}
+
+void KLASTManager::onFileParsed(const KLFile * file)
+{
+  for(size_t i=0;i<m_astClients.size();i++)
+  {
+    m_astClients[i]->onFileParsed(file);
+  }
+  onASTChanged();
+}
+
+void KLASTManager::onASTChanged()
+{
+  for(size_t i=0;i<m_astClients.size();i++)
+  {
+    m_astClients[i]->onASTChanged();
+  }
+}
+
 const KLExtension* KLASTManager::loadExtension(const char * name, const char * jsonContent, uint32_t numKlFiles, const char ** klContent)
 {
   KLExtension * extension = new KLExtension(this, name, jsonContent, numKlFiles, klContent);
   m_extensions.push_back(extension);
+  onExtensionLoaded(extension);
   extension->parse();
+  onExtensionParsed(extension);
   return extension;
 }
 
@@ -70,7 +116,9 @@ const KLExtension* KLASTManager::loadExtension(const char * jsonFilePath)
 {
   KLExtension * extension = new KLExtension(this, jsonFilePath);
   m_extensions.push_back(extension);
+  onExtensionLoaded(extension);
   extension->parse();
+  onExtensionParsed(extension);
   return extension;
 }
 
@@ -99,6 +147,7 @@ void KLASTManager::loadAllExtensionsInFolder(const char * extensionFolder, bool 
             try
             {
               KLExtension * extension = new KLExtension(this, dir->path().string().c_str());
+              onExtensionLoaded(extension);
               m_extensions.push_back(extension);
             }
             catch(FabricCore::Exception e)
@@ -117,6 +166,7 @@ void KLASTManager::loadAllExtensionsInFolder(const char * extensionFolder, bool 
     {
       KLExtension * klExtension = (KLExtension *)m_extensions[i];
       klExtension->parse();
+      onExtensionParsed(klExtension);
     }
   }
 }
@@ -148,6 +198,7 @@ bool KLASTManager::loadAllExtensionsFromExtsPath(bool parseExtensions)
     {
       KLExtension * klExtension = (KLExtension *)m_extensions[i];
       klExtension->parse();
+      onExtensionParsed(klExtension);
     }
   }
 
@@ -192,8 +243,10 @@ const KLExtension* KLASTManager::loadExtensionFromExtsPath(const char * name)
           try
           {
             KLExtension * extension = new KLExtension(this, dir->path().string().c_str());
+            onExtensionLoaded(extension);
             m_extensions.push_back(extension);
             extension->parse();
+            onExtensionParsed(extension);
             return extension;
           }
           catch(FabricCore::Exception e)

@@ -45,3 +45,28 @@ bool KLASTClient::setASTManager(KLASTManager * manager)
   return false;
 }
 
+void KLASTClient::onExtensionLoaded(const KLExtension * extension)
+{
+
+}
+
+void KLASTClient::onExtensionParsed(const KLExtension * extension)
+{
+
+}
+
+void KLASTClient::onFileLoaded(const KLFile * file)
+{
+
+}
+
+void KLASTClient::onFileParsed(const KLFile * file)
+{
+
+}
+
+void KLASTClient::onASTChanged()
+{
+
+}
+

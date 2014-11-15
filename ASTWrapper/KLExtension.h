@@ -36,6 +36,7 @@ namespace FabricServices
       virtual ~KLExtension();
 
       const KLASTManager * getASTManager() const;
+      KLASTManager * getASTManager();
       const char * getName() const;
       const char * getFilePath() const;
       const Version & getVersion() const;
@@ -67,7 +68,7 @@ namespace FabricServices
       std::vector<std::string> extractKLFilePaths(JSONData data, const char * extensionName);
 
       bool m_parsed;
-      const KLASTManager* m_astManager;
+      KLASTManager* m_astManager;
       std::string m_name;
       std::string m_filePath;
       Version m_version;

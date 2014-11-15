@@ -29,11 +29,11 @@ namespace FabricServices
       virtual KLASTManager * getASTManager();
       virtual bool setASTManager(KLASTManager * manager);
 
-      virtual void onExtensionLoaded(const KLExtension * extension) {}
-      virtual void onExtensionParsed(const KLExtension * extension) {}
-      virtual void onFileLoaded(const KLExtension * extension) {}
-      virtual void onFileParsed(const KLExtension * extension) {}
-      virtual void onASTChanged() {}
+      virtual void onExtensionLoaded(const KLExtension * extension);
+      virtual void onExtensionParsed(const KLExtension * extension);
+      virtual void onFileLoaded(const KLFile * file);
+      virtual void onFileParsed(const KLFile * file);
+      virtual void onASTChanged();
 
     private:
       KLASTManager * m_manager;

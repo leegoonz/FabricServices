@@ -58,7 +58,7 @@ namespace FabricServices
 
     private:
       bool m_parsed;
-      const KLExtension* m_extension;
+      KLExtension* m_extension;
       std::string m_filePath;
       std::string m_fileName;
       std::string m_absFilePath;

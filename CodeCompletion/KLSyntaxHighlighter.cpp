@@ -75,7 +75,15 @@ void KLSyntaxHighlighter::initRules()
   // method rules
   addRule(HighlightRuleType_Method, "\\.\\b[a-zA-Z0-9_]+\\b");
 
-  if(hasASTManager())
+  m_basicTypesInitialized = false;
+}
+
+void KLSyntaxHighlighter::onFileParsed(const ASTWrapper::KLFile * file)
+{
+  if(!hasASTManager())
+    return;
+
+  if(!m_basicTypesInitialized)
   {
     // ask the ast manager for all basic types
     const FabricCore::Client * client = getASTManager()->getClient();
@@ -94,19 +102,13 @@ void KLSyntaxHighlighter::initRules()
       HighlightRule * rule = addRule(HighlightRuleType_Type, "\\b"+key+"\\b");
       m_typeRules.insert(std::pair<std::string, HighlightRule*>(key, rule));
     }
+
+    m_basicTypesInitialized = true;
   }
 
-  updateRules();
-}
-
-void KLSyntaxHighlighter::updateRules()
-{
-  if(!hasASTManager())
-    return;
-
-  std::vector<const ASTWrapper::KLConstant*> constants = getASTManager()->getConstants();
-  std::vector<const ASTWrapper::KLType*> types = getASTManager()->getTypes();
-  std::vector<const ASTWrapper::KLAlias*> aliases = getASTManager()->getAliases();
+  std::vector<const ASTWrapper::KLConstant*> constants = file->getConstants();
+  std::vector<const ASTWrapper::KLType*> types = file->getTypes();
+  std::vector<const ASTWrapper::KLAlias*> aliases = file->getAliases();
 
   for(size_t i=0;i<constants.size();i++)
   {

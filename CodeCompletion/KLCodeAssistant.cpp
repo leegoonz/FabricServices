@@ -121,8 +121,6 @@ bool KLCodeAssistant::updateCurrentCodeAndFile(const std::string & code, const s
         }
       }
     }
-
-    m_highlighter->updateRules();
   }
 
   return updateAST;

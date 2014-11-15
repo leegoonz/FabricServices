@@ -38,7 +38,7 @@ bool KLExtension::Version::operator !=(const KLExtension::Version & other) const
 
 KLExtension::KLExtension(const KLASTManager* astManager, const char * jsonFilePath)
 {
-  m_astManager = astManager;
+  m_astManager = (KLASTManager*)astManager;
 
   boost::filesystem::path jsonPath = jsonFilePath;
   m_name = jsonPath.filename().string();
@@ -115,7 +115,7 @@ KLExtension::KLExtension(const KLASTManager* astManager, const char * jsonFilePa
 
 KLExtension::KLExtension(const KLASTManager* astManager, const char * name, const char * jsonContent, uint32_t numKLFiles, const char ** klContent)
 {
-  m_astManager = astManager;
+  m_astManager = (KLASTManager*)astManager;
   m_name = name;
   m_filePath = m_name + ".fpm.json";
   init(jsonContent, numKLFiles, klContent);
@@ -191,6 +191,7 @@ void KLExtension::init(const char * jsonContent, uint32_t numKLFiles, const char
   for(uint32_t i=0;i<klFilePaths.size();i++)
   {
     KLFile * klFile = new KLFile(this, klFilePaths[i].c_str(), klContent[i]);
+    getASTManager()->onFileLoaded(klFile);
     m_files.push_back(klFile);
   }
 }
@@ -207,6 +208,7 @@ void KLExtension::parse()
   {
     KLFile * klFile = (KLFile *)m_files[i];
     klFile->parse();
+    getASTManager()->onFileParsed(klFile);
   }
 }
 
@@ -265,6 +267,11 @@ std::vector<std::string> KLExtension::extractKLFilePaths(JSONData data, const ch
 }
 
 const KLASTManager * KLExtension::getASTManager() const
+{
+  return m_astManager;
+}
+
+KLASTManager * KLExtension::getASTManager() 
 {
   return m_astManager;
 }

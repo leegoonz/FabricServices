@@ -18,6 +18,7 @@ namespace FabricServices
     {
       friend class KLDecl;
       friend class KLFile;
+      friend class KLExtension;
       friend class KLASTClient;
 
     public:
@@ -68,6 +69,11 @@ namespace FabricServices
 
       void registerASTClient(KLASTClient * client);
       void unregisterASTClient(KLASTClient * client);
+      void onExtensionLoaded(const KLExtension * extension);
+      void onExtensionParsed(const KLExtension * extension);
+      void onFileLoaded(const KLFile * file);
+      void onFileParsed(const KLFile * file);
+      void onASTChanged();
 
     private:
       const FabricCore::Client * m_client;
