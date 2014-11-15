@@ -61,6 +61,8 @@ const char * SyntaxHighlighter::getRuleTypeName(HighlightRuleType type) const
       return "Number";
     case HighlightRuleType_Constant:
       return "Constant";
+    case HighlightRuleType_Function:
+      return "Function";
     case HighlightRuleType_Method:
       return "Method";
     case HighlightRuleType_Error:

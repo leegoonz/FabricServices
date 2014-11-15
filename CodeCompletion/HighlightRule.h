@@ -19,6 +19,7 @@ namespace FabricServices
       HighlightRuleType_Keyword,
       HighlightRuleType_Type,
       HighlightRuleType_Constant,
+      HighlightRuleType_Function,
       HighlightRuleType_Method,
       HighlightRuleType_Error,
       HighlightRuleType_Highlight,

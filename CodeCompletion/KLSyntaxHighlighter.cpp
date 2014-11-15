@@ -141,7 +141,7 @@ void KLSyntaxHighlighter::onFileParsed(const ASTWrapper::KLFile * file)
       continue;
     if(m_functionRules.find(functions[i]->getName()) != m_functionRules.end())
       continue;
-    HighlightRule * rule = addRule(HighlightRuleType_Method, "\\b"+functions[i]->getName()+"\\b");
+    HighlightRule * rule = addRule(HighlightRuleType_Function, "\\b"+functions[i]->getName()+"\\b");
     m_functionRules.insert(std::pair<std::string, HighlightRule*>(functions[i]->getName(), rule));
   }
 }
