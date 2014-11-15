@@ -38,7 +38,7 @@ void KLSyntaxHighlighter::initRules()
 
   // number rules
   addRule(HighlightRuleType_Number, "\\b[0-9][0-9\\.]+\\b");
-  addRule(HighlightRuleType_Number, "\\b[0-9x]+\\b");
+  addRule(HighlightRuleType_Number, "\\b[0-9]+[x]*[0-9]*\\b");
 
   // keyword rules
   addRule(HighlightRuleType_Keyword, "<<<");
@@ -61,6 +61,7 @@ void KLSyntaxHighlighter::initRules()
   addRule(HighlightRuleType_Keyword, "\\bif\\b");
   addRule(HighlightRuleType_Keyword, "\\bin\\b");
   addRule(HighlightRuleType_Keyword, "\\bio\\b");
+  addRule(HighlightRuleType_Keyword, "\\bnull\\b");
   addRule(HighlightRuleType_Keyword, "\\block\\b");
   addRule(HighlightRuleType_Keyword, "\\boperator\\b");
   addRule(HighlightRuleType_Keyword, "\\bparent\\b");
