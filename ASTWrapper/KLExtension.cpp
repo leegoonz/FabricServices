@@ -50,6 +50,8 @@ KLExtension::KLExtension(const KLASTManager* astManager, const char * jsonFilePa
     }
   }
 
+  m_filePath = jsonFilePath;
+
   FILE * jsonFile = fopen(jsonFilePath, "rb");
   if(!jsonFile)
   {
@@ -115,6 +117,7 @@ KLExtension::KLExtension(const KLASTManager* astManager, const char * name, cons
 {
   m_astManager = astManager;
   m_name = name;
+  m_filePath = m_name + ".fpm.json";
   init(jsonContent, numKLFiles, klContent);
 }
 
@@ -269,6 +272,11 @@ const KLASTManager * KLExtension::getASTManager() const
 const char * KLExtension::getName() const
 {
   return m_name.c_str();
+}
+
+const char * KLExtension::getFilePath() const
+{
+  return m_filePath.c_str();
 }
 
 const KLExtension::Version & KLExtension::getVersion() const

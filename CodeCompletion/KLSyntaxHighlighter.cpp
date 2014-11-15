@@ -28,8 +28,8 @@ KLSyntaxHighlighter::~KLSyntaxHighlighter()
 void KLSyntaxHighlighter::initRules()
 {
   // comment rules
-  addRule(HighlightRuleType_Comment, "/\\*([^*]|[\\r\\n]|(\\*+([^*/]|[\\r\\n])))*\\*+/");
-  // addRule(HighlightRuleType_Comment, "/\\*.*\\*/");
+  // addRule(HighlightRuleType_Comment, "/\\*([^*]|[\\r\\n]|(\\*+([^*/]|[\\r\\n])))*\\*+/");
+  addRule(HighlightRuleType_Comment, "/\\*.*\\*/");
   addRule(HighlightRuleType_Comment, "//[^\n]*");
 
   // string rules
@@ -60,6 +60,7 @@ void KLSyntaxHighlighter::initRules()
   addRule(HighlightRuleType_Keyword, "\\bfunction\\b");
   addRule(HighlightRuleType_Keyword, "\\bif\\b");
   addRule(HighlightRuleType_Keyword, "\\bin\\b");
+  addRule(HighlightRuleType_Keyword, "\\binline\\b");
   addRule(HighlightRuleType_Keyword, "\\bio\\b");
   addRule(HighlightRuleType_Keyword, "\\bnull\\b");
   addRule(HighlightRuleType_Keyword, "\\block\\b");
@@ -101,6 +102,8 @@ void KLSyntaxHighlighter::initRules()
     HighlightRule * rule = addRule(HighlightRuleType_Type, "\\b"+key+"\\b");
     m_typeRules.insert(std::pair<std::string, HighlightRule*>(key, rule));
   }
+
+  updateRules();
 }
 
 void KLSyntaxHighlighter::updateRules()

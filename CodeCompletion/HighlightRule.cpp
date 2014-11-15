@@ -49,10 +49,17 @@ uint32_t HighlightRule::getIndexIn(const std::string & text, uint32_t startIndex
   boost::match_flag_type flags = boost::match_default;
   std::string::const_iterator s = text.begin() + startIndex;
   std::string::const_iterator e = text.end();
-  if(boost::regex_search(s,e,what,m_expression,flags))
+  try
   {
-    m_matchedLength = what.length();
-    return what.position() + startIndex;
+    if(boost::regex_search(s,e,what,m_expression,flags))
+    {
+      m_matchedLength = what.length();
+      return what.position() + startIndex;
+    }
+  }
+  catch(std::runtime_error e)
+  {
+    // too large to match
   }
   m_matchedLength = 0;
   return UINT_MAX;

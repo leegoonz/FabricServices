@@ -29,6 +29,9 @@ namespace FabricServices
       SyntaxHighlighter();
       virtual ~SyntaxHighlighter();
 
+      bool isEnabled() const;
+      void setEnabled(bool state);
+
       // rule management
       HighlightRule * addRule(HighlightRuleType type, const std::string & pattern, const std::string & formatPrefix = "", const std::string & formatSuffix = "");
       uint32_t getRuleCount() const;
@@ -45,6 +48,7 @@ namespace FabricServices
 
     private:
 
+      bool m_enabled;
       std::vector<HighlightRule*> m_rules;
       mutable std::string m_lastText;
       mutable std::vector<Format> m_lastFormats;

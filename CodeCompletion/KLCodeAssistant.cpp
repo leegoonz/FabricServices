@@ -79,28 +79,41 @@ std::vector<const KLError*> KLCodeAssistant::getKLErrors()
   return std::vector<const KLError*>();
 }
 
-void KLCodeAssistant::updateCurrentKLFile(const KLFile * file)
+bool KLCodeAssistant::updateCurrentKLFile(const KLFile * file)
 {
+  if(m_file == file)
+    return false;
   m_file = file;
-  m_fileName = m_file->getFileName();
+  if(!m_file)
+    return false;
+
+  m_fileName = m_file->getAbsoluteFilePath();
   m_code = m_file->getKLCode();
   m_code.erase(boost::remove_if(m_code, boost::is_any_of("\r")), m_code.end());
   boost::split(m_lines, m_code, boost::is_any_of("\n"));
+  return true;
 }
 
-void KLCodeAssistant::updateCurrentCodeAndFile(const std::string & code, const std::string & fileName, bool updateAST)
+bool KLCodeAssistant::updateCurrentCodeAndFile(const std::string & code, const std::string & fileName, bool updateAST)
 {
-  m_code = code;
-  m_code.erase(boost::remove_if(m_code, boost::is_any_of("\r")), m_code.end());
-  boost::split(m_lines, m_code, boost::is_any_of("\n"));
+  if(code.length() == 0 || fileName.length() == 0)
+    return false;
 
+  std::string newCode = code;
+  newCode.erase(boost::remove_if(newCode, boost::is_any_of("\r")), newCode.end());
+  if(m_code == newCode && m_fileName == fileName)
+    return false;
+
+  m_code = newCode;
   m_fileName = fileName;
+  
+  boost::split(m_lines, m_code, boost::is_any_of("\n"));
 
   if(updateAST)
   {
     if(m_file == NULL)
       m_file = m_manager->loadSingleKLFile(m_fileName.c_str(), m_code.c_str());
-    else if(m_file->getFilePath() != fileName)
+    else if(m_file->getAbsoluteFilePath() != fileName)
       m_file = m_manager->loadSingleKLFile(m_fileName.c_str(), m_code.c_str());
     else
       ((KLFile*)m_file)->updateKLCode(m_code.c_str());
@@ -123,6 +136,8 @@ void KLCodeAssistant::updateCurrentCodeAndFile(const std::string & code, const s
 
     m_highlighter->updateRules();
   }
+
+  return updateAST;
 }
 
 void KLCodeAssistant::lineAndColumnToCursor(uint32_t line, uint32_t column, uint32_t & cursor) const

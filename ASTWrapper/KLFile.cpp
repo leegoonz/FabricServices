@@ -12,6 +12,14 @@ KLFile::KLFile(const KLExtension* extension, const char * filePath, const char *
 {
   m_extension = extension;
   m_filePath = filePath;
+
+  boost::filesystem::path path = m_filePath;
+  m_fileName = path.stem().string() + ".kl";
+
+  path = extension->getFilePath();
+  path = path.parent_path() / m_filePath;
+  m_absFilePath = path.string();
+  
   m_klCode = klCode;
   m_parsed = false;
 }
@@ -23,9 +31,6 @@ void KLFile::parse()
   m_parsed = true;
 
   const FabricCore::Client * client = m_extension->getASTManager()->getClient();
-
-  boost::filesystem::path path = m_filePath;
-  m_fileName = path.stem().string() + ".kl";
 
   try
   {
@@ -199,6 +204,11 @@ const char * KLFile::getFilePath() const
 const char * KLFile::getFileName() const
 {
   return m_fileName.c_str();
+}
+
+const char * KLFile::getAbsoluteFilePath() const
+{
+  return m_absFilePath.c_str();
 }
 
 const char * KLFile::getKLCode() const

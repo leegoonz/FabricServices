@@ -6,6 +6,7 @@ using namespace FabricServices::CodeCompletion;
 
 SyntaxHighlighter::SyntaxHighlighter()
 {
+  m_enabled = true;
 }
 
 SyntaxHighlighter::~SyntaxHighlighter()
@@ -14,6 +15,16 @@ SyntaxHighlighter::~SyntaxHighlighter()
   {
     delete(m_rules[i]);
   }
+}
+
+bool SyntaxHighlighter::isEnabled() const
+{
+  return m_enabled;
+}
+
+void SyntaxHighlighter::setEnabled(bool state)
+{
+  m_enabled = state;
 }
 
 HighlightRule * SyntaxHighlighter::addRule(HighlightRuleType type, const std::string & pattern, const std::string & formatPrefix, const std::string & formatSuffix)
@@ -62,6 +73,13 @@ const char * SyntaxHighlighter::getRuleTypeName(HighlightRuleType type) const
 
 const std::vector<SyntaxHighlighter::Format> & SyntaxHighlighter::getHighlightFormats(const std::string & text) const
 {
+  if(!m_enabled)
+  {
+    m_lastFormats.clear();
+    m_lastText = "";
+    return m_lastFormats;
+  }
+
   if(m_lastText == text)
     return m_lastFormats;
 

@@ -37,6 +37,7 @@ namespace FabricServices
 
       const KLASTManager * getASTManager() const;
       const char * getName() const;
+      const char * getFilePath() const;
       const Version & getVersion() const;
 
       std::vector<const KLFile*> getFiles() const;
@@ -68,6 +69,7 @@ namespace FabricServices
       bool m_parsed;
       const KLASTManager* m_astManager;
       std::string m_name;
+      std::string m_filePath;
       Version m_version;
       std::vector<const KLFile*> m_files;
     };

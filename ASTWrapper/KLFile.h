@@ -28,6 +28,7 @@ namespace FabricServices
       const KLExtension* getExtension() const;
       const char * getFilePath() const;
       const char * getFileName() const;
+      const char * getAbsoluteFilePath() const;
       const char * getKLCode() const;
 
       bool hasErrors() const;
@@ -60,6 +61,7 @@ namespace FabricServices
       const KLExtension* m_extension;
       std::string m_filePath;
       std::string m_fileName;
+      std::string m_absFilePath;
       std::string m_klCode;
       std::vector<const KLRequire*> m_requires;
       std::vector<const KLAlias*> m_aliases;

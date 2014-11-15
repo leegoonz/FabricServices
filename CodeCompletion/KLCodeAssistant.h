@@ -30,9 +30,9 @@ namespace FabricServices
       KLSyntaxHighlighter * getHighlighter();
       const ASTWrapper::KLFile * getKLFile();
       std::vector<const ASTWrapper::KLError*> getKLErrors();
-      
-      void updateCurrentKLFile(const ASTWrapper::KLFile * file);
-      void updateCurrentCodeAndFile(const std::string & code, const std::string & fileName, bool updateAST = true);
+
+      bool updateCurrentKLFile(const ASTWrapper::KLFile * file);
+      bool updateCurrentCodeAndFile(const std::string & code, const std::string & fileName, bool updateAST = true);
 
       void lineAndColumnToCursor(uint32_t line, uint32_t column, uint32_t & cursor) const;
       void cursorToLineAndColumn(uint32_t cursor,  uint32_t & line, uint32_t & column) const;
