@@ -211,16 +211,16 @@ std::string KLCodeAssistant::getCodeForStatement(const KLStatement * statement) 
   return m_code.substr(start, end - start);
 }
 
-std::string KLCodeAssistant::getWordAtCursor(uint32_t cursor) const
+std::string KLCodeAssistant::getWordAtCursor(uint32_t cursor, bool ignoreParentheses) const
 {
   uint32_t line, column;
   cursorToLineAndColumn(cursor, line, column);
-  return getWordAtCursor(line, column);
+  return getWordAtCursor(line, column, ignoreParentheses);
 }
 
-#define isWordChar(c) (isalnum(c) || (c == '_'))
+#define isWordChar(c) (isalnum(c) || (c == '_') || (ignoreParentheses && (c == '(' || c == ')')))
 
-std::string KLCodeAssistant::getWordAtCursor(uint32_t line, uint32_t column) const
+std::string KLCodeAssistant::getWordAtCursor(uint32_t line, uint32_t column, bool ignoreParentheses) const
 {
   if(line > m_lines.size() || line == 0)
     return "";
@@ -248,9 +248,34 @@ std::string KLCodeAssistant::getWordAtCursor(uint32_t line, uint32_t column) con
   }
 
   if(isWordChar(l[s]) && isWordChar(l[e]))
-    return l.substr(s, e - s + 1);  
+  {
+    std::string result = l.substr(s, e - s + 1);
+    result.erase(boost::remove_if(result, boost::is_any_of("()")), result.end());
+    return result;
+  }
 
   return "";
+}
+
+std::string KLCodeAssistant::getCharAtCursor(uint32_t cursor) const
+{
+  uint32_t line, column;
+  cursorToLineAndColumn(cursor, line, column);
+  return getCharAtCursor(line, column);
+}
+
+std::string KLCodeAssistant::getCharAtCursor(uint32_t line, uint32_t column) const
+{
+  if(line > m_lines.size() || line == 0)
+    return "";
+
+  const std::string & l = m_lines[line-1];
+  if(column == 0)
+    return "";
+  if(column > l.length())
+    column = l.length();
+
+  return l.substr(column-1, 1);
 }
 
 std::vector<KLVariable> KLCodeAssistant::getVariablesAtCursor(uint32_t cursor) const
@@ -508,14 +533,14 @@ const KLDecl * KLCodeAssistant::getDeclAtCursor(uint32_t line, uint32_t column) 
   return type;
 }
 
-const KLType * KLCodeAssistant::getTypeAtCursor(uint32_t cursor) const
+const KLType * KLCodeAssistant::getTypeAtCursor(uint32_t cursor, bool ignoreInvalidMethod) const
 {
   uint32_t line, column;
   cursorToLineAndColumn(cursor, line, column);
-  return getTypeAtCursor(line, column);
+  return getTypeAtCursor(line, column, ignoreInvalidMethod);
 }
 
-const KLType * KLCodeAssistant::getTypeAtCursor(uint32_t line, uint32_t column) const
+const KLType * KLCodeAssistant::getTypeAtCursor(uint32_t line, uint32_t column, bool ignoreInvalidMethod) const
 {
   const KLDecl * decl = getDeclAtCursor(line, column);
   if(decl)
@@ -526,8 +551,28 @@ const KLType * KLCodeAssistant::getTypeAtCursor(uint32_t line, uint32_t column) 
     }
     else if(decl->isOfDeclType(KLDeclType_Function))
     {
-      KLTypeDesc returnType(((const KLFunction*)decl)->getReturnType());
-      return getASTManager()->getKLTypeByName(resolveAliases(returnType.getBaseType().c_str()), m_file);
+      KLTypeDesc typeDesc(((const KLFunction*)decl)->getReturnType());
+      if(ignoreInvalidMethod)
+      {
+        if(decl->isOfDeclType(KLDeclType_Method))
+        {
+          // walk backwards and check if there is a brace
+          std::string l = m_lines[line-1];
+          int c = column-1;
+          while(c >= 0)
+          {
+            if(l[c] == ')')
+              break;
+            else if(isalnum(l[c]) || l[c] == '_')
+            {
+              typeDesc = KLTypeDesc(((const KLMethod*)decl)->getThisType());
+              break;
+            }
+            c--;
+          }
+        }
+      }
+      return getASTManager()->getKLTypeByName(resolveAliases(typeDesc.getBaseType().c_str()), m_file);
     }
   }
   return NULL;

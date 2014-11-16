@@ -42,16 +42,18 @@ namespace FabricServices
       const ASTWrapper::KLStatement * getStatementAtCursor(uint32_t line, uint32_t column) const;
       std::string getCodeForStatement(const ASTWrapper::KLStatement * statement) const;
 
-      std::string getWordAtCursor(uint32_t cursor) const;
-      std::string getWordAtCursor(uint32_t line, uint32_t column) const;
+      std::string getWordAtCursor(uint32_t cursor, bool ignoreParentheses = false) const;
+      std::string getWordAtCursor(uint32_t line, uint32_t column, bool ignoreParentheses = false) const;
+      std::string getCharAtCursor(uint32_t cursor) const;
+      std::string getCharAtCursor(uint32_t line, uint32_t column) const;
 
       std::vector<KLVariable> getVariablesAtCursor(uint32_t cursor) const;
       std::vector<KLVariable> getVariablesAtCursor(uint32_t line, uint32_t column) const;
 
       const ASTWrapper::KLDecl * getDeclAtCursor(uint32_t cursor) const;
       const ASTWrapper::KLDecl * getDeclAtCursor(uint32_t line, uint32_t column) const;
-      const ASTWrapper::KLType * getTypeAtCursor(uint32_t cursor) const;
-      const ASTWrapper::KLType * getTypeAtCursor(uint32_t line, uint32_t column) const;
+      const ASTWrapper::KLType * getTypeAtCursor(uint32_t cursor, bool ignoreInvalidMethod = false) const;
+      const ASTWrapper::KLType * getTypeAtCursor(uint32_t line, uint32_t column, bool ignoreInvalidMethod = false) const;
 
     private:
 
