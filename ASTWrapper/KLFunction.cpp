@@ -146,7 +146,7 @@ std::string KLFunction::getKLCode(bool includeReturnType, bool includeKeyWord, b
   if(!skipSuffix)
     code += getSuffix();
 
-  code += " (";
+  code += "(";
 
   if(m_params.size() > 0)
   {
