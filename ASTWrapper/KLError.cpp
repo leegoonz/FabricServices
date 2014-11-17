@@ -3,37 +3,20 @@
 #include "KLError.h"
 #include "KLError.h"
 
-#include <boost/regex.hpp>
-
 using namespace FabricServices::ASTWrapper;
 
-boost::regex g_KLError_expr("(.*):([0-9]+):([0-9]+): (.*)$");
-
-KLError::KLError(const char * message)
+KLError::KLError(JSONData data)
 {
-  std::string messageStr(message);
-  boost::match_results<std::string::const_iterator> results;
-  if (boost::regex_match(messageStr, results, g_KLError_expr))
-  {
-    m_fileName = results[1];
-    m_line = atoi(std::string(results[2]).c_str());
-    m_column = atoi(std::string(results[3]).c_str());
-    m_description = results[4];
-    m_valid = true;
-  }
-  else
-  {
-    m_valid = false;
-  }
+  printf("%s\n", data->getJSONEncoding().getStringData());
+  m_fileName = data->getDictValue("filename")->getStringData();
+  m_line = data->getDictValue("line")->getSInt32();
+  m_column = data->getDictValue("column")->getSInt32();
+  m_level = data->getDictValue("level")->getStringData();
+  m_desc = data->getDictValue("desc")->getStringData();
 }
 
 KLError::~KLError()
 {
-}
-
-bool KLError::isValid() const
-{
-  return m_valid;
 }
 
 const char * KLError::getFileName() const
@@ -51,8 +34,13 @@ int KLError::getColumn() const
   return m_column;
 }
 
-const char * KLError::getDescription() const
+const char * KLError::getLevel() const
 {
-  return m_description.c_str();
+  return m_level.c_str();
+}
+
+const char * KLError::getDesc() const
+{
+  return m_desc.c_str();
 }
 

@@ -34,131 +34,134 @@ void KLFile::parse()
 
   try
   {
-    FabricCore::RTVal jsonVal = GetKLJSONAST(*client, m_klCode.c_str(), false, m_fileName.c_str());
+    FabricCore::RTVal jsonVal = GetKLJSONAST(*client, m_fileName.c_str(), m_klCode.c_str(), false);
     std::string jsonStr = jsonVal.getStringCString();
 
     FabricCore::Variant variant = FabricCore::Variant::CreateFromJSON(jsonStr.c_str());
-
-    for(uint32_t i=0;i<variant.getArraySize();i++)
+    const FabricCore::Variant * astVariant = variant.getDictValue("ast");
+    if(astVariant)
     {
-      const FabricCore::Variant * element = variant.getArrayElement(i);
-      if(!element->isDict())
-        continue;
-      const FabricCore::Variant * etVar = element->getDictValue("type");
-      if(!etVar)
-        continue;
-      if(!etVar->isString())
-        continue;
+      for(uint32_t i=0;i<astVariant->getArraySize();i++)
+      {
+        const FabricCore::Variant * element = astVariant->getArrayElement(i);
+        if(!element->isDict())
+          continue;
+        const FabricCore::Variant * etVar = element->getDictValue("type");
+        if(!etVar)
+          continue;
+        if(!etVar->isString())
+          continue;
 
-      std::string et = etVar->getStringData();
-      if(et == "RequireGlobal")
-      {
-        KLRequire * e = new KLRequire(this, element);
-        m_requires.push_back(e);
-
-        // ensure to parse extensions in the right order,
-        // so that we can add methods to types for example.
-        KLExtension * extension = (KLExtension *)getExtension()->getASTManager()->getExtension(e);
-        if(extension)
-          extension->parse();
-      }
-      else if(et == "Alias")
-      {
-        KLAlias * e = new KLAlias(this, element);
-        m_aliases.push_back(e);
-      }
-      else if(et == "GlobalConstDecl")
-      {
-        KLConstant * e = new KLConstant(this, element);
-        m_constants.push_back(e);
-      }
-      else if(et == "Function")
-      {
-        KLFunction * e = new KLFunction(this, element);
-        m_functions.push_back(e);
-      }
-      else if(et == "Operator")
-      {
-        KLOperator * e = new KLOperator(this, element);
-        m_operators.push_back(e);
-      }
-      else if(et == "ASTStructDecl")
-      {
-        KLStruct * e = new KLStruct(this, element);
-        m_types.push_back(e);
-      }
-      else if(et == "MethodOpImpl")
-      {
-        KLMethod * e = new KLMethod(this, element);
-        std::string thisType = e->getThisType();
-        const KLType * klType = m_extension->getASTManager()->getKLTypeByName(thisType.c_str(), e);
-        if(klType)
+        std::string et = etVar->getStringData();
+        if(et == "RequireGlobal")
         {
-          if(!klType->pushMethod(e))
+          KLRequire * e = new KLRequire(this, element);
+          m_requires.push_back(e);
+
+          // ensure to parse extensions in the right order,
+          // so that we can add methods to types for example.
+          KLExtension * extension = (KLExtension *)getExtension()->getASTManager()->getExtension(e);
+          if(extension)
+            extension->parse();
+        }
+        else if(et == "Alias")
+        {
+          KLAlias * e = new KLAlias(this, element);
+          m_aliases.push_back(e);
+        }
+        else if(et == "GlobalConstDecl")
+        {
+          KLConstant * e = new KLConstant(this, element);
+          m_constants.push_back(e);
+        }
+        else if(et == "Function")
+        {
+          KLFunction * e = new KLFunction(this, element);
+          m_functions.push_back(e);
+        }
+        else if(et == "Operator")
+        {
+          KLOperator * e = new KLOperator(this, element);
+          m_operators.push_back(e);
+        }
+        else if(et == "ASTStructDecl")
+        {
+          KLStruct * e = new KLStruct(this, element);
+          m_types.push_back(e);
+        }
+        else if(et == "MethodOpImpl")
+        {
+          KLMethod * e = new KLMethod(this, element);
+          std::string thisType = e->getThisType();
+          const KLType * klType = m_extension->getASTManager()->getKLTypeByName(thisType.c_str(), e);
+          if(klType)
+          {
+            if(!klType->pushMethod(e))
+              m_functions.push_back(e);
+          }
+          else
+            m_functions.push_back(e);
+        }
+        else if(et == "Destructor")
+        {
+          KLFunction function(this, element);
+          std::string thisType = function.getName();
+          boost::trim_left_if(thisType, boost::is_any_of("~"));
+          KLMethod * e = new KLMethod(this, element, thisType);
+          const KLType * klType = m_extension->getASTManager()->getKLTypeByName(thisType.c_str(), e);
+          if(klType)
+          {
+            if(!klType->pushMethod(e))
+              m_functions.push_back(e);
+          }
+          else
+            m_functions.push_back(e);
+        }
+        else if(et == "ASTInterface")
+        {
+          KLInterface * e = new KLInterface(this, element);
+          m_types.push_back(e);
+        }
+        else if(et == "ASTObjectDecl")
+        {
+          KLObject * e = new KLObject(this, element);
+          m_types.push_back(e);
+        }
+        else if(et == "ComparisonOpImpl" ||
+          et == "AssignOpImpl" ||
+          et == "BinOpImpl" ||
+          et == "ASTUniOpDecl")
+        {
+          KLTypeOp * e = new KLTypeOp(this, element);
+
+          std::string thisType = e->getLhs();
+          const KLType * klType = m_extension->getASTManager()->getKLTypeByName(thisType.c_str(), e);
+          if(klType)
+            klType->pushTypeOp(e);
+          else
             m_functions.push_back(e);
         }
         else
-          m_functions.push_back(e);
-      }
-      else if(et == "Destructor")
-      {
-        KLFunction function(this, element);
-        std::string thisType = function.getName();
-        boost::trim_left_if(thisType, boost::is_any_of("~"));
-        KLMethod * e = new KLMethod(this, element, thisType);
-        const KLType * klType = m_extension->getASTManager()->getKLTypeByName(thisType.c_str(), e);
-        if(klType)
         {
-          if(!klType->pushMethod(e))
-            m_functions.push_back(e);
+          std::string message = "Unknown AST token '"+et+"'.";
+          throw(FabricCore::Exception(message.c_str(), message.length()));
+          return;
         }
-        else
-          m_functions.push_back(e);
       }
-      else if(et == "ASTInterface")
+    }
+    const FabricCore::Variant * diagnosticsVariant = variant.getDictValue("diagnostics");
+    if(diagnosticsVariant)
+    {
+      for(uint32_t i=0;i<diagnosticsVariant->getArraySize();i++)
       {
-        KLInterface * e = new KLInterface(this, element);
-        m_types.push_back(e);
-      }
-      else if(et == "ASTObjectDecl")
-      {
-        KLObject * e = new KLObject(this, element);
-        m_types.push_back(e);
-      }
-      else if(et == "ComparisonOpImpl" ||
-        et == "AssignOpImpl" ||
-        et == "BinOpImpl" ||
-        et == "ASTUniOpDecl")
-      {
-        KLTypeOp * e = new KLTypeOp(this, element);
-
-        std::string thisType = e->getLhs();
-        const KLType * klType = m_extension->getASTManager()->getKLTypeByName(thisType.c_str(), e);
-        if(klType)
-          klType->pushTypeOp(e);
-        else
-          m_functions.push_back(e);
-      }
-      else
-      {
-        std::string message = "Unknown AST token '"+et+"'.";
-        throw(FabricCore::Exception(message.c_str(), message.length()));
-        return;
+        const FabricCore::Variant * element = diagnosticsVariant->getArrayElement(i);
+        m_errors.push_back(new KLError(element));
       }
     }
   }
   catch(FabricCore::Exception e)
   {
-    std::string message = e.getDesc_cstr();
-    std::vector<std::string> errors;
-    boost::split(errors, message, boost::is_any_of("\n"));
-
-    for(size_t i=0;i<errors.size();i++)
-    {
-      KLError error(errors[i].c_str());
-      if(error.isValid())
-        m_errors.push_back(new KLError(errors[i].c_str()));
-    }
+    throw(e);
   }
 }
 

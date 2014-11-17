@@ -4,6 +4,7 @@
 #define __ASTWrapper_KLError__
 
 #include <string>
+#include "KLDecl.h"
 
 namespace FabricServices
 {
@@ -19,24 +20,23 @@ namespace FabricServices
 
       virtual ~KLError();
 
-      bool isValid() const;
-
       const char * getFileName() const;
       int getLine() const;
       int getColumn() const;
-      const char * getDescription() const;
+      const char * getLevel() const;
+      const char * getDesc() const;
 
     protected:
       
-      KLError(const char * message);
+      KLError(JSONData data);
 
     private:
       
       std::string m_fileName;
       int m_line;
       int m_column;
-      std::string m_description;
-      bool m_valid;
+      std::string m_level;
+      std::string m_desc;
     };
 
   };
