@@ -10,6 +10,7 @@
 #include "KLExprStatement.h"
 #include "KLLocation.h"
 
+#include <limits.h>
 #include <vector>
 #include <string>
 

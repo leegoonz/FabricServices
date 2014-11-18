@@ -4,6 +4,7 @@
 #define __CodeCompletion_KLSyntaxHighlighter__
 
 #include "SyntaxHighlighter.h"
+#include <ASTWrapper/KLASTClient.h>
 #include <ASTWrapper/KLASTManager.h>
 #include <map>
 

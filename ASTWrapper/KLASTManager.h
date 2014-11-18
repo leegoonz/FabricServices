@@ -6,13 +6,13 @@
 #include "KLDeclContainer.h"
 #include "KLLocation.h"
 #include "KLExtension.h"
-#include "KLASTClient.h"
 
 namespace FabricServices
 {
 
   namespace ASTWrapper
   {
+    class KLASTClient;
 
     class KLASTManager : public KLDeclContainer
     {
