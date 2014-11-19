@@ -42,8 +42,8 @@ namespace FabricServices
       const ASTWrapper::KLStatement * getStatementAtCursor(uint32_t line, uint32_t column) const;
       std::string getCodeForStatement(const ASTWrapper::KLStatement * statement) const;
 
-      std::string getWordAtCursor(uint32_t cursor, bool ignoreParentheses = false) const;
-      std::string getWordAtCursor(uint32_t line, uint32_t column, bool ignoreParentheses = false) const;
+      std::string getWordAtCursor(uint32_t cursor, bool ignoreParentheses) const;
+      std::string getWordAtCursor(uint32_t line, uint32_t column, bool ignoreParentheses) const;
       std::string getCharAtCursor(uint32_t cursor) const;
       std::string getCharAtCursor(uint32_t line, uint32_t column) const;
 
