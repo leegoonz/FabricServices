@@ -1,0 +1,22 @@
+#
+# Copyright 2010-2014 Fabric Software Inc. All rights reserved.
+#
+
+Import('parentEnv')
+
+env = parentEnv.CloneSubStage('Commands')
+
+sources = Glob('*.cpp')
+
+commandsLib = env.StaticLibrary('Fabric-Commands', sources)
+
+commandsIncludeDir = env.Dir('.').dir.srcnode()
+
+commandsFlags = {
+  'CPPPATH': [commandsIncludeDir],
+  'LIBS': [commandsLib]
+}
+
+Export('commandsLib', 'commandsIncludeDir', 'commandsFlags')
+Alias('commands', commandsLib)
+Return('commandsLib')
