@@ -29,9 +29,10 @@ void CommandStack::setLimit(uint32_t limit)
   capCommandsForLimit();
 }
 
-void CommandStack::add(Command * command)
+bool CommandStack::add(Command * command)
 {
-  command->invoke();
+  if(!command->invoke())
+    return false;
 
   m_undoCommands.push_back(command);
 
@@ -43,6 +44,8 @@ void CommandStack::add(Command * command)
   m_redoCommands.clear();
 
   capCommandsForLimit();
+
+  return true;
 }
 
 void CommandStack::clear()
