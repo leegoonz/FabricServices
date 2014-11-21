@@ -2,6 +2,8 @@
 
 #include "CommandStack.h"
 
+#include <cstddef>
+
 using namespace FabricServices::Commands;
 
 CommandStack::CommandStack()
