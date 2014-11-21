@@ -22,6 +22,7 @@ namespace FabricServices
       Binding(const Binding & other);
       virtual ~Binding();
 
+      bool isValid() const;
       FabricCore::DFGBinding getWrappedCoreBinding() const;
 
       FabricCore::RTVal getArgValue(char const *name);

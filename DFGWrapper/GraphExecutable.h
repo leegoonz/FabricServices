@@ -28,6 +28,8 @@ namespace FabricServices
       Node addNodeWithNewFunc(char const * title = 0);
       Node addNodeFromJSON(char const * json);
 
+      // todo: connections
+
     protected:
       
       GraphExecutable(FabricCore::DFGBinding binding, std::string path);

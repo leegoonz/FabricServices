@@ -25,8 +25,9 @@ FuncExecutable::~FuncExecutable()
 
 std::string FuncExecutable::getCode()
 {
-  // todo
-  return "";
+  FabricCore::Variant descVar = FabricCore::Variant::CreateFromJSON(getDesc().c_str());
+  const FabricCore::Variant * codeVar = descVar.getDictValue("code");
+  return codeVar->getStringData();
 }
 
 void FuncExecutable::setCode(char const *code)

@@ -15,26 +15,27 @@ namespace FabricServices
     class Port
     {
       friend class Executable;
+      friend class Pin;
 
     public:
 
       Port(const Port & other);
       virtual ~Port();
 
+      bool isValid() const;
       FabricCore::DFGBinding getWrappedCoreBinding() const;
 
       std::string getPath() const;
       std::string getTitle() const;
+      FabricCore::DFGPortType getPortType();
+      std::string getDataType();
 
-      std::string getDesc();
+      virtual std::string getDesc();
 
-      void connect(const Port & other);
-      void disconnect(const Port & other);
+      virtual void connect(const Port & other);
+      virtual void disconnect(const Port & other);
+
       void setDefaultValue(FabricCore::RTVal defaultValue);
-      void addDebugPin();
-      FabricCore::RTVal getDebugPinValue();
-      void removeDebugPin();
-      void setPinDefaultValue(FabricCore::RTVal defaultValue);
 
     protected:
       
@@ -44,6 +45,8 @@ namespace FabricServices
 
       FabricCore::DFGBinding m_binding;      
       std::string m_path;
+      std::string m_portType;
+      std::string m_dataType;
     };
 
   };

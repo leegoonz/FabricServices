@@ -5,6 +5,8 @@
 
 #include <FabricCore.h>
 #include <string>
+#include <vector>
+
 #include "Port.h"
 
 namespace FabricServices
@@ -22,12 +24,17 @@ namespace FabricServices
       Executable(const Executable & other);
       virtual ~Executable();
 
+      bool isValid() const;
       FabricCore::DFGBinding getWrappedCoreBinding() const;
 
       std::string getDesc();
       std::string getObjectType();
       std::string getPath();
       std::string getTitle();
+      std::vector<Port> getPorts();
+      Port getPort(char const * name);
+      Port getPort(uint32_t index);
+      Port addPort(char const *title, FabricCore::DFGPortType portType, char const *dataType = 0);
 
       std::string exportJSON();
 
@@ -35,8 +42,6 @@ namespace FabricServices
       void setMetadata(char const * key, char const * metadata, bool canUndo);
 
       std::string getImportPathName();
-      
-      Port addPort(char const *title, FabricCore::DFGPortType portType, char const *dataType = 0);
 
     protected:
       

@@ -5,7 +5,8 @@
 
 #include <FabricCore.h>
 #include <string>
-#include "Port.h"
+#include <vector>
+#include "Pin.h"
 
 namespace FabricServices
 {
@@ -23,6 +24,7 @@ namespace FabricServices
       Node(const Node & other);
       virtual ~Node();
 
+      bool isValid() const;
       FabricCore::DFGBinding getWrappedCoreBinding() const;
 
       Executable getExecutable();
@@ -32,9 +34,14 @@ namespace FabricServices
       std::string getPath();
       std::string getTitle();
       void setTitle(char const *title);
+      std::vector<std::string> getDataTypes();
 
       std::string getMetadata(char const * key);
       void setMetadata(char const * key, char const * metadata, bool canUndo);
+
+      std::vector<Pin> getPins();
+      Pin getPin(char const * name);
+      Pin getPin(uint32_t index);
 
     protected:
       

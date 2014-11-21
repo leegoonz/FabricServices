@@ -21,6 +21,12 @@ Executable::~Executable()
 {
 }
 
+bool Executable::isValid() const
+{
+  return m_binding.isValid();
+}
+
+
 FabricCore::DFGBinding Executable::getWrappedCoreBinding() const
 {
   return m_binding;
@@ -50,6 +56,38 @@ std::string Executable::getTitle()
 {
   FabricCore::Variant descVar = FabricCore::Variant::CreateFromJSON(getDesc().c_str());
   return descVar.getDictValue("title")->getStringData();    
+}
+
+std::vector<Port> Executable::getPorts()
+{
+  std::vector<Port> result;
+
+  FabricCore::Variant descVar = FabricCore::Variant::CreateFromJSON(getDesc().c_str());
+  const FabricCore::Variant * portsVar = descVar.getDictValue("ports");
+  for(uint32_t i=0;i<portsVar->getArraySize();i++)
+  {
+    const FabricCore::Variant * portVar = portsVar->getArrayElement(i);
+    const FabricCore::Variant * titleVar = portVar->getDictValue("title");
+    std::string titleStr = titleVar->getStringData();
+    result.push_back(Port(getWrappedCoreBinding(), getPath() + "." + titleStr));
+  }
+  return result;
+}
+
+Port Executable::getPort(char const * name)
+{
+  std::vector<Port> ports = getPorts();
+  for(size_t i=0;i<ports.size();i++)
+  {
+    if(ports[i].getTitle() == name)
+      return ports[i];
+  }
+  return Port(FabricCore::DFGBinding(), "");
+}
+
+Port Executable::getPort(uint32_t index)
+{
+  return getPorts()[index];
 }
 
 std::string Executable::exportJSON()

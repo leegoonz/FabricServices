@@ -18,6 +18,11 @@ Binding::~Binding()
 {
 }
 
+bool Binding::isValid() const
+{
+  return m_binding.isValid();
+}
+
 FabricCore::DFGBinding Binding::getWrappedCoreBinding() const
 {
   return m_binding;

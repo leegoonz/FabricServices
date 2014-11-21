@@ -14,10 +14,17 @@ Port::Port(const Port & other)
 {
   m_binding = other.m_binding;
   m_path = other.m_path;
+  m_portType = other.m_portType;
+  m_dataType = other.m_dataType;
 }
 
 Port::~Port()
 {
+}
+
+bool Port::isValid() const
+{
+  return m_binding.isValid();
 }
 
 FabricCore::DFGBinding Port::getWrappedCoreBinding() const
@@ -40,6 +47,33 @@ std::string Port::getTitle() const
   return m_path.substr(pos+1, m_path.length());
 }
 
+FabricCore::DFGPortType Port::getPortType()
+{
+  if(m_portType.length() == 0)
+  {
+    FabricCore::Variant descVar = FabricCore::Variant::CreateFromJSON(getDesc().c_str());
+    const FabricCore::Variant * typeVar = descVar.getDictValue("portType");
+    m_portType = typeVar->getStringData();
+  }
+  if(m_portType == "In")
+    return FabricCore::DFGPortType_In;
+  if(m_portType == "Out")
+    return FabricCore::DFGPortType_Out;
+  return FabricCore::DFGPortType_IO;
+}
+
+std::string Port::getDataType()
+{
+  if(m_dataType.length() == 0)
+  {
+    FabricCore::Variant descVar = FabricCore::Variant::CreateFromJSON(getDesc().c_str());
+    const FabricCore::Variant * typeVar = descVar.getDictValue("type");
+    if(typeVar->isString())
+      m_dataType = typeVar->getStringData();
+  }
+  return m_dataType;
+}
+
 std::string Port::getDesc()
 {
   return m_binding.getDesc(m_path.c_str()).getCString();
@@ -60,22 +94,3 @@ void Port::setDefaultValue(FabricCore::RTVal defaultValue)
   m_binding.setPortDefaultValue(m_path.c_str(), defaultValue);
 }
 
-void Port::addDebugPin()
-{
-  m_binding.addDebugPin(m_path.c_str());
-}
-
-FabricCore::RTVal Port::getDebugPinValue()
-{
-  return m_binding.getDebugPinValue(m_path.c_str());
-}
-
-void Port::removeDebugPin()
-{
-  m_binding.removeDebugPin(m_path.c_str());
-}
-
-void Port::setPinDefaultValue(FabricCore::RTVal defaultValue)
-{
-  m_binding.setPinDefaultValue(m_path.c_str(), defaultValue);
-}

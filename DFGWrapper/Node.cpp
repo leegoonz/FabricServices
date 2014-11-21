@@ -23,6 +23,11 @@ Node::~Node()
 {
 }
 
+bool Node::isValid() const
+{
+  return m_binding.isValid();
+}
+
 FabricCore::DFGBinding Node::getWrappedCoreBinding() const
 {
   return m_binding;
@@ -64,6 +69,23 @@ void Node::setTitle(char const *title)
   m_binding.setTitle(m_path.c_str(), title);
 }
 
+std::vector<std::string> Node::getDataTypes()
+{
+ std::vector<std::string> result;
+
+  FabricCore::Variant descVar = FabricCore::Variant::CreateFromJSON(getDesc().c_str());
+  const FabricCore::Variant * typesVar = descVar.getDictValue("types");
+  for(uint32_t i=0;i<typesVar->getArraySize();i++)
+  {
+    const FabricCore::Variant * typeVar = typesVar->getArrayElement(i);
+    if(typeVar->isString())
+      result.push_back(typeVar->getStringData());
+    else
+      result.push_back("");
+  }
+  return result;
+}
+
 std::string Node::getMetadata(char const * key)
 {
   return m_binding.getInstanceMetadata(m_path.c_str(), key);
@@ -74,3 +96,34 @@ void Node::setMetadata(char const *key, char const * metadata, bool canUndo)
   return m_binding.setInstanceMetadata(m_path.c_str(), key, metadata, canUndo);
 }
 
+std::vector<Pin> Node::getPins()
+{
+  std::vector<Pin> result;
+
+  FabricCore::Variant descVar = FabricCore::Variant::CreateFromJSON(getDesc().c_str());
+  const FabricCore::Variant * pinsVar = descVar.getDictValue("pins");
+  for(uint32_t i=0;i<pinsVar->getArraySize();i++)
+  {
+    const FabricCore::Variant * pinVar = pinsVar->getArrayElement(i);
+    const FabricCore::Variant * titleVar = pinVar->getDictValue("title");
+    std::string titleStr = titleVar->getStringData();
+    result.push_back(Pin(getWrappedCoreBinding(), getPath() + "." + titleStr));
+  }
+  return result;
+}
+
+Pin Node::getPin(char const * name)
+{
+  std::vector<Pin> pins = getPins();
+  for(size_t i=0;i<pins.size();i++)
+  {
+    if(pins[i].getTitle() == name)
+      return pins[i];
+  }
+  return Pin(FabricCore::DFGBinding(), "");
+}
+
+Pin Node::getPin(uint32_t index)
+{
+  return getPins()[index];
+}
