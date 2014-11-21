@@ -18,13 +18,13 @@ namespace FabricServices
 
     public:
 
+      GraphNode(const Node & other);
       GraphNode(const GraphNode & other);
       virtual ~GraphNode();
 
-      // graph node
-      // DFGStringResult addNodeFromPreset(char const *parentGraphPath, char const *execPath);
-      // DFGStringResult addNodeWithNewGraph(char const *parentGraphPath, char const *title = 0);
-      // DFGStringResult addNodeWithNewFunc(char const *parentGraphPath, char const *title = 0);
+      // Node addNodeFromPreset(char const *parentGraphPath, char const *execPath);
+      // GraphNode addNodeWithNewGraph(char const *title = 0);
+      // FuncNode addNodeWithNewFunc(char const *title = 0);
       // DFGStringResult addNodeFromJSON(char const *parentGraphPath, char const *json);
 
     protected:

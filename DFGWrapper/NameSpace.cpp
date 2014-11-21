@@ -105,3 +105,9 @@ std::vector<Graph> NameSpace::getGraphs(bool recursive)
 
   return result;
 }
+
+NameSpace NameSpace::addNameSpace(char const *displayName)
+{
+  getWrappedCoreHost().addNamespace(getPath().c_str(), displayName);
+  return NameSpace(getWrappedCoreHost(), getPath() + "." + displayName);
+}

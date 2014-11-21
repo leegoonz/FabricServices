@@ -4,6 +4,7 @@
 #define __DFGWrapper_Port__
 
 #include <FabricCore.h>
+#include <string>
 
 namespace FabricServices
 {
@@ -13,7 +14,7 @@ namespace FabricServices
 
     class Port
     {
-      friend class Binding;
+      friend class Node;
 
     public:
 
@@ -22,12 +23,15 @@ namespace FabricServices
 
       FabricCore::DFGBinding getWrappedCoreBinding() const;
 
-      // void connect(char const *srcPath, char const *dstPath);
-      // void disconnect(char const *srcPath, char const *dstPath);
-      // void addDebugPin(char const *path);
-      // RTVal getDebugPinValue(char const *path);
-      // void removeDebugPin(char const *path);
-      // void setPinDefaultValue(char const *path, RTVal defaultValue);
+      std::string getPath() const;
+      std::string getTitle() const;
+      
+      void connect(const Port & other);
+      void disconnect(const Port & other);
+      void addDebugPin();
+      FabricCore::RTVal getDebugPinValue();
+      void removeDebugPin();
+      void setPinDefaultValue(FabricCore::RTVal defaultValue);
 
     protected:
       

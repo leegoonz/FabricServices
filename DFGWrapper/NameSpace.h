@@ -30,6 +30,8 @@ namespace FabricServices
       std::vector<Func> getFuncs(bool recursive = false);
       std::vector<Graph> getGraphs(bool recursive = false);
 
+      NameSpace addNameSpace(char const *displayName);
+
     protected:
       
       NameSpace(FabricCore::DFGHost host, std::string path);

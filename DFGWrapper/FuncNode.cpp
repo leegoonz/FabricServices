@@ -9,6 +9,11 @@ FuncNode::FuncNode(FabricCore::DFGBinding binding, std::string path)
 {
 }
 
+FuncNode::FuncNode(const Node & other)
+: Node(other)
+{
+}
+
 FuncNode::FuncNode(const FuncNode & other)
 : Node(other)
 {

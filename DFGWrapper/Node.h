@@ -5,6 +5,7 @@
 
 #include <FabricCore.h>
 #include <string>
+#include "Port.h"
 
 namespace FabricServices
 {
@@ -23,17 +24,23 @@ namespace FabricServices
 
       FabricCore::DFGBinding getWrappedCoreBinding() const;
 
-      // // node
-      // DFGStringResult getDesc(char const *path);
-      // DFGStringResult getInstanceDesc(char const *path);
-      // void setTitle(char const *path, char const *title);
-      // DFGStringResult exportJSON(char const *execPath);
-      // char const *getMetadata(char const *pathCStr, char const *keyCStr);
-      // void setMetadata(char const *path, char const *key, char const *metadata, bool canUndo);
-      // char const *getInstanceMetadata(char const *pathCStr, char const *keyCStr);
-      // void setInstanceMetadata(char const *pathCStr, char const *keyCStr, char const *valueCStr, bool canUndo);
-      // char const *getImportPathname(char const *path);
-      // DFGStringResult addPort(char const *parentGraphPath,char const *title, FEC_DFGPortType portType, char const *dataType = 0);
+      std::string getDesc();
+      std::string getObjectType();
+      std::string getPath();
+      std::string getTitle();
+      void setTitle(char const *title);
+
+      // todo: is this the same as getDesc
+      std::string exportJSON();
+
+      std::string getMetadata(char const * key);
+      void setMetadata(char const * key, char const * metadata, bool canUndo);
+      std::string getInstanceMetadata(char const * key);
+      void setInstanceMetadata(char const * key, char const * metadata, bool canUndo);
+
+      std::string getImportPathName();
+      
+      Port addPort(char const *title, FabricCore::DFGPortType portType, char const *dataType = 0);
       // void setPortDefaultValue(char const *path, RTVal defaultValue);
 
     protected:
@@ -44,6 +51,7 @@ namespace FabricServices
 
       FabricCore::DFGBinding m_binding;
       std::string m_path;
+      std::string m_objectType;
     };
 
   };

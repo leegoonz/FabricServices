@@ -38,3 +38,7 @@ NameSpace Host::getRootNameSpace() const
   return NameSpace(m_host, "");
 }
 
+Binding Host::createBindingToNewGraph()
+{
+  return Binding(m_host.createBindingToNewGraph());
+}

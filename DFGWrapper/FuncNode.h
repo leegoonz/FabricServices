@@ -18,6 +18,7 @@ namespace FabricServices
 
     public:
 
+      FuncNode(const Node & other);
       FuncNode(const FuncNode & other);
       virtual ~FuncNode();
 

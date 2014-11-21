@@ -9,6 +9,11 @@ GraphNode::GraphNode(FabricCore::DFGBinding binding, std::string path)
 {
 }
 
+GraphNode::GraphNode(const Node & other)
+: Node(other)
+{
+}
+
 GraphNode::GraphNode(const GraphNode & other)
 : Node(other)
 {

@@ -31,17 +31,13 @@ namespace FabricServices
 
       NameSpace getRootNameSpace() const;
 
-      // this should be a simple call without parent namespace, additional namespaces should be built as children
-      // DFGStringResult addNamespace(char const *parentNameSpace, char const *displayName);
-
-      // todo once we have a namespace wrapper
+      // todo
       //DFGStringResult importJSON(char const *parentNameSpace, char const *json, char const *importPathname = 0);
       //DFGStringResult exportJSON(char const *execPath);
 
-      // construct a new binding
-      //DFGBinding createBindingToNewGraph()
+      Binding createBindingToNewGraph();
 
-      // todo: what do these do exactly
+      // todo
       // DFGBinding createBindingFromJSON(char const *json, uint32_t rtValCount = 0, RTVal const *rtVals = 0);
       // DFGBinding createBindingToPreset(char const *execPath, uint32_t rtValCount = 0, RTVal const *rtVals = 0);
 
