@@ -5,7 +5,7 @@
 
 #include <FabricCore.h>
 
-#include "Node.h"
+#include "GraphNode.h"
 
 namespace FabricServices
 {
@@ -13,7 +13,7 @@ namespace FabricServices
   namespace DFGWrapper
   {
 
-    class Binding : public Node
+    class Binding : public GraphNode
     {
       friend class Host;
 

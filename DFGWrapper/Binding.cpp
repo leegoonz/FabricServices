@@ -5,12 +5,12 @@
 using namespace FabricServices::DFGWrapper;
 
 Binding::Binding(FabricCore::DFGBinding binding)
-: Node(binding, "")
+: GraphNode(binding, "")
 {
 }
 
 Binding::Binding(const Binding & other)
-: Node(other)
+: GraphNode(other)
 {
 }
 
