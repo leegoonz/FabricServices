@@ -2,6 +2,8 @@
 
 #include "CompoundCommand.h"
 
+#include <stdlib.h>
+
 using namespace FabricServices::Commands;
 
 CompoundCommand::CompoundCommand()
