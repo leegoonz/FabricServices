@@ -3,6 +3,8 @@
 #ifndef __Commands_Command__
 #define __Commands_Command__
 
+#include <vector>
+
 namespace FabricServices
 {
 
@@ -11,6 +13,7 @@ namespace FabricServices
     class Command
     {
       friend class CommandStack;
+      friend class CompoundCommand;
 
     public:
 
@@ -28,6 +31,8 @@ namespace FabricServices
       virtual bool redo();
       virtual void destroy(); 
     };
+
+    typedef std::vector<Command*> CommandVector;
 
   };
 
