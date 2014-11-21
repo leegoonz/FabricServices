@@ -31,15 +31,11 @@ namespace FabricServices
 
       NameSpace getRootNameSpace() const;
 
-      // todo
-      //DFGStringResult importJSON(char const *parentNameSpace, char const *json, char const *importPathname = 0);
-      //DFGStringResult exportJSON(char const *execPath);
+      void importJSON(char const * parentNameSpace, char const * json, char const * importPathname = 0);
 
       Binding createBindingToNewGraph();
-
-      // todo
-      // DFGBinding createBindingFromJSON(char const *json, uint32_t rtValCount = 0, RTVal const *rtVals = 0);
-      // DFGBinding createBindingToPreset(char const *execPath, uint32_t rtValCount = 0, RTVal const *rtVals = 0);
+      Binding createBindingFromJSON(char const * json, uint32_t rtValCount = 0, FabricCore::RTVal const *rtVals = 0);
+      Binding createBindingToPreset(char const * preset, uint32_t rtValCount = 0, FabricCore::RTVal const *rtVals = 0);
 
     private:
 

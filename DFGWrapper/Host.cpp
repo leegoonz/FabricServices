@@ -38,7 +38,23 @@ NameSpace Host::getRootNameSpace() const
   return NameSpace(m_host, "");
 }
 
+void Host::importJSON(char const *parentNameSpace, char const *json, char const *importPathname)
+{
+  m_host.importJSON(parentNameSpace, json, importPathname);
+}
+
 Binding Host::createBindingToNewGraph()
 {
   return Binding(m_host.createBindingToNewGraph());
+}
+
+Binding Host::createBindingFromJSON(char const * json, uint32_t rtValCount, FabricCore::RTVal const *rtVals)
+{
+  return Binding(m_host.createBindingFromJSON(json, rtValCount, rtVals));
+}
+
+Binding Host::createBindingToPreset(char const * preset, uint32_t rtValCount, FabricCore::RTVal const *rtVals)
+{
+  return Binding(m_host.createBindingToPreset(preset, rtValCount, rtVals));
+
 }

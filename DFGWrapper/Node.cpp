@@ -30,14 +30,12 @@ FabricCore::DFGBinding Node::getWrappedCoreBinding() const
 
 Executable Node::getExecutable()
 {
-  if(getObjectType() == "Graph")
-    return GraphExecutable(m_binding, m_path);
-  return FuncExecutable(m_binding, m_path);
+  return Executable(m_binding, m_path);
 }
 
 std::string Node::getDesc()
 {
-  return m_binding.getDesc(m_path.c_str()).getCString();
+  return m_binding.getInstanceDesc(m_path.c_str()).getCString();
 }
 
 std::string Node::getObjectType()

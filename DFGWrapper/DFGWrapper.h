@@ -1,0 +1,18 @@
+// Copyright 2010-2014 Fabric Engine Inc. All rights reserved.
+
+#ifndef __DFGWrapper_DFGWrapper__
+#define __DFGWrapper_DFGWrapper__
+
+#include <FabricCore.h>
+#include "Host.h"
+#include "NameSpace.h"
+#include "Func.h"
+#include "Graph.h"
+#include "Binding.h"
+#include "Node.h"
+#include "Executable.h"
+#include "FuncExecutable.h"
+#include "GraphExecutable.h"
+#include "Port.h"
+
+#endif // __DFGWrapper_DFGWrapper__
