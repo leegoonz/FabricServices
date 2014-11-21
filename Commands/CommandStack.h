@@ -5,7 +5,6 @@
 
 #include "Command.h"
 
-#include <vector>
 #include <stdint.h>
 
 namespace FabricServices
@@ -13,7 +12,6 @@ namespace FabricServices
 
   namespace Commands
   {
-    typedef std::vector<Command*> CommandVector;
 
     class CommandStack
     {
@@ -25,7 +23,7 @@ namespace FabricServices
       uint32_t getLimit() const;
       void setLimit(uint32_t limit);
 
-      virtual void add(Command * command);
+      virtual bool add(Command * command);
       virtual void clear();
       virtual bool undo();
       virtual bool redo();
