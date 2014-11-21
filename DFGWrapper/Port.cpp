@@ -40,6 +40,11 @@ std::string Port::getTitle() const
   return m_path.substr(pos+1, m_path.length());
 }
 
+std::string Port::getDesc()
+{
+  return m_binding.getDesc(m_path.c_str()).getCString();
+}
+
 void Port::connect(const Port & other)
 {
   m_binding.connect(m_path.c_str(), other.m_path.c_str());

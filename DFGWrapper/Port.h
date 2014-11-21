@@ -25,7 +25,9 @@ namespace FabricServices
 
       std::string getPath() const;
       std::string getTitle() const;
-      
+
+      std::string getDesc();
+
       void connect(const Port & other);
       void disconnect(const Port & other);
       void setDefaultValue(FabricCore::RTVal defaultValue);
