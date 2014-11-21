@@ -5,7 +5,7 @@
 
 #include <FabricCore.h>
 
-#include "GraphNode.h"
+#include "GraphExecutable.h"
 
 namespace FabricServices
 {
@@ -13,7 +13,7 @@ namespace FabricServices
   namespace DFGWrapper
   {
 
-    class Binding : public GraphNode
+    class Binding
     {
       friend class Host;
 
@@ -22,8 +22,12 @@ namespace FabricServices
       Binding(const Binding & other);
       virtual ~Binding();
 
+      FabricCore::DFGBinding getWrappedCoreBinding() const;
+
       FabricCore::RTVal getArgValue(char const *name);
       void setArgValue(char const *name, FabricCore::RTVal value);
+
+      GraphExecutable getGraph();
 
       void execute();
 
@@ -31,6 +35,8 @@ namespace FabricServices
       
       Binding(FabricCore::DFGBinding binding);
 
+    private:
+      FabricCore::DFGBinding m_binding;      
     };
 
   };

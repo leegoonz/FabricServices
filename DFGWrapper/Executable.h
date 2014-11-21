@@ -1,7 +1,7 @@
 // Copyright 2010-2014 Fabric Engine Inc. All rights reserved.
 
-#ifndef __DFGWrapper_Node__
-#define __DFGWrapper_Node__
+#ifndef __DFGWrapper_Executable__
+#define __DFGWrapper_Executable__
 
 #include <FabricCore.h>
 #include <string>
@@ -13,31 +13,34 @@ namespace FabricServices
   namespace DFGWrapper
   {
 
-    class Node
+    class Executable
     {
-      friend class Binding;
+      friend class Node;
 
     public:
 
-      Node(const Node & other);
-      virtual ~Node();
+      Executable(const Executable & other);
+      virtual ~Executable();
 
       FabricCore::DFGBinding getWrappedCoreBinding() const;
-
-      Executable getExecutable();
 
       std::string getDesc();
       std::string getObjectType();
       std::string getPath();
       std::string getTitle();
-      void setTitle(char const *title);
+
+      std::string exportJSON();
 
       std::string getMetadata(char const * key);
       void setMetadata(char const * key, char const * metadata, bool canUndo);
 
+      std::string getImportPathName();
+      
+      Port addPort(char const *title, FabricCore::DFGPortType portType, char const *dataType = 0);
+
     protected:
       
-      Node(FabricCore::DFGBinding binding, std::string path);
+      Executable(FabricCore::DFGBinding binding, std::string path);
 
     private:
 
@@ -51,4 +54,4 @@ namespace FabricServices
 };
 
 
-#endif // __DFGWrapper_Node__
+#endif // __DFGWrapper_Executable__

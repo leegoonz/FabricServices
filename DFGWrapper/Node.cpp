@@ -1,6 +1,8 @@
 // Copyright 2010-2014 Fabric Engine Inc. All rights reserved.
 
 #include "Node.h"
+#include "GraphExecutable.h"
+#include "FuncExecutable.h"
 
 using namespace FabricServices::DFGWrapper;
 
@@ -24,6 +26,13 @@ Node::~Node()
 FabricCore::DFGBinding Node::getWrappedCoreBinding() const
 {
   return m_binding;
+}
+
+Executable Node::getExecutable()
+{
+  if(getObjectType() == "Graph")
+    return GraphExecutable(m_binding, m_path);
+  return FuncExecutable(m_binding, m_path);
 }
 
 std::string Node::getDesc()
@@ -57,38 +66,13 @@ void Node::setTitle(char const *title)
   m_binding.setTitle(m_path.c_str(), title);
 }
 
-std::string Node::exportJSON()
-{
-  return m_binding.exportJSON(m_path.c_str()).getCString();
-}
-
 std::string Node::getMetadata(char const * key)
-{
-  return m_binding.getMetadata(m_path.c_str(), key);
-}
-
-void Node::setMetadata(char const *key, char const * metadata, bool canUndo)
-{
-  return m_binding.setMetadata(m_path.c_str(), key, metadata, canUndo);
-}
-
-std::string Node::getInstanceMetadata(char const * key)
 {
   return m_binding.getInstanceMetadata(m_path.c_str(), key);
 }
 
-void Node::setInstanceMetadata(char const * key, char const * metadata, bool canUndo)
+void Node::setMetadata(char const *key, char const * metadata, bool canUndo)
 {
   return m_binding.setInstanceMetadata(m_path.c_str(), key, metadata, canUndo);
 }
 
-std::string Node::getImportPathName()
-{
-  return m_binding.getImportPathname(m_path.c_str());
-}
-
-Port Node::addPort(char const *title, FabricCore::DFGPortType portType, char const *dataType)
-{
-  std::string result = m_binding.addPort(m_path.c_str(), title, portType, dataType).getCString();
-  return Port(m_binding, m_path + "." + result);
-}

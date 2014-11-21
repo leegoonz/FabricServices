@@ -14,7 +14,7 @@ namespace FabricServices
 
     class Port
     {
-      friend class Node;
+      friend class Executable;
 
     public:
 
@@ -28,6 +28,7 @@ namespace FabricServices
       
       void connect(const Port & other);
       void disconnect(const Port & other);
+      void setDefaultValue(FabricCore::RTVal defaultValue);
       void addDebugPin();
       FabricCore::RTVal getDebugPinValue();
       void removeDebugPin();

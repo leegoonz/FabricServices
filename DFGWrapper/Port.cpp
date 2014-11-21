@@ -50,6 +50,11 @@ void Port::disconnect(const Port & other)
   m_binding.disconnect(m_path.c_str(), other.m_path.c_str());
 }
 
+void Port::setDefaultValue(FabricCore::RTVal defaultValue)
+{
+  m_binding.setPortDefaultValue(m_path.c_str(), defaultValue);
+}
+
 void Port::addDebugPin()
 {
   m_binding.addDebugPin(m_path.c_str());

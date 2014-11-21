@@ -5,30 +5,40 @@
 using namespace FabricServices::DFGWrapper;
 
 Binding::Binding(FabricCore::DFGBinding binding)
-: GraphNode(binding, "")
 {
+  m_binding = binding;
 }
 
 Binding::Binding(const Binding & other)
-: GraphNode(other)
 {
+  m_binding = other.m_binding;
 }
 
 Binding::~Binding()
 {
 }
 
+FabricCore::DFGBinding Binding::getWrappedCoreBinding() const
+{
+  return m_binding;
+}
+
 FabricCore::RTVal Binding::getArgValue(char const *name)
 {
-  return getWrappedCoreBinding().getArgValue(name);
+  return m_binding.getArgValue(name);
 }
 
 void Binding::setArgValue(char const *name, FabricCore::RTVal value)
 {
-  getWrappedCoreBinding().setArgValue(name, value);
+  m_binding.setArgValue(name, value);
+}
+
+GraphExecutable Binding::getGraph()
+{
+  return GraphExecutable(m_binding, "");
 }
 
 void Binding::execute()
 {
-  getWrappedCoreBinding().execute();
+  m_binding.execute();
 }
