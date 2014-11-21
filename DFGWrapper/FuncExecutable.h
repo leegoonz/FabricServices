@@ -23,8 +23,8 @@ namespace FabricServices
       FuncExecutable(const FuncExecutable & other);
       virtual ~FuncExecutable();
 
-      // std::string getCode();
-      // void setCode(char const *path, char const *code);
+      std::string getCode();
+      void setCode(char const *code);
 
     protected:
       

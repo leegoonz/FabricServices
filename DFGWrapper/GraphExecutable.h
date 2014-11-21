@@ -23,10 +23,10 @@ namespace FabricServices
       GraphExecutable(const GraphExecutable & other);
       virtual ~GraphExecutable();
 
-      // Executable addExecutableFromPreset(char const *parentGraphPath, char const *execPath);
-      // GraphExecutable addExecutableWithNewGraph(char const *title = 0);
-      // FuncExecutable addExecutableWithNewFunc(char const *title = 0);
-      // DFGStringResult addExecutableFromJSON(char const *parentGraphPath, char const *json);
+      Node addNodeFromPreset(char const * preset);
+      Node addNodeWithNewGraph(char const * title = 0);
+      Node addNodeWithNewFunc(char const * title = 0);
+      Node addNodeFromJSON(char const * json);
 
     protected:
       

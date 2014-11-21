@@ -16,6 +16,7 @@ namespace FabricServices
     class Node
     {
       friend class Binding;
+      friend class GraphExecutable;
 
     public:
 

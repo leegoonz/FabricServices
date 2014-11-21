@@ -22,3 +22,15 @@ FuncExecutable::FuncExecutable(const FuncExecutable & other)
 FuncExecutable::~FuncExecutable()
 {
 }
+
+std::string FuncExecutable::getCode()
+{
+  // todo
+  return "";
+}
+
+void FuncExecutable::setCode(char const *code)
+{
+  getWrappedCoreBinding().setCode(getPath().c_str(), code);
+}
+
