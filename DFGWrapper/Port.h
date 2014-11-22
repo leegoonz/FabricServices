@@ -15,7 +15,9 @@ namespace FabricServices
     class Port
     {
       friend class Executable;
+      friend class GraphExecutable;
       friend class Pin;
+      friend class Connection;
 
     public:
 
@@ -32,6 +34,7 @@ namespace FabricServices
 
       virtual std::string getDesc();
 
+      virtual bool canConnectTo(Port other);
       virtual void connect(const Port & other);
       virtual void disconnect(const Port & other);
 

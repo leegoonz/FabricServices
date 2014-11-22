@@ -5,6 +5,7 @@
 
 #include <FabricCore.h>
 #include "Executable.h"
+#include "Connection.h"
 
 namespace FabricServices
 {
@@ -28,7 +29,9 @@ namespace FabricServices
       Node addNodeWithNewFunc(char const * title = 0);
       Node addNodeFromJSON(char const * json);
 
-      // todo: connections
+      // todo get nodes
+
+      std::vector<Connection> getConnections();
 
     protected:
       

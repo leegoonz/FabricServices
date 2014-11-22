@@ -79,6 +79,15 @@ std::string Port::getDesc()
   return m_binding.getDesc(m_path.c_str()).getCString();
 }
 
+bool Port::canConnectTo(Port other)
+{
+  if(getDataType() == other.getDataType())
+    return true;
+
+  // todo: delegate this to the core
+  return false;
+}
+
 void Port::connect(const Port & other)
 {
   m_binding.connect(m_path.c_str(), other.m_path.c_str());

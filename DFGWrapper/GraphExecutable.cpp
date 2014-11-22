@@ -47,3 +47,31 @@ Node GraphExecutable::addNodeFromJSON(char const * json)
   std::string name = getWrappedCoreBinding().addNodeFromJSON(getPath().c_str(), json).getCString();
   return Node(getWrappedCoreBinding(), name);
 }
+
+std::vector<Connection> GraphExecutable::getConnections()
+{
+  std::vector<Connection> result;
+
+  FabricCore::Variant descVar = FabricCore::Variant::CreateFromJSON(getDesc().c_str());
+  const FabricCore::Variant * connectionsVar = descVar.getDictValue("connections");
+
+  std::string prefix = getPath();
+  if(prefix.length() > 0)
+    prefix += ".";
+  
+  for(FabricCore::Variant::DictIter connectionIter(*connectionsVar); !connectionIter.isDone(); connectionIter.next())
+  {
+    std::string srcStr = connectionIter.getKey()->getStringData();
+    Port src(getWrappedCoreBinding(), prefix + srcStr);
+    
+    const FabricCore::Variant * connectedVar = connectionIter.getValue();
+    for(uint32_t i=0;i<connectedVar->getArraySize();i++)
+    {
+      std::string dstStr = connectedVar->getArrayElement(i)->getStringData();
+      Port dst(getWrappedCoreBinding(), prefix + dstStr);
+      result.push_back(Connection(src, dst));
+    }
+  }
+
+  return result; 
+}
