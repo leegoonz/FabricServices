@@ -6,6 +6,7 @@
 #include <FabricCore.h>
 #include <string>
 #include <vector>
+#include "Executable.h"
 #include "Pin.h"
 
 namespace FabricServices
