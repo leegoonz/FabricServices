@@ -31,7 +31,7 @@ namespace FabricServices
 
     protected:
       
-      virtual void onNotification(char const * message);
+      virtual void onNotification(char const * json) = 0;
       virtual void onNodeInserted(Node node) = 0;
       virtual void onNodeRemoved(Node node) = 0;
       virtual void onPinInserted(Pin pin) = 0;

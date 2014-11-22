@@ -21,10 +21,6 @@ bool View::isValid() const
   return m_view.isValid();
 }
 
-void View::onNotification(char const * message)
-{
-}
-
 void View::callback(void * userData, char const * jsonCString, uint32_t jsonLength)
 {
   View * view = (View *)userData;
