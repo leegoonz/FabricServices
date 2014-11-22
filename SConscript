@@ -5,6 +5,6 @@
 Import('parentEnv')
 
 SConscript(
-  dirs = ['Commands', 'ASTWrapper', 'CodeCompletion'],
+  dirs = ['Commands', 'ASTWrapper', 'DFGWrapper', 'CodeCompletion'],
   exports = {'parentEnv': parentEnv.CloneSubStage('Services')}
   )
