@@ -6,6 +6,7 @@
 #include <FabricCore.h>
 #include "Executable.h"
 #include "Connection.h"
+#include "Node.h"
 
 namespace FabricServices
 {
