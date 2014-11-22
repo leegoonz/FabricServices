@@ -18,6 +18,7 @@ namespace FabricServices
       friend class GraphExecutable;
       friend class Pin;
       friend class Connection;
+      friend class View;
 
     public:
 

@@ -18,6 +18,7 @@ namespace FabricServices
     {
       friend class Binding;
       friend class GraphExecutable;
+      friend class View;
 
     public:
 
@@ -30,7 +31,6 @@ namespace FabricServices
       Executable getExecutable();
 
       std::string getDesc();
-      std::string getObjectType();
       std::string getPath();
       std::string getTitle();
       void setTitle(char const *title);

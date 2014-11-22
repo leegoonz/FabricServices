@@ -17,6 +17,7 @@ namespace FabricServices
     class Pin : public Port
     {
       friend class Node;
+      friend class View;
 
     public:
 

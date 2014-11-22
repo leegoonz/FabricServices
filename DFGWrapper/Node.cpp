@@ -43,16 +43,6 @@ std::string Node::getDesc()
   return m_binding.getInstanceDesc(m_path.c_str()).getCString();
 }
 
-std::string Node::getObjectType()
-{
-  if(m_objectType.length() == 0)
-  {
-    FabricCore::Variant descVar = FabricCore::Variant::CreateFromJSON(getDesc().c_str());
-    m_objectType = descVar.getDictValue("objectType")->getStringData();    
-  }
-  return m_objectType;
-}
-
 std::string Node::getPath()
 {
   return m_path;
@@ -114,13 +104,10 @@ std::vector<Pin> Node::getPins()
 
 Pin Node::getPin(char const * name)
 {
-  std::vector<Pin> pins = getPins();
-  for(size_t i=0;i<pins.size();i++)
-  {
-    if(pins[i].getTitle() == name)
-      return pins[i];
-  }
-  return Pin(FabricCore::DFGBinding(), "");
+  std::string prefix = getPath();
+  if(prefix.length() > 0)
+    prefix += ".";
+  return Pin(m_binding, prefix + name);
 }
 
 Pin Node::getPin(uint32_t index)

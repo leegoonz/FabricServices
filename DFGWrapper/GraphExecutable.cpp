@@ -48,6 +48,40 @@ Node GraphExecutable::addNodeFromJSON(char const * json)
   return Node(getWrappedCoreBinding(), name);
 }
 
+std::vector<Node> GraphExecutable::getNodes()
+{
+  std::vector<Node> result;
+
+  FabricCore::Variant descVar = FabricCore::Variant::CreateFromJSON(getDesc().c_str());
+  const FabricCore::Variant * nodesVar = descVar.getDictValue("nodes");
+
+  std::string prefix = getPath();
+  if(prefix.length() > 0)
+    prefix += ".";
+  
+  for(uint32_t i=0;i<nodesVar->getArraySize();i++)
+  {
+    const FabricCore::Variant * nodeVar = nodesVar->getArrayElement(i);
+    const FabricCore::Variant * nameVar = nodeVar->getDictValue("name");
+    result.push_back(Node(getWrappedCoreBinding(), prefix + nameVar->getStringData()));
+  }
+
+  return result; 
+}
+
+Node GraphExecutable::getNode(char const * name)
+{
+  std::string prefix = getPath();
+  if(prefix.length() > 0)
+    prefix += ".";
+  return Node(getWrappedCoreBinding(), prefix + name);
+}
+
+void GraphExecutable::removeNode(Node node)
+{
+  getWrappedCoreBinding().destroy(node.getPath().c_str());
+}
+
 std::vector<Connection> GraphExecutable::getConnections()
 {
   std::vector<Connection> result;

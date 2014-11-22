@@ -29,7 +29,10 @@ namespace FabricServices
       Node addNodeWithNewFunc(char const * title = 0);
       Node addNodeFromJSON(char const * json);
 
-      // todo get nodes
+      std::vector<Node> getNodes();
+      Node getNode(char const * name);
+      void removeNode(Node node);
+
 
       std::vector<Connection> getConnections();
 

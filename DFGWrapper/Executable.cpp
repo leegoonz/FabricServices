@@ -62,6 +62,10 @@ std::vector<Port> Executable::getPorts()
 {
   std::vector<Port> result;
 
+  std::string prefix = getPath();
+  if(prefix.length() > 0)
+    prefix += ".";
+
   FabricCore::Variant descVar = FabricCore::Variant::CreateFromJSON(getDesc().c_str());
   const FabricCore::Variant * portsVar = descVar.getDictValue("ports");
   for(uint32_t i=0;i<portsVar->getArraySize();i++)
@@ -69,25 +73,40 @@ std::vector<Port> Executable::getPorts()
     const FabricCore::Variant * portVar = portsVar->getArrayElement(i);
     const FabricCore::Variant * titleVar = portVar->getDictValue("title");
     std::string titleStr = titleVar->getStringData();
-    result.push_back(Port(getWrappedCoreBinding(), getPath() + "." + titleStr));
+    result.push_back(Port(getWrappedCoreBinding(), prefix + titleStr));
   }
   return result;
 }
 
 Port Executable::getPort(char const * name)
 {
-  std::vector<Port> ports = getPorts();
-  for(size_t i=0;i<ports.size();i++)
-  {
-    if(ports[i].getTitle() == name)
-      return ports[i];
-  }
-  return Port(FabricCore::DFGBinding(), "");
+  std::string prefix = getPath();
+  if(prefix.length() > 0)
+    prefix += ".";
+  return Port(getWrappedCoreBinding(), prefix + name);
 }
 
 Port Executable::getPort(uint32_t index)
 {
   return getPorts()[index];
+}
+
+void Executable::removePort(Port port)
+{
+  removePort(port.getTitle().c_str());
+}
+
+void Executable::removePort(char const * name)
+{
+  std::string prefix = getPath();
+  if(prefix.length() > 0)
+    prefix += ".";
+  m_binding.destroy((prefix + name).c_str());
+}
+
+void Executable::removePort(uint32_t index)
+{
+  removePort(getPorts()[index]);
 }
 
 std::string Executable::exportJSON()

@@ -35,6 +35,9 @@ namespace FabricServices
       Port getPort(char const * name);
       Port getPort(uint32_t index);
       Port addPort(char const *title, FabricCore::DFGPortType portType, char const *dataType = 0);
+      void removePort(Port port);
+      void removePort(char const * name);
+      void removePort(uint32_t index);
 
       std::string exportJSON();
 
