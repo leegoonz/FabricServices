@@ -21,6 +21,11 @@ bool View::isValid() const
   return m_view.isValid();
 }
 
+GraphExecutable View::getGraph()
+{
+  return m_graph;
+}
+
 void View::callback(void * userData, char const * jsonCString, uint32_t jsonLength)
 {
   View * view = (View *)userData;
@@ -90,6 +95,14 @@ void View::callback(void * userData, char const * jsonCString, uint32_t jsonLeng
       Port src(binding, prefix + srcEndPointPathVar->getStringData());
       Port dst(binding, prefix + dstEndPointPathVar->getStringData());
       view->onEndPointsDisconnected(src, dst);
+    }
+    else if(descStr == "nodeMetadataChanged")
+    {
+      const FabricCore::Variant * nodePathVar = notificationVar->getDictValue("nodePath");
+      const FabricCore::Variant * keyVar = notificationVar->getDictValue("key");
+      const FabricCore::Variant * valueVar = notificationVar->getDictValue("value");
+      Node node(binding, prefix + nodePathVar->getStringData());
+      view->onNodeMetadataChanged(node, keyVar->getStringData(), valueVar->getStringData());
     }
     else
     {

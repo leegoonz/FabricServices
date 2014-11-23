@@ -29,6 +29,8 @@ namespace FabricServices
 
       bool isValid() const;
 
+      GraphExecutable getGraph();
+
     protected:
       
       virtual void onNotification(char const * json) = 0;
@@ -40,6 +42,7 @@ namespace FabricServices
       virtual void onPortRemoved(Port pin) = 0;
       virtual void onEndPointsConnected(Port src, Port dst) = 0;
       virtual void onEndPointsDisconnected(Port src, Port dst) = 0;
+      virtual void onNodeMetadataChanged(Node node, const char * key, const char * metadata) = 0;
 
     private:
 
