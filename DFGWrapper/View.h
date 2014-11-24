@@ -38,8 +38,8 @@ namespace FabricServices
       virtual void onNodeRemoved(Node node) = 0;
       virtual void onPinInserted(Pin pin) = 0;
       virtual void onPinRemoved(Pin pin) = 0;
-      virtual void onPortInserted(Port pin) = 0;
-      virtual void onPortRemoved(Port pin) = 0;
+      virtual void onPortInserted(Port port) = 0;
+      virtual void onPortRemoved(Port port) = 0;
       virtual void onEndPointsConnected(Port src, Port dst) = 0;
       virtual void onEndPointsDisconnected(Port src, Port dst) = 0;
       virtual void onNodeMetadataChanged(Node node, const char * key, const char * metadata) = 0;
