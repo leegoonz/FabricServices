@@ -4,10 +4,12 @@
 
 using namespace FabricServices::DFGWrapper;
 
-Port::Port(FabricCore::DFGBinding binding, std::string path)
+Port::Port(FabricCore::DFGBinding binding, std::string path, std::string portType, std::string dataType)
 {
   m_binding = binding;
   m_path = path;
+  m_portType = portType;
+  m_dataType = dataType;
 }
 
 Port::Port(const Port & other)

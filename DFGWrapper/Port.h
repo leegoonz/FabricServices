@@ -43,7 +43,7 @@ namespace FabricServices
 
     protected:
       
-      Port(FabricCore::DFGBinding binding, std::string path);
+      Port(FabricCore::DFGBinding binding, std::string path, std::string portType = "", std::string dataType = "");
 
     private:
 

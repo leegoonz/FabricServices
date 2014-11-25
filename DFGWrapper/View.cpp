@@ -77,7 +77,9 @@ void View::callback(void * userData, char const * jsonCString, uint32_t jsonLeng
     else if(descStr == "portRemoved")
     {
       const FabricCore::Variant * portPathVar = notificationVar->getDictValue("portPath");
-      Port port(binding, prefix + portPathVar->getStringData());
+      const FabricCore::Variant * portVar = notificationVar->getDictValue("port");
+      const FabricCore::Variant * portTypeVar = portVar->getDictValue("portType");
+      Port port(binding, prefix + portPathVar->getStringData(), portTypeVar->getStringData());
       view->onPortRemoved(port);
     }
     else if(descStr == "endPointsConnected")
