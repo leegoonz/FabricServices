@@ -132,5 +132,5 @@ std::string Executable::getImportPathName()
 Port Executable::addPort(char const *title, FabricCore::DFGPortType portType, char const *dataType)
 {
   std::string result = m_binding.addPort(m_path.c_str(), title, portType, dataType).getCString();
-  return Port(m_binding, m_path + "." + result);
+  return Port(m_binding, result);
 }
