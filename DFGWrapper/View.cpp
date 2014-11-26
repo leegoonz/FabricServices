@@ -14,6 +14,7 @@ View::View(GraphExecutable graph)
 
 View::~View()
 {
+  m_view.destroy();
 }
 
 bool View::isValid() const
@@ -105,6 +106,12 @@ void View::callback(void * userData, char const * jsonCString, uint32_t jsonLeng
       const FabricCore::Variant * valueVar = notificationVar->getDictValue("value");
       Node node(binding, prefix + nodePathVar->getStringData());
       view->onNodeMetadataChanged(node, keyVar->getStringData(), valueVar->getStringData());
+    }
+    else if(descStr == "execMetadataChanged")
+    {
+      const FabricCore::Variant * keyVar = notificationVar->getDictValue("key");
+      const FabricCore::Variant * valueVar = notificationVar->getDictValue("value");
+      view->onExecMetadataChanged(view->m_graph, keyVar->getStringData(), valueVar->getStringData());
     }
     else
     {

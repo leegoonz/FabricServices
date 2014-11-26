@@ -43,6 +43,7 @@ namespace FabricServices
       virtual void onEndPointsConnected(Port src, Port dst) = 0;
       virtual void onEndPointsDisconnected(Port src, Port dst) = 0;
       virtual void onNodeMetadataChanged(Node node, const char * key, const char * metadata) = 0;
+      virtual void onExecMetadataChanged(Executable exec, const char * key, const char * metadata) = 0;
 
     private:
 
