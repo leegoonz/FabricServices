@@ -49,6 +49,11 @@ std::string Port::getTitle() const
   return m_path.substr(pos+1, m_path.length());
 }
 
+void Port::setTitle(char const *title)
+{
+  m_binding.setTitle(m_path.c_str(), title);
+}
+
 FabricCore::DFGPortType Port::getPortType()
 {
   if(m_portType.length() == 0)

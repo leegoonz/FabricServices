@@ -30,6 +30,7 @@ namespace FabricServices
 
       std::string getPath() const;
       std::string getTitle() const;
+      void setTitle(char const *title);
       FabricCore::DFGPortType getPortType();
       std::string getDataType();
 
