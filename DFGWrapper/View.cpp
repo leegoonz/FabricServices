@@ -107,6 +107,13 @@ void View::callback(void * userData, char const * jsonCString, uint32_t jsonLeng
       Node node(binding, prefix + nodePathVar->getStringData());
       view->onNodeMetadataChanged(node, keyVar->getStringData(), valueVar->getStringData());
     }
+    else if(descStr == "nodeTitleChanged")
+    {
+      const FabricCore::Variant * nodePathVar = notificationVar->getDictValue("nodePath");
+      const FabricCore::Variant * titleVar = notificationVar->getDictValue("title");
+      Node node(binding, prefix + nodePathVar->getStringData());
+      view->onNodeTitleChanged(node, titleVar->getStringData());
+    }
     else if(descStr == "execMetadataChanged")
     {
       const FabricCore::Variant * keyVar = notificationVar->getDictValue("key");
