@@ -114,6 +114,13 @@ void View::callback(void * userData, char const * jsonCString, uint32_t jsonLeng
       Node node(binding, prefix + nodePathVar->getStringData());
       view->onNodeTitleChanged(node, titleVar->getStringData());
     }
+    else if(descStr == "portTitleChanged")
+    {
+      const FabricCore::Variant * portPathVar = notificationVar->getDictValue("portPath");
+      const FabricCore::Variant * titleVar = notificationVar->getDictValue("title");
+      Port port = view->m_graph.getPort(portPathVar->getStringData());
+      view->onPortTitleChanged(port, titleVar->getStringData());
+    }
     else if(descStr == "execMetadataChanged")
     {
       const FabricCore::Variant * keyVar = notificationVar->getDictValue("key");
@@ -122,7 +129,7 @@ void View::callback(void * userData, char const * jsonCString, uint32_t jsonLeng
     }
     else
     {
-      printf("View::callback: Unhandled desc '%s'\n", descStr.c_str());
+      printf("View::callback: Unhandled desc '%s', '%s'\n", descStr.c_str(), jsonCString);
     }
   }
 }
