@@ -44,6 +44,8 @@ namespace FabricServices
       std::string getMetadata(char const * key);
       void setMetadata(char const * key, char const * metadata, bool canUndo);
 
+      void addExtensionDependency(char const * ext);
+
       std::string getImportPathName();
 
     protected:

@@ -124,6 +124,11 @@ void Executable::setMetadata(char const *key, char const * metadata, bool canUnd
   return m_binding.setMetadata(m_path.c_str(), key, metadata, canUndo);
 }
 
+void Executable::addExtensionDependency(char const * ext)
+{
+  m_binding.addExtDep(m_path.c_str(), ext);
+}
+
 std::string Executable::getImportPathName()
 {
   return m_binding.getImportPathname(m_path.c_str());
