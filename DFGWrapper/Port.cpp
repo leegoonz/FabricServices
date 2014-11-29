@@ -39,7 +39,7 @@ std::string Port::getPath() const
   return m_path;
 }
 
-std::string Port::getTitle() const
+std::string Port::getName() const
 {
   if(m_path.length() == 0)
     return "";
@@ -47,6 +47,13 @@ std::string Port::getTitle() const
   if(pos == std::string::npos)
     return m_path;
   return m_path.substr(pos+1, m_path.length());
+}
+
+std::string Port::getTitle()
+{
+  FabricCore::Variant descVar = FabricCore::Variant::CreateFromJSON(getDesc().c_str());
+  const FabricCore::Variant * titleVar = descVar.getDictValue("title");
+  return titleVar->getStringData();
 }
 
 void Port::setTitle(char const *title)

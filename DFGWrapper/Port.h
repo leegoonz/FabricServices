@@ -29,7 +29,8 @@ namespace FabricServices
       FabricCore::DFGBinding getWrappedCoreBinding() const;
 
       std::string getPath() const;
-      std::string getTitle() const;
+      std::string getName() const;
+      std::string getTitle();
       void setTitle(char const *title);
       FabricCore::DFGPortType getPortType();
       std::string getDataType();
