@@ -127,6 +127,11 @@ void View::callback(void * userData, char const * jsonCString, uint32_t jsonLeng
       const FabricCore::Variant * valueVar = notificationVar->getDictValue("value");
       view->onExecMetadataChanged(view->m_graph, keyVar->getStringData(), valueVar->getStringData());
     }
+    else if(descStr == "extDepAdded'")
+    {
+      // pass for now
+      continue;
+    }
     else
     {
       printf("View::callback: Unhandled desc '%s', '%s'\n", descStr.c_str(), jsonCString);
