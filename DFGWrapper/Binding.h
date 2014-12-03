@@ -19,6 +19,7 @@ namespace FabricServices
 
     public:
 
+      Binding(FabricCore::DFGBinding binding);
       Binding(const Binding & other);
       virtual ~Binding();
 
@@ -31,10 +32,6 @@ namespace FabricServices
       GraphExecutable getGraph();
 
       void execute();
-
-    protected:
-      
-      Binding(FabricCore::DFGBinding binding);
 
     private:
       FabricCore::DFGBinding m_binding;      

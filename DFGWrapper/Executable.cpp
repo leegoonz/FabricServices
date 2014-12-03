@@ -71,9 +71,9 @@ std::vector<Port> Executable::getPorts()
   for(uint32_t i=0;i<portsVar->getArraySize();i++)
   {
     const FabricCore::Variant * portVar = portsVar->getArrayElement(i);
-    const FabricCore::Variant * titleVar = portVar->getDictValue("title");
-    std::string titleStr = titleVar->getStringData();
-    result.push_back(Port(getWrappedCoreBinding(), prefix + titleStr));
+    const FabricCore::Variant * nameVar = portVar->getDictValue("name");
+    std::string nameStr = nameVar->getStringData();
+    result.push_back(Port(getWrappedCoreBinding(), prefix + nameStr));
   }
   return result;
 }
