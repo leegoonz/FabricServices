@@ -43,6 +43,11 @@ void Host::importJSON(char const *parentNameSpace, char const *json, char const 
   m_host.importJSON(parentNameSpace, json, importPathname);
 }
 
+std::string Host::exportJSON(char const * execPath)
+{
+  return m_host.exportJSON(execPath).getCString();
+}
+
 Binding Host::createBindingToNewGraph()
 {
   return Binding(m_host.createBindingToNewGraph());

@@ -32,6 +32,7 @@ namespace FabricServices
       NameSpace getRootNameSpace() const;
 
       void importJSON(char const * parentNameSpace, char const * json, char const * importPathname = 0);
+      std::string exportJSON(char const * execPath);
 
       Binding createBindingToNewGraph();
       Binding createBindingFromJSON(char const * json, uint32_t rtValCount = 0, FabricCore::RTVal const *rtVals = 0);
