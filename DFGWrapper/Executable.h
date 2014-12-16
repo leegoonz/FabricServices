@@ -39,6 +39,8 @@ namespace FabricServices
       void removePort(char const * name);
       void removePort(uint32_t index);
 
+      std::vector<std::string> getErrors();
+
       std::string exportJSON();
 
       std::string getMetadata(char const * key);

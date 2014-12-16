@@ -109,6 +109,22 @@ void Executable::removePort(uint32_t index)
   removePort(getPorts()[index]);
 }
 
+std::vector<std::string> Executable::getErrors()
+{
+  std::vector<std::string> result;
+  FabricCore::Variant descVar = FabricCore::Variant::CreateFromJSON(getDesc().c_str());
+  const FabricCore::Variant * errorsVar = descVar.getDictValue("errors");
+  if(!errorsVar)
+    return result;
+  for(uint32_t i=0;i<errorsVar->getArraySize();i++)
+  {
+    const FabricCore::Variant * errorVar = errorsVar->getArrayElement(i);
+    std::string errorStr = errorVar->getStringData();
+    result.push_back(errorStr);
+  }
+  return result;
+}
+
 std::string Executable::exportJSON()
 {
   return m_binding.exportJSON(m_path.c_str()).getCString();
