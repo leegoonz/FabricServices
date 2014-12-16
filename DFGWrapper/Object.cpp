@@ -30,7 +30,7 @@ std::string Object::getPath() const
   return m_path;
 }
 
-std::string Object::getTitle() const
+std::string Object::getName() const
 {
   if(m_path.length() == 0)
     return "";

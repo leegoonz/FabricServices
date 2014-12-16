@@ -24,7 +24,7 @@ namespace FabricServices
 
       FabricCore::DFGHost getWrappedCoreHost() const;
       std::string getPath() const;
-      std::string getTitle() const;
+      std::string getName() const;
 
     protected:
       
