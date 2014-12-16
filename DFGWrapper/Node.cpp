@@ -95,9 +95,9 @@ std::vector<Pin> Node::getPins()
   for(uint32_t i=0;i<pinsVar->getArraySize();i++)
   {
     const FabricCore::Variant * pinVar = pinsVar->getArrayElement(i);
-    const FabricCore::Variant * titleVar = pinVar->getDictValue("title");
-    std::string titleStr = titleVar->getStringData();
-    result.push_back(Pin(getWrappedCoreBinding(), getPath() + "." + titleStr));
+    const FabricCore::Variant * nameVar = pinVar->getDictValue("name");
+    std::string nameStr = nameVar->getStringData();
+    result.push_back(Pin(getWrappedCoreBinding(), getPath() + "." + nameStr));
   }
   return result;
 }
