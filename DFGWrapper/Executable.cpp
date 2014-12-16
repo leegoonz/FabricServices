@@ -93,7 +93,7 @@ Port Executable::getPort(uint32_t index)
 
 void Executable::removePort(Port port)
 {
-  removePort(port.getTitle().c_str());
+  removePort(port.getName().c_str());
 }
 
 void Executable::removePort(char const * name)

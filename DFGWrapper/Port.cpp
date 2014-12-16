@@ -49,16 +49,10 @@ std::string Port::getName() const
   return m_path.substr(pos+1, m_path.length());
 }
 
-std::string Port::getTitle()
+void Port::setName(char const *name)
 {
-  FabricCore::Variant descVar = FabricCore::Variant::CreateFromJSON(getDesc().c_str());
-  const FabricCore::Variant * titleVar = descVar.getDictValue("title");
-  return titleVar->getStringData();
-}
-
-void Port::setTitle(char const *title)
-{
-  m_binding.setTitle(m_path.c_str(), title);
+  // portTitle todo
+  // m_binding.setName(m_path.c_str(), name);
 }
 
 FabricCore::DFGPortType Port::getPortType()

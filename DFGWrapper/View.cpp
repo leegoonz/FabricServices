@@ -114,12 +114,12 @@ void View::callback(void * userData, char const * jsonCString, uint32_t jsonLeng
       Node node(binding, prefix + nodePathVar->getStringData());
       view->onNodeTitleChanged(node, titleVar->getStringData());
     }
-    else if(descStr == "portTitleChanged")
+    else if(descStr == "portNameChanged")
     {
       const FabricCore::Variant * portPathVar = notificationVar->getDictValue("portPath");
-      const FabricCore::Variant * titleVar = notificationVar->getDictValue("title");
+      const FabricCore::Variant * nameVar = notificationVar->getDictValue("name");
       Port port = view->m_graph.getPort(portPathVar->getStringData());
-      view->onPortTitleChanged(port, titleVar->getStringData());
+      view->onPortNameChanged(port, nameVar->getStringData());
     }
     else if(descStr == "execMetadataChanged")
     {
