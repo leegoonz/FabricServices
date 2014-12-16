@@ -114,12 +114,25 @@ void View::callback(void * userData, char const * jsonCString, uint32_t jsonLeng
       Node node(binding, prefix + nodePathVar->getStringData());
       view->onNodeTitleChanged(node, titleVar->getStringData());
     }
-    else if(descStr == "portNameChanged")
+    else if(descStr == "portRenamed")
     {
-      const FabricCore::Variant * portPathVar = notificationVar->getDictValue("portPath");
-      const FabricCore::Variant * nameVar = notificationVar->getDictValue("name");
-      Port port = view->m_graph.getPort(portPathVar->getStringData());
-      view->onPortNameChanged(port, nameVar->getStringData());
+      const FabricCore::Variant * oldPathVar = notificationVar->getDictValue("oldPath");
+      const FabricCore::Variant * newPathVar = notificationVar->getDictValue("newPath");
+      std::string oldPath = oldPathVar->getStringData();
+      if(oldPath.rfind('.') != std::string::npos)
+        oldPath = oldPath.substr(oldPath.find('.')+1, oldPath.length());
+      Port port(binding, prefix + newPathVar->getStringData());
+      view->onPortRenamed(port, oldPath.c_str());
+    }
+    else if(descStr == "pinRenamed")
+    {
+      const FabricCore::Variant * oldPathVar = notificationVar->getDictValue("oldPath");
+      const FabricCore::Variant * newPathVar = notificationVar->getDictValue("newPath");
+      std::string oldPath = oldPathVar->getStringData();
+      if(oldPath.rfind('.') != std::string::npos)
+        oldPath = oldPath.substr(oldPath.find('.')+1, oldPath.length());
+      Pin pin(binding, prefix + newPathVar->getStringData());
+      view->onPinRenamed(pin, oldPath.c_str());
     }
     else if(descStr == "execMetadataChanged")
     {

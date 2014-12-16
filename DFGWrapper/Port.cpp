@@ -51,8 +51,16 @@ std::string Port::getName() const
 
 void Port::setName(char const *name)
 {
-  // portTitle todo
-  // m_binding.setName(m_path.c_str(), name);
+  std::string path = getPath();
+  std::string oldName = getName();
+  if(name == oldName)
+    return;
+
+  std::string newName = m_binding.rename(path.c_str(), name).getCString();
+  if(path.rfind('.') != std::string::npos)
+    path.substr(0, path.rfind('.')) + newName;
+  else
+    m_path = newName;
 }
 
 FabricCore::DFGPortType Port::getPortType()
