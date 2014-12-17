@@ -145,13 +145,23 @@ void Executable::addExtensionDependency(char const * ext)
   m_binding.addExtDep(m_path.c_str(), ext);
 }
 
-std::string Executable::getImportPathName()
+std::string Executable::getImportPathname()
 {
   return m_binding.getImportPathname(m_path.c_str());
+}
+
+void Executable::setImportPathname( char const *importPathname )
+{
+  m_binding.setImportPathname(m_path.c_str(), importPathname);
 }
 
 Port Executable::addPort(char const *title, FabricCore::DFGPortType portType, char const *dataType)
 {
   std::string result = m_binding.addPort(m_path.c_str(), title, portType, dataType).getCString();
   return Port(m_binding, result);
+}
+
+void Executable::attachPreset(char const *parentPresetPath, char const *desiredName)
+{
+  m_binding.attachPreset(m_path.c_str(), parentPresetPath, desiredName);
 }

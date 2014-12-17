@@ -48,7 +48,10 @@ namespace FabricServices
 
       void addExtensionDependency(char const * ext);
 
-      std::string getImportPathName();
+      std::string getImportPathname();
+      void setImportPathname( char const *importPathname );
+
+      void attachPreset(char const *parentPresetPath, char const *desiredName);
 
     protected:
       
