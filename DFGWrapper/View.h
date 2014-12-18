@@ -47,6 +47,7 @@ namespace FabricServices
       virtual void onPortRenamed(Port port, const char * oldName) = 0;
       virtual void onPinRenamed(Pin pin, const char * oldName) = 0;
       virtual void onExecMetadataChanged(Executable exec, const char * key, const char * metadata) = 0;
+      virtual void onExtDepAdded(const char * extension, const char * version) = 0;
 
     private:
 

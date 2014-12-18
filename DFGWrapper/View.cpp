@@ -140,10 +140,11 @@ void View::callback(void * userData, char const * jsonCString, uint32_t jsonLeng
       const FabricCore::Variant * valueVar = notificationVar->getDictValue("value");
       view->onExecMetadataChanged(view->m_graph, keyVar->getStringData(), valueVar->getStringData());
     }
-    else if(descStr == "extDepAdded'")
+    else if(descStr == "extDepAdded")
     {
-      // pass for now
-      continue;
+      const FabricCore::Variant * nameVar = notificationVar->getDictValue("name");
+      const FabricCore::Variant * versionRangeVar = notificationVar->getDictValue("versionRange");
+      view->onExtDepAdded(nameVar->getStringData(), versionRangeVar->getStringData());
     }
     else
     {
