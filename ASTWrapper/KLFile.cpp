@@ -64,7 +64,7 @@ void KLFile::parse()
           if(extension)
             extension->parse();
         }
-        else if(et == "ASTAlias")
+        else if(et == "Alias")
         {
           KLAlias * e = new KLAlias(this, element);
           m_aliases.push_back(e);
@@ -117,7 +117,7 @@ void KLFile::parse()
           else
             m_functions.push_back(e);
         }
-        else if(et == "ASTInterfaceDecl")
+        else if(et == "ASTInterface")
         {
           KLInterface * e = new KLInterface(this, element);
           m_types.push_back(e);
