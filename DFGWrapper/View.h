@@ -1,4 +1,4 @@
-// Copyright 2010-2014 Fabric Engine Inc. All rights reserved.
+// Copyright 2010-2015 Fabric Software Inc. All rights reserved.
 
 #ifndef __DFGWrapper_View__
 #define __DFGWrapper_View__

@@ -1,4 +1,4 @@
-// Copyright 2010-2014 Fabric Engine Inc. All rights reserved.
+// Copyright 2010-2015 Fabric Software Inc. All rights reserved.
 
 #ifndef __ASTWrapper_KLOperator__
 #define __ASTWrapper_KLOperator__
