@@ -78,7 +78,6 @@ KLExtension::KLExtension(const KLASTManager* astManager, const char * jsonFilePa
   
   std::vector<std::string> klFileRelPaths = extractKLFilePaths(&jsonVar, m_name.c_str());
   std::vector<std::string> klContent;
-  std::vector<const char *> klContentCStr;
   for(uint32_t i=0;i<klFileRelPaths.size();i++)
   {
     boost::filesystem::path klFilePath = klFileRelPaths[i];
@@ -93,21 +92,27 @@ KLExtension::KLExtension(const KLASTManager* astManager, const char * jsonFilePa
       throw(FabricCore::Exception(message.c_str()));
     }
 
+    klContent.resize( klContent.size() + 1 );
+    std::string &fileContent = klContent.back();
+
     FILE * klFile = fopen(klFilePath.string().c_str(), "rb");
-
-    fseek( klFile, 0, SEEK_END );
-    int klFileSize = ftell( klFile );
-    rewind( klFile );
-
-    char * klFileBuffer = (char*) malloc(klFileSize + 1);
-    klFileBuffer[klFileSize] = '\0';
-
-    fread(klFileBuffer, klFileSize, 1, klFile);
+    for (;;)
+    {
+      size_t oldSize = fileContent.size();
+      fileContent.resize( oldSize + 16384 );
+      size_t readResult = 
+        fread(&fileContent[oldSize], 1, 16384, klFile);
+      fileContent.resize( oldSize + readResult );
+      if ( readResult < 16384 )
+        break;
+    }
     fclose(klFile);
+  }
 
-    klContent.push_back(klFileBuffer);
+  std::vector<const char *> klContentCStr;
+  for(uint32_t i=0;i<klFileRelPaths.size();i++)
+  {
     klContentCStr.push_back(klContent[i].c_str());
-    free(klFileBuffer);
   }
 
   init(jsonContent.c_str(), klContentCStr.size(), &klContentCStr[0]);
@@ -130,8 +135,6 @@ KLExtension::~KLExtension()
 void KLExtension::init(const char * jsonContent, uint32_t numKLFiles, const char ** klContent)
 {
   m_parsed = false;
-
-  const FabricCore::Client * client = m_astManager->getClient();
 
   FabricCore::Variant jsonVar = FabricCore::Variant::CreateFromJSON(jsonContent);
 

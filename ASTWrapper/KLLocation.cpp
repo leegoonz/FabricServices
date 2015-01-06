@@ -9,7 +9,7 @@ KLLocation::KLLocation(JSONData data)
   m_line = data->getDictValue("line")->getSInt32();
   m_column = data->getDictValue("column")->getSInt32();
   m_endLine = data->getDictValue("endLine")->getSInt32();
-  m_endColumn = data->getDictValue("endColumn")->getSInt32();
+  m_endColumn = data->getDictValue("endColumn")->getSInt32() + 1;
 }
 
 KLLocation::~KLLocation()
