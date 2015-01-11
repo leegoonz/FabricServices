@@ -186,7 +186,7 @@ bool KLCodeAssistant::isCursorInsideCommentOrString(uint32_t line, uint32_t colu
   return isCursorInsideCommentOrString(cursor);
 }
 
-const KLStatement * KLCodeAssistant::getStatementAtCursor(uint32_t cursor) const
+const KLStmt * KLCodeAssistant::getStatementAtCursor(uint32_t cursor) const
 {
   uint32_t line = 0;
   uint32_t column = 0;
@@ -194,7 +194,7 @@ const KLStatement * KLCodeAssistant::getStatementAtCursor(uint32_t cursor) const
   return getStatementAtCursor(line, column);
 }
 
-const KLStatement * KLCodeAssistant::getStatementAtCursor(uint32_t line, uint32_t column) const
+const KLStmt * KLCodeAssistant::getStatementAtCursor(uint32_t line, uint32_t column) const
 {
   if(!hasASTManager())
     return NULL;
@@ -203,7 +203,7 @@ const KLStatement * KLCodeAssistant::getStatementAtCursor(uint32_t line, uint32_
   return m_file->getStatementAtCursor(line, column);
 }
 
-std::string KLCodeAssistant::getCodeForStatement(const KLStatement * statement) const
+std::string KLCodeAssistant::getCodeForStatement(const KLStmt * statement) const
 {
   uint32_t start, end;
   lineAndColumnToCursor(statement->getLocation()->getLine(), statement->getLocation()->getColumn(), start);
@@ -290,7 +290,7 @@ std::vector<KLVariable> KLCodeAssistant::getVariablesAtCursor(uint32_t line, uin
   std::vector<KLVariable> result;
   if(!hasASTManager())
     return result;
-  const KLStatement * statement = getStatementAtCursor(line, column);
+  const KLStmt * statement = getStatementAtCursor(line, column);
   if(statement)
   {
     if(statement->isOfDeclType(KLDeclType_Function))
@@ -298,10 +298,10 @@ std::vector<KLVariable> KLCodeAssistant::getVariablesAtCursor(uint32_t line, uin
   }
   if(statement)
   {
-    std::vector<const KLStatement *> varDecls = statement->getAllChildrenOfType(KLDeclType_VarDeclStatement, false, true);
+    std::vector<const KLStmt *> varDecls = statement->getAllChildrenOfType(KLDeclType_VarDeclStmt, false, true);
     for(size_t i=0;i<varDecls.size();i++)
     {
-      const KLVarDeclStatement * varDecl = (const KLVarDeclStatement *)varDecls[i];
+      const KLVarDeclStmt * varDecl = (const KLVarDeclStmt *)varDecls[i];
       for(uint32_t j=0;j<varDecl->getCount();j++)
       {
         result.push_back(KLVariable(varDecl->getName(j), varDecl->getBaseType(), varDecl->getArrayModifier(j)));
@@ -514,7 +514,7 @@ const KLDecl * KLCodeAssistant::getDeclAtCursor(uint32_t line, uint32_t column) 
 
       if(!found)
       {
-        if(type->getKLType() != "interface")
+        if(type->getDeclType() != KLDeclType_Interface)
         {
           const KLStruct * castType = (const KLStruct *)type;
           const KLMember * member = castType->getMember(delegates[i].c_str(), true);
