@@ -145,7 +145,7 @@ const KLStmt * KLStmt::constructChild(JSONData data)
   {
     result = new KLCompoundStmt(getKLFile(), data, this);
   }
-  else if(type == "ConditionalStatement")
+  else if(type == "ASTCondStmt")
   {
     result = new KLConditionalStmt(getKLFile(), data, this);
   }
