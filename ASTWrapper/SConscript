@@ -2,7 +2,7 @@
 # Copyright 2010-2015 Fabric Software Inc. All rights reserved.
 #
 
-Import('parentEnv', 'capiIncludeDir', 'boostFlags')
+Import('parentEnv', 'capiIncludeDir', 'capiSharedLib', 'boostFlags')
 
 env = parentEnv.CloneSubStage('ASTWrapper')
 
@@ -13,6 +13,7 @@ env.Append(CPPPATH = [capiIncludeDir])
 sources = Glob('*.cpp')
 
 astWrapperLib = env.StaticLibrary('Fabric-ASTWrapper', sources)
+env.Depends(astWrapperLib, capiSharedLib)
 
 astWrapperIncludeDir = env.Dir('.').dir.srcnode()
 

@@ -3,14 +3,14 @@
 #ifndef __ASTWrapper_KLFunction__
 #define __ASTWrapper_KLFunction__
 
-#include "KLStatement.h"
-#include "KLCompoundStatement.h"
-#include "KLConditionalStatement.h"
-#include "KLCStyleLoopStatement.h"
-#include "KLSwitchStatement.h"
-#include "KLCaseStatement.h"
-#include "KLVarDeclStatement.h"
-#include "KLExprStatement.h"
+#include "KLStmt.h"
+#include "KLCompoundStmt.h"
+#include "KLConditionalStmt.h"
+#include "KLCStyleLoopStmt.h"
+#include "KLSwitchStmt.h"
+#include "KLCaseStmt.h"
+#include "KLVarDeclStmt.h"
+#include "KLExprStmt.h"
 #include "KLParameter.h"
 
 #include <string>
@@ -21,7 +21,7 @@ namespace FabricServices
   namespace ASTWrapper
   {
 
-    class KLFunction : public KLStatement
+    class KLFunction : public KLStmt
     {
       friend class KLFile;
 
@@ -37,7 +37,7 @@ namespace FabricServices
       virtual const std::string & getSymbolName() const;
       virtual uint32_t getParameterCount() const;
       virtual const KLParameter * getParameter(uint32_t index) const;
-      virtual const KLCompoundStatement * getBody() const;
+      virtual const KLCompoundStmt * getBody() const;
 
       virtual bool isMethod() const;
       virtual std::string getPrefix() const; // the prefix of the function *may* be something like 'Vec3.'
@@ -57,7 +57,7 @@ namespace FabricServices
       std::string m_returnType;
       std::string m_symbolName;
       std::vector<KLParameter*> m_params;
-      KLCompoundStatement * m_body;
+      KLCompoundStmt * m_body;
     };
 
   };
