@@ -30,6 +30,7 @@ namespace FabricServices
 
       virtual bool isMethod() const;
       virtual bool isVirtual() const;
+      virtual bool isConstructor() const;
       virtual std::string getPrefix() const;
       virtual std::string getSuffix() const;
       virtual const KLComment * getComments() const;

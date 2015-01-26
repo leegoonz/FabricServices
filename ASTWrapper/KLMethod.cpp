@@ -97,6 +97,11 @@ bool KLMethod::isVirtual() const
   return m_isVirtual > 0;
 }
 
+bool KLMethod::isConstructor() const
+{
+  return getLabel().substr(0, getThisType().length()+2) == getThisType() + " (";
+}
+
 std::string KLMethod::getPrefix() const
 {
   // filter out constructors / destructors
