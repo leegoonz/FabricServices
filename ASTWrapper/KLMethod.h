@@ -1,4 +1,4 @@
-// Copyright 2010-2014 Fabric Engine Inc. All rights reserved.
+// Copyright 2010-2015 Fabric Software Inc. All rights reserved.
 
 #ifndef __ASTWrapper_KLMethod__
 #define __ASTWrapper_KLMethod__
@@ -30,6 +30,7 @@ namespace FabricServices
 
       virtual bool isMethod() const;
       virtual bool isVirtual() const;
+      virtual bool isConstructor() const;
       virtual std::string getPrefix() const;
       virtual std::string getSuffix() const;
       virtual const KLComment * getComments() const;

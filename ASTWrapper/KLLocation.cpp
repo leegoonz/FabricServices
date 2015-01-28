@@ -1,4 +1,4 @@
-// Copyright 2010-2014 Fabric Engine Inc. All rights reserved.
+// Copyright 2010-2015 Fabric Software Inc. All rights reserved.
 
 #include "KLLocation.h"
 
@@ -9,7 +9,7 @@ KLLocation::KLLocation(JSONData data)
   m_line = data->getDictValue("line")->getSInt32();
   m_column = data->getDictValue("column")->getSInt32();
   m_endLine = data->getDictValue("endLine")->getSInt32();
-  m_endColumn = data->getDictValue("endColumn")->getSInt32();
+  m_endColumn = data->getDictValue("endColumn")->getSInt32() + 1;
 }
 
 KLLocation::~KLLocation()

@@ -1,4 +1,4 @@
-// Copyright 2010-2014 Fabric Engine Inc. All rights reserved.
+// Copyright 2010-2015 Fabric Software Inc. All rights reserved.
 
 #ifndef __ASTWrapper_KLDecl__
 #define __ASTWrapper_KLDecl__
@@ -23,14 +23,14 @@ namespace FabricServices
     enum KLDeclType
     {
       KLDeclType_Alias,
-      KLDeclType_CaseStatement,
+      KLDeclType_CaseStmt,
       KLDeclType_Comment,
       KLDeclType_Commented,
-      KLDeclType_CompoundStatement,
-      KLDeclType_ConditionalStatement,
+      KLDeclType_CompoundStmt,
+      KLDeclType_ConditionalStmt,
       KLDeclType_Constant,
-      KLDeclType_CStyleLoopStatement,
-      KLDeclType_ExprStatement,
+      KLDeclType_CStyleLoopStmt,
+      KLDeclType_ExprStmt,
       KLDeclType_Function,
       KLDeclType_Interface,
       KLDeclType_Location,
@@ -40,12 +40,12 @@ namespace FabricServices
       KLDeclType_Operator,
       KLDeclType_Parameter,
       KLDeclType_Require,
-      KLDeclType_Statement,
+      KLDeclType_Stmt,
       KLDeclType_Struct,
-      KLDeclType_SwitchStatement,
+      KLDeclType_SwitchStmt,
       KLDeclType_Type,
       KLDeclType_TypeOp,
-      KLDeclType_VarDeclStatement,
+      KLDeclType_VarDeclStmt,
       KLDeclType_NumItems
     };
 

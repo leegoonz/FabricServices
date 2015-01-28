@@ -1,4 +1,4 @@
-// Copyright 2010-2014 Fabric Engine Inc. All rights reserved.
+// Copyright 2010-2015 Fabric Software Inc. All rights reserved.
 
 #include "KLFile.h"
 #include "KLLocation.h"
@@ -117,7 +117,7 @@ void KLFile::parse()
           else
             m_functions.push_back(e);
         }
-        else if(et == "ASTInterface")
+        else if(et == "ASTInterfaceDecl")
         {
           KLInterface * e = new KLInterface(this, element);
           m_types.push_back(e);
@@ -292,14 +292,14 @@ std::vector<const KLError*> KLFile::getErrors() const
   return m_errors;
 }
 
-const KLStatement * KLFile::getStatementAtCursor(uint32_t line, uint32_t column) const
+const KLStmt * KLFile::getStatementAtCursor(uint32_t line, uint32_t column) const
 {
   uint32_t minDistance = UINT_MAX;
-  const KLStatement * result = NULL;
+  const KLStmt * result = NULL;
 
   for(size_t i=0;i<m_functions.size();i++)
   {
-    const KLStatement * statement = m_functions[i]->getStatementAtCursor(line, column);
+    const KLStmt * statement = m_functions[i]->getStatementAtCursor(line, column);
     if(statement)
     {
       uint32_t distance = statement->getCursorDistance(line, column);
@@ -314,7 +314,7 @@ const KLStatement * KLFile::getStatementAtCursor(uint32_t line, uint32_t column)
 
   for(size_t i=0;i<m_operators.size();i++)
   {
-    const KLStatement * statement = m_operators[i]->getStatementAtCursor(line, column);
+    const KLStmt * statement = m_operators[i]->getStatementAtCursor(line, column);
     if(statement)
     {
       uint32_t distance = statement->getCursorDistance(line, column);
@@ -331,7 +331,7 @@ const KLStatement * KLFile::getStatementAtCursor(uint32_t line, uint32_t column)
   {
     for(uint32_t j=0;j<m_types[i]->getMethodCount();j++)
     {
-      const KLStatement * statement = m_types[i]->getMethod(j)->getStatementAtCursor(line, column);
+      const KLStmt * statement = m_types[i]->getMethod(j)->getStatementAtCursor(line, column);
       if(statement)
       {
         uint32_t distance = statement->getCursorDistance(line, column);
@@ -345,7 +345,7 @@ const KLStatement * KLFile::getStatementAtCursor(uint32_t line, uint32_t column)
 
     for(uint32_t j=0;j<m_types[i]->getTypeOpCount();j++)
     {
-      const KLStatement * statement = m_types[i]->getTypeOp(j)->getStatementAtCursor(line, column);
+      const KLStmt * statement = m_types[i]->getTypeOp(j)->getStatementAtCursor(line, column);
       if(statement)
       {
         uint32_t distance = statement->getCursorDistance(line, column);

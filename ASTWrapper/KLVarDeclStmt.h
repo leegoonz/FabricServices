@@ -1,9 +1,9 @@
-// Copyright 2010-2014 Fabric Engine Inc. All rights reserved.
+// Copyright 2010-2015 Fabric Software Inc. All rights reserved.
 
-#ifndef __ASTWrapper_KLVarDeclStatement__
-#define __ASTWrapper_KLVarDeclStatement__
+#ifndef __ASTWrapper_KLVarDeclStmt__
+#define __ASTWrapper_KLVarDeclStmt__
 
-#include "KLStatement.h"
+#include "KLStmt.h"
 
 #include <string>
 
@@ -12,14 +12,14 @@ namespace FabricServices
 
   namespace ASTWrapper
   {
-    class KLVarDeclStatement : public KLStatement
+    class KLVarDeclStmt : public KLStmt
     {
       friend class KLFunction;
-      friend class KLStatement;
+      friend class KLStmt;
 
     public:
 
-      virtual ~KLVarDeclStatement() {}
+      virtual ~KLVarDeclStmt() {}
 
       virtual KLDeclType getDeclType() const;
       virtual bool isOfDeclType(KLDeclType type) const;
@@ -31,7 +31,7 @@ namespace FabricServices
 
     protected:
 
-      KLVarDeclStatement(const KLFile* klFile, JSONData data, KLStatement * parent = NULL);
+      KLVarDeclStmt(const KLFile* klFile, JSONData data, KLStmt * parent = NULL);
 
       std::string m_baseType;
       std::vector<std::string> m_names;
@@ -43,4 +43,4 @@ namespace FabricServices
 };
 
 
-#endif // __ASTWrapper_KLVarDeclStatement__
+#endif // __ASTWrapper_KLVarDeclStmt__

@@ -1,4 +1,4 @@
-// Copyright 2010-2014 Fabric Engine Inc. All rights reserved.
+// Copyright 2010-2015 Fabric Software Inc. All rights reserved.
 
 #include "KLMethod.h"
 #include "KLType.h"
@@ -95,6 +95,11 @@ bool KLMethod::isVirtual() const
     }
   }
   return m_isVirtual > 0;
+}
+
+bool KLMethod::isConstructor() const
+{
+  return getLabel().substr(0, getThisType().length()+2) == getThisType() + " (";
 }
 
 std::string KLMethod::getPrefix() const

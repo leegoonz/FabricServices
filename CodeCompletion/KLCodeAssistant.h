@@ -1,4 +1,4 @@
-// Copyright 2010-2014 Fabric Engine Inc. All rights reserved.
+// Copyright 2010-2015 Fabric Software Inc. All rights reserved.
 
 #ifndef __CodeCompletion_KLCodeAssistant__
 #define __CodeCompletion_KLCodeAssistant__
@@ -38,9 +38,9 @@ namespace FabricServices
       bool isCursorInsideCommentOrString(uint32_t cursor) const;
       bool isCursorInsideCommentOrString(uint32_t line, uint32_t column) const;
 
-      const ASTWrapper::KLStatement * getStatementAtCursor(uint32_t cursor) const;
-      const ASTWrapper::KLStatement * getStatementAtCursor(uint32_t line, uint32_t column) const;
-      std::string getCodeForStatement(const ASTWrapper::KLStatement * statement) const;
+      const ASTWrapper::KLStmt * getStatementAtCursor(uint32_t cursor) const;
+      const ASTWrapper::KLStmt * getStatementAtCursor(uint32_t line, uint32_t column) const;
+      std::string getCodeForStatement(const ASTWrapper::KLStmt * statement) const;
 
       std::string getWordAtCursor(uint32_t cursor, bool ignoreParentheses) const;
       std::string getWordAtCursor(uint32_t line, uint32_t column, bool ignoreParentheses) const;

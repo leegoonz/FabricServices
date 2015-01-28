@@ -1,13 +1,13 @@
-// Copyright 2010-2014 Fabric Engine Inc. All rights reserved.
+// Copyright 2010-2015 Fabric Software Inc. All rights reserved.
 
-#include "KLStatement.h"
-#include "KLCompoundStatement.h"
-#include "KLConditionalStatement.h"
-#include "KLCStyleLoopStatement.h"
-#include "KLSwitchStatement.h"
-#include "KLCaseStatement.h"
-#include "KLVarDeclStatement.h"
-#include "KLExprStatement.h"
+#include "KLStmt.h"
+#include "KLCompoundStmt.h"
+#include "KLConditionalStmt.h"
+#include "KLCStyleLoopStmt.h"
+#include "KLSwitchStmt.h"
+#include "KLCaseStmt.h"
+#include "KLVarDeclStmt.h"
+#include "KLExprStmt.h"
 #include "KLLocation.h"
 
 #include <limits.h>
@@ -16,7 +16,7 @@
 
 using namespace FabricServices::ASTWrapper;
 
-KLStatement::KLStatement(const KLFile* klFile, JSONData data, KLStatement * parent)
+KLStmt::KLStmt(const KLFile* klFile, JSONData data, KLStmt * parent)
 : KLCommented(klFile, data)
 {
   m_type = getDictValue("type")->getStringData();
@@ -27,7 +27,7 @@ KLStatement::KLStatement(const KLFile* klFile, JSONData data, KLStatement * pare
     m_depth = 0;
 }
 
-KLStatement::~KLStatement()
+KLStmt::~KLStmt()
 {
   for(uint32_t i=0;i<m_statements.size();i++)
   {
@@ -35,36 +35,36 @@ KLStatement::~KLStatement()
   }
 }
 
-KLDeclType KLStatement::getDeclType() const
+KLDeclType KLStmt::getDeclType() const
 {
-  return KLDeclType_Statement;
+  return KLDeclType_Stmt;
 }
 
-bool KLStatement::isOfDeclType(KLDeclType type) const
+bool KLStmt::isOfDeclType(KLDeclType type) const
 {
-  if(type == KLDeclType_Statement)
+  if(type == KLDeclType_Stmt)
     return true;
   return KLCommented::isOfDeclType(type);
 }
 
-std::string KLStatement::getTypeName() const
+std::string KLStmt::getTypeName() const
 {
   return m_type;  
 }
 
-uint32_t KLStatement::getChildCount() const
+uint32_t KLStmt::getChildCount() const
 {
   return m_statements.size();
 }
 
-const KLStatement * KLStatement::getChild(uint32_t index) const
+const KLStmt * KLStmt::getChild(uint32_t index) const
 {
   return m_statements[index];
 }
 
-std::vector<const KLStatement*> KLStatement::getAllChildrenOfType(KLDeclType type, bool downwards, bool upwards) const
+std::vector<const KLStmt*> KLStmt::getAllChildrenOfType(KLDeclType type, bool downwards, bool upwards) const
 {
-  std::vector<const KLStatement*> result;
+  std::vector<const KLStmt*> result;
   for(size_t i=0;i<m_statements.size();i++)
   {
     if(m_statements[i]->isOfDeclType(type))
@@ -74,14 +74,14 @@ std::vector<const KLStatement*> KLStatement::getAllChildrenOfType(KLDeclType typ
   } 
   if(upwards && m_parent)
   {
-    std::vector<const KLStatement*> childResult = m_parent->getAllChildrenOfType(type, false, true);
+    std::vector<const KLStmt*> childResult = m_parent->getAllChildrenOfType(type, false, true);
     result.insert(result.end(), childResult.begin(), childResult.end());
   }
   if(downwards)
   {
     for(size_t i=0;i<m_statements.size();i++)
     {
-      std::vector<const KLStatement*> childResult = m_statements[i]->getAllChildrenOfType(type, true, false);
+      std::vector<const KLStmt*> childResult = m_statements[i]->getAllChildrenOfType(type, true, false);
       result.insert(result.end(), childResult.begin(), childResult.end());
     } 
   }
@@ -89,10 +89,10 @@ std::vector<const KLStatement*> KLStatement::getAllChildrenOfType(KLDeclType typ
   return result;
 }
 
-const KLStatement * KLStatement::getStatementAtCursor(uint32_t line, uint32_t column) const
+const KLStmt * KLStmt::getStatementAtCursor(uint32_t line, uint32_t column) const
 {
   uint32_t minDistance = UINT_MAX;
-  const KLStatement * result = NULL;
+  const KLStmt * result = NULL;
 
   if(getCursorDistance(line, column) < minDistance)
   {
@@ -102,7 +102,7 @@ const KLStatement * KLStatement::getStatementAtCursor(uint32_t line, uint32_t co
 
   for(size_t i=0;i<m_statements.size();i++)
   {
-    const KLStatement * statement = m_statements[i]->getStatementAtCursor(line, column);
+    const KLStmt * statement = m_statements[i]->getStatementAtCursor(line, column);
     if(statement)
     {
       uint32_t distance = statement->getCursorDistance(line, column);
@@ -117,12 +117,12 @@ const KLStatement * KLStatement::getStatementAtCursor(uint32_t line, uint32_t co
   return result;
 }
 
-const KLStatement * KLStatement::getParent() const
+const KLStmt * KLStmt::getParent() const
 {
   return m_parent;
 }
 
-const KLStatement * KLStatement::getTop() const
+const KLStmt * KLStmt::getTop() const
 {
   if(!m_parent)
     return this;
@@ -130,57 +130,57 @@ const KLStatement * KLStatement::getTop() const
 }
 
 
-uint32_t KLStatement::getDepth() const
+uint32_t KLStmt::getDepth() const
 {
   return m_depth;
 }
 
-const KLStatement * KLStatement::constructChild(JSONData data)
+const KLStmt * KLStmt::constructChild(JSONData data)
 {
   std::string type = data->getDictValue("type")->getStringData();
 
-  KLStatement * result = NULL;
+  KLStmt * result = NULL;
 
   if(type == "CompoundStatement")
   {
-    result = new KLCompoundStatement(getKLFile(), data, this);
+    result = new KLCompoundStmt(getKLFile(), data, this);
   }
-  else if(type == "ConditionalStatement")
+  else if(type == "ASTCondStmt")
   {
-    result = new KLConditionalStatement(getKLFile(), data, this);
+    result = new KLConditionalStmt(getKLFile(), data, this);
   }
   else if(type == "CStyleLoop")
   {
-    result = new KLCStyleLoopStatement(getKLFile(), data, this);
+    result = new KLCStyleLoopStmt(getKLFile(), data, this);
   }
   else if(type == "SwitchStatement")
   {
-    result = new KLSwitchStatement(getKLFile(), data, this);
+    result = new KLSwitchStmt(getKLFile(), data, this);
   }
   else if(type == "Case")
   {
-    result = new KLCaseStatement(getKLFile(), data, this);
+    result = new KLCaseStmt(getKLFile(), data, this);
   }
   else if(type == "VarDeclStatement")
   {
-    result = new KLVarDeclStatement(getKLFile(), data, this);
+    result = new KLVarDeclStmt(getKLFile(), data, this);
   }
   else if(type == "ExprStatement")
   {
-    result = new KLExprStatement(getKLFile(), data, this);
+    result = new KLExprStmt(getKLFile(), data, this);
   }
   else
   {
     // printf("unresolved type '%s'\n", type.c_str());
     // printf("json '%s'\n", data->getJSONEncoding().getStringData());
-    result = new KLStatement(getKLFile(), data, this);
+    result = new KLStmt(getKLFile(), data, this);
   }
 
   m_statements.push_back(result);
   return result;
 }
 
-uint32_t KLStatement::getCursorDistance(uint32_t line, uint32_t column) const
+uint32_t KLStmt::getCursorDistance(uint32_t line, uint32_t column) const
 {
   if(getLocation()->getLine() > line || getLocation()->getEndLine() < line)
     return UINT_MAX;
