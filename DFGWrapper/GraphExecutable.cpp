@@ -5,6 +5,10 @@
 
 using namespace FabricServices::DFGWrapper;
 
+GraphExecutable::GraphExecutable()
+{
+}
+
 GraphExecutable::GraphExecutable(FabricCore::DFGBinding binding, std::string path)
 : Executable(binding, path)
 {

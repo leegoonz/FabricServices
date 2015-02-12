@@ -18,6 +18,7 @@ namespace FabricServices
     class Executable
     {
       friend class Node;
+      friend class View;
 
     public:
 
@@ -55,6 +56,7 @@ namespace FabricServices
 
     protected:
       
+      Executable();
       Executable(FabricCore::DFGBinding binding, std::string path);
 
     private:

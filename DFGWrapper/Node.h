@@ -23,6 +23,7 @@ namespace FabricServices
 
     public:
 
+      Node();
       Node(const Node & other);
       virtual ~Node();
 

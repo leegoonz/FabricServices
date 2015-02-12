@@ -17,12 +17,18 @@ namespace FabricServices
       CompoundCommand();
       virtual ~CompoundCommand();
 
-      virtual const char * getName() const;
-      virtual const char * getShortDesc() const;
-      virtual const char * getFullDesc() const;
+      virtual const char * getName() const { return "Compound"; }
+      virtual const char * getShortDesc() const { return "A command container."; }
+      virtual const char * getFullDesc() const { return "A command to contain other commands."; }
 
       virtual bool add(Command * command);
       virtual bool isEmpty() const;
+
+      unsigned int getNbCommands() const;
+      Command * getCommand(unsigned int index);
+
+      Command * getFirstNonCompoundCommand();
+      Command * getLastNonCompoundCommand();
 
     protected:
       

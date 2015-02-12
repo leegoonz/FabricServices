@@ -4,6 +4,11 @@
 
 using namespace FabricServices::DFGWrapper;
 
+Binding::Binding()
+{
+  m_binding = FabricCore::DFGBinding();
+}
+
 Binding::Binding(FabricCore::DFGBinding binding)
 {
   m_binding = binding;
@@ -46,4 +51,16 @@ GraphExecutable Binding::getGraph()
 void Binding::execute()
 {
   m_binding.execute();
+}
+
+void Binding::setNotificationCallback(FabricCore::DFGNotificationCallback callback, void * userData)
+{
+  m_binding.setNotificationCallback(callback, userData);
+}
+
+bool Binding::canConnect(char const *pathA, char const *pathB)
+{
+  FabricCore::DFGStringResult result = m_binding.canConnect(pathA, pathB);
+  printf("Binding::canConnect '%s'\n", result.getCString());
+  return result.getCString() == NULL;
 }

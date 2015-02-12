@@ -24,11 +24,13 @@ namespace FabricServices
 
     public:
 
+      View();
       View(GraphExecutable graph);
       virtual ~View();
 
       bool isValid() const;
 
+      void setGraph(GraphExecutable graph);
       GraphExecutable getGraph();
 
     protected:

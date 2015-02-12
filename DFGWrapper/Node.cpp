@@ -6,6 +6,10 @@
 
 using namespace FabricServices::DFGWrapper;
 
+Node::Node()
+{
+}
+
 Node::Node(FabricCore::DFGBinding binding, std::string path)
 {
   m_binding = binding;

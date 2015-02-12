@@ -5,11 +5,13 @@
 
 using namespace FabricServices::DFGWrapper;
 
-View::View(GraphExecutable graph)
-: m_graph(graph)
+View::View()
 {
-  if(m_graph.isValid())
-    m_view = m_graph.getWrappedCoreBinding().createView(graph.getPath().c_str(), &callback, this);
+}
+
+View::View(GraphExecutable graph)
+{
+  setGraph(graph);
 }
 
 View::~View()
@@ -20,6 +22,20 @@ View::~View()
 bool View::isValid() const
 {
   return m_view.isValid();
+}
+
+void View::setGraph(GraphExecutable graph)
+{
+  if(!graph.isValid())
+  {
+    m_graph = GraphExecutable();
+    m_view = FabricCore::DFGView();
+  }
+  else
+  {
+    m_graph = graph;
+    m_view = m_graph.getWrappedCoreBinding().createView(graph.getPath().c_str(), &callback, this);
+  } 
 }
 
 GraphExecutable View::getGraph()

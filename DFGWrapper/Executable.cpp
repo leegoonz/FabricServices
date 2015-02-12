@@ -4,6 +4,10 @@
 
 using namespace FabricServices::DFGWrapper;
 
+Executable::Executable()
+{
+}
+
 Executable::Executable(FabricCore::DFGBinding binding, std::string path)
 {
   m_binding = binding;

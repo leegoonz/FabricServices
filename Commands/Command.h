@@ -4,6 +4,7 @@
 #define __Commands_Command__
 
 #include <vector>
+#include <string>
 
 namespace FabricServices
 {
@@ -20,6 +21,7 @@ namespace FabricServices
       Command();
       virtual ~Command();
 
+      unsigned int getID() const;
       virtual const char * getName() const = 0;
       virtual const char * getShortDesc() const = 0;
       virtual const char * getFullDesc() const = 0;
@@ -30,6 +32,11 @@ namespace FabricServices
       virtual bool undo() = 0;
       virtual bool redo();
       virtual void destroy(); 
+
+    private:
+
+      unsigned int m_id;
+      static unsigned int s_maxID;
     };
 
     typedef std::vector<Command*> CommandVector;

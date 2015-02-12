@@ -49,25 +49,26 @@ std::string Port::getName() const
   return m_path.substr(pos+1, m_path.length());
 }
 
-void Port::setName(char const *name)
+std::string Port::setName(char const *name)
 {
   std::string path = getPath();
   std::string oldName = getName();
   if(name == oldName)
-    return;
+    return oldName;
 
   std::string newName = m_binding.rename(path.c_str(), name).getCString();
   if(path.rfind('.') != std::string::npos)
-    path.substr(0, path.rfind('.')) + newName;
+    m_path = path.substr(0, path.rfind('.')) + newName;
   else
     m_path = newName;
+  return newName;
 }
 
 FabricCore::DFGPortType Port::getPortType()
 {
   if(m_portType.length() == 0)
   {
-    FabricCore::Variant descVar = FabricCore::Variant::CreateFromJSON(getDesc().c_str());
+    FabricCore::Variant descVar = FabricCore::Variant::CreateFromJSON(Port::getDesc().c_str());
     const FabricCore::Variant * typeVar = descVar.getDictValue("portType");
     m_portType = typeVar->getStringData();
   }
@@ -84,10 +85,25 @@ std::string Port::getDataType()
   {
     FabricCore::Variant descVar = FabricCore::Variant::CreateFromJSON(getDesc().c_str());
     const FabricCore::Variant * typeVar = descVar.getDictValue("type");
-    if(typeVar->isString())
-      m_dataType = typeVar->getStringData();
+    if(typeVar->isNull())
+      typeVar = descVar.getDictValue("dataType");
+    if(typeVar)
+      if(typeVar->isString())
+        m_dataType = typeVar->getStringData();
   }
   return m_dataType;
+}
+
+bool Port::isArray()
+{
+  if(m_dataType.length() == 0)
+    getDataType();
+  return m_dataType.substr(m_dataType.length()-2, 2) == "[]";
+}
+
+unsigned int Port::getArraySize()
+{
+  return getRTVal().getArraySize();
 }
 
 std::string Port::getDesc()
@@ -95,13 +111,48 @@ std::string Port::getDesc()
   return m_binding.getDesc(m_path.c_str()).getCString();
 }
 
-bool Port::canConnectTo(Port other)
+bool Port::hasMetadata(char const * key)
 {
-  if(getDataType() == other.getDataType())
-    return true;
+  return getMetadata(key).length() > 0;
+}
 
-  // todo: delegate this to the core
-  return false;
+std::string Port::getMetadata(char const * key)
+{
+  const char * md = m_binding.getMetadata(m_path.c_str(), key);
+  if(md)
+    return md;
+  return "";
+}
+
+void Port::setMetadata(char const *key, char const * metadata, bool canUndo)
+{
+  return m_binding.setMetadata(m_path.c_str(), key, metadata, canUndo);
+}
+
+bool Port::hasOption(char const * key)
+{
+  return hasMetadata(key);
+}
+
+FabricCore::Variant Port::getOption(char const * key)
+{
+  std::string md = getMetadata(key);
+  if(md.length() > 0)
+    return FabricCore::Variant::CreateFromJSON(md.c_str());
+  return FabricCore::Variant();
+}
+
+void Port::setOption(char const * key, const FabricCore::Variant * var)
+{
+  if(!var)
+    return;
+  setMetadata(key, var->getJSONEncoding().getStringData(), false);
+}
+
+bool Port::canConnect(Port other)
+{
+  FabricCore::DFGStringResult result = m_binding.canConnect(m_path.c_str(), other.m_path.c_str());
+  return result.getCString() == NULL;
 }
 
 void Port::connect(const Port & other)
@@ -114,8 +165,94 @@ void Port::disconnect(const Port & other)
   m_binding.disconnect(m_path.c_str(), other.m_path.c_str());
 }
 
-void Port::setDefaultValue(FabricCore::RTVal defaultValue)
+bool Port::isConnected()
 {
-  m_binding.setPortDefaultValue(m_path.c_str(), defaultValue);
+  return getSources().size() > 0 || getDestinations().size() > 0;
+}
+
+std::vector<std::string> Port::getSources()
+{
+  std::vector<std::string> result;
+  FabricCore::Variant descVar = FabricCore::Variant::CreateFromJSON(getDesc().c_str());
+  const FabricCore::Variant * connectionsVar = descVar.getDictValue("connections");
+  if(connectionsVar)
+  {
+    for(FabricCore::Variant::DictIter connectionIter(*connectionsVar); !connectionIter.isDone(); connectionIter.next())
+    {
+      std::string name = connectionIter.getKey()->getStringData();
+      if(name != "src")
+        continue;
+      const FabricCore::Variant * sourceVar = connectionIter.getValue();
+      if(sourceVar->isString())
+      {
+        result.push_back(sourceVar->getStringData());
+      }
+    }
+  }
+  return result;
+}
+
+std::vector<std::string> Port::getDestinations()
+{
+  std::vector<std::string> result;
+  FabricCore::Variant descVar = FabricCore::Variant::CreateFromJSON(getDesc().c_str());
+  const FabricCore::Variant * connectionsVar = descVar.getDictValue("dsts");
+  if(connectionsVar)
+  {
+    for(unsigned int i=0;i<connectionsVar->getArraySize();i++)
+    {
+      const FabricCore::Variant * connectionVar = connectionsVar->getArrayElement(i);
+      if(connectionVar->isString())
+      {
+        std::string name = connectionVar->getStringData();
+        if(name != getName())
+          result.push_back(name);
+      }
+    }
+  }
+  return result;
+}
+
+FabricCore::RTVal Port::getDefaultValue(char const * dataType)
+{
+  FabricCore::Variant descVar = FabricCore::Variant::CreateFromJSON(Port::getDesc().c_str());
+  const FabricCore::Variant * defaultValuesVar = descVar.getDictValue("defaultValues");
+  if(defaultValuesVar)
+  {
+    std::string dataType = getDataType();
+    const FabricCore::Variant * defaultValueVar = defaultValuesVar->getDictValue(dataType.c_str());
+    if(defaultValueVar)
+    {
+      FabricCore::DFGHost host = getWrappedCoreBinding().getHost();
+      FabricCore::Context context = host.getContext();
+      return FabricCore::ConstructRTValFromJSON(context, dataType.c_str(), defaultValueVar->getJSONEncoding().getStringData());
+    }
+  }
+  
+  return FabricCore::RTVal();
+}
+
+void Port::setDefaultValue(FabricCore::RTVal value)
+{
+  m_binding.setPortDefaultValue(m_path.c_str(), value);
+}
+
+FabricCore::RTVal Port::getRTVal()
+{
+  return m_binding.getArgValue(m_path.c_str());
+}
+
+void Port::setRTVal(FabricCore::RTVal value)
+{
+  // todo: this type conversion should not be required
+  std::string dataType = getRTVal().getTypeName().getStringCString();
+  if(dataType != value.getTypeName().getStringCString())
+  {
+    FabricCore::DFGHost host = getWrappedCoreBinding().getHost();
+    FabricCore::Context context = host.getContext();
+    value = FabricCore::RTVal::Construct(context, dataType.c_str(), 1, &value);
+  }
+
+  m_binding.setArgValue(m_path.c_str(), value);
 }
 

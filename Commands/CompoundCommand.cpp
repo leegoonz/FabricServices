@@ -17,27 +17,6 @@ CompoundCommand::~CompoundCommand()
     delete(m_commands[i]);
 }
 
-const char * CompoundCommand::getName() const
-{
-  if(m_commands.size() == 0)
-    return "";
-  return m_commands.back()->getName();
-}
-
-const char * CompoundCommand::getShortDesc() const
-{
-  if(m_commands.size() == 0)
-    return "";
-  return m_commands.back()->getShortDesc();
-}
-
-const char * CompoundCommand::getFullDesc() const
-{
-  if(m_commands.size() == 0)
-    return "";
-  return m_commands.back()->getFullDesc();
-}
-
 bool CompoundCommand::add(Command * command)
 {
   if(!command->invoke())
@@ -83,3 +62,34 @@ void CompoundCommand::destroy()
     m_commands[i]->destroy();
 } 
 
+unsigned int CompoundCommand::getNbCommands() const
+{
+  return (unsigned int)m_commands.size();
+}
+
+Command * CompoundCommand::getCommand(unsigned int index)
+{
+  return m_commands[index];
+}
+
+Command * CompoundCommand::getFirstNonCompoundCommand()
+{
+  for(size_t i=0;i<m_commands.size();i++)
+  {
+    if(m_commands[i]->getName() == std::string("Compound"))
+      return ((CompoundCommand*)m_commands[i])->getFirstNonCompoundCommand();
+    return m_commands[i];
+  }
+  return NULL;
+}
+
+Command * CompoundCommand::getLastNonCompoundCommand()
+{
+  for(int i=m_commands.size()-1;i>=0;i--)
+  {
+    if(m_commands[i]->getName() == std::string("Compound"))
+      return ((CompoundCommand*)m_commands[i])->getFirstNonCompoundCommand();
+    return m_commands[i];
+  }
+  return NULL;
+}

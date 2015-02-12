@@ -28,12 +28,17 @@ namespace FabricServices
 
       virtual std::string getDesc();
 
+      virtual std::string getMetadata(char const * key);
+      virtual void setMetadata(char const * key, char const * metadata, bool canUndo);
+
       Port getPort();
 
       void addDebugPin();
       FabricCore::RTVal getDebugPinValue();
       void removeDebugPin();
-      void setPinDefaultValue(FabricCore::RTVal defaultValue);
+
+      virtual FabricCore::RTVal getDefaultValue(char const * dataType = NULL);
+      virtual void setDefaultValue(FabricCore::RTVal value);
 
     protected:
       
