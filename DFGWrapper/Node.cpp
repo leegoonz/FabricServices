@@ -27,9 +27,19 @@ Node::~Node()
 {
 }
 
-bool Node::isValid() const
+bool Node::isValid()
 {
-  return m_binding.isValid();
+  if(!m_binding.isValid())
+    return false;
+  try
+  {
+    getDesc();
+    return true;
+  }
+  catch(FabricCore::Exception e)
+  {
+  }
+  return false;
 }
 
 FabricCore::DFGBinding Node::getWrappedCoreBinding() const

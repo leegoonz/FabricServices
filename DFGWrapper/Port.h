@@ -26,7 +26,7 @@ namespace FabricServices
       Port(const Port & other);
       virtual ~Port();
 
-      bool isValid() const;
+      bool isValid();
       FabricCore::DFGBinding getWrappedCoreBinding() const;
 
       std::string getPath() const;

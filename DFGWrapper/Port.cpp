@@ -24,9 +24,19 @@ Port::~Port()
 {
 }
 
-bool Port::isValid() const
+bool Port::isValid()
 {
-  return m_binding.isValid();
+  if(!m_binding.isValid())
+    return false;
+  try
+  {
+    getDesc();
+    return true;
+  }
+  catch(FabricCore::Exception e)
+  {
+  }
+  return false;
 }
 
 FabricCore::DFGBinding Port::getWrappedCoreBinding() const

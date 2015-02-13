@@ -27,7 +27,7 @@ namespace FabricServices
       Node(const Node & other);
       virtual ~Node();
 
-      bool isValid() const;
+      bool isValid();
       FabricCore::DFGBinding getWrappedCoreBinding() const;
 
       Executable getExecutable();

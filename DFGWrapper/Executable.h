@@ -25,7 +25,7 @@ namespace FabricServices
       Executable(const Executable & other);
       virtual ~Executable();
 
-      bool isValid() const;
+      bool isValid();
       FabricCore::DFGBinding getWrappedCoreBinding() const;
 
       std::string getDesc();
