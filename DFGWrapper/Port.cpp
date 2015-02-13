@@ -85,11 +85,16 @@ std::string Port::getDataType()
   {
     FabricCore::Variant descVar = FabricCore::Variant::CreateFromJSON(getDesc().c_str());
     const FabricCore::Variant * typeVar = descVar.getDictValue("type");
-    if(typeVar->isNull())
-      typeVar = descVar.getDictValue("dataType");
     if(typeVar)
       if(typeVar->isString())
         m_dataType = typeVar->getStringData();
+    if(m_dataType.length() == 0)
+    {
+      typeVar = descVar.getDictValue("dataType");
+      if(typeVar)
+        if(typeVar->isString())
+          m_dataType = typeVar->getStringData();
+    }
   }
   return m_dataType;
 }
