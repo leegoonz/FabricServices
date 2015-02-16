@@ -99,7 +99,7 @@ bool KLMethod::isVirtual() const
 
 bool KLMethod::isConstructor() const
 {
-  return getLabel().substr(0, getThisType().length()+2) == getThisType() + " (";
+  return getName() == getThisType();
 }
 
 std::string KLMethod::getPrefix() const
