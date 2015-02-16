@@ -50,6 +50,25 @@ const std::string & KLMethod::getThisUsage() const
   return m_thisUsage;
 }
 
+bool KLMethod::hasUniqueName() const
+{
+  const KLType* thisType = getASTManager()->getKLTypeByName(m_thisType.c_str(), this);
+  if(!thisType)
+    return KLFunction::hasUniqueName();
+  
+  std::vector<const ASTWrapper::KLMethod*> methods = thisType->getMethods();
+
+  for(size_t i=0;i<methods.size();i++)
+  {
+    if(methods[i] == this)
+      continue;
+    if(methods[i]->getName() == getName())
+      return false;
+  }
+
+  return true;
+}
+
 bool KLMethod::isMethod() const
 {
   return true;

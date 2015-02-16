@@ -28,6 +28,7 @@ namespace FabricServices
       const std::string & getThisType() const;
       const std::string & getThisUsage() const;
 
+      virtual bool hasUniqueName() const;
       virtual bool isMethod() const;
       virtual bool isVirtual() const;
       virtual bool isConstructor() const;

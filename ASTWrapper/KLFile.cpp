@@ -83,8 +83,12 @@ void KLFile::parse()
             KLMethod * m = new KLMethod(this, element, e->getName());
             if(!klType->pushMethod(m))
               m_functions.push_back(m);
+            delete(e);
           }
-          delete(e);
+          else
+          {
+            m_functions.push_back(e);
+          }
         }
         else if(et == "Operator")
         {
