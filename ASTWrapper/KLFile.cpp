@@ -77,7 +77,18 @@ void KLFile::parse()
         else if(et == "Function")
         {
           KLFunction * e = new KLFunction(this, element);
-          m_functions.push_back(e);
+          const KLType * klType = m_extension->getASTManager()->getKLTypeByName(e->getName().c_str(), e);
+          if(klType)
+          {
+            KLMethod * m = new KLMethod(this, element, e->getName());
+            if(!klType->pushMethod(m))
+              m_functions.push_back(m);
+            delete(e);
+          }
+          else
+          {
+            m_functions.push_back(e);
+          }
         }
         else if(et == "Operator")
         {
