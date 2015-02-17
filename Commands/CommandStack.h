@@ -5,6 +5,7 @@
 
 #include "Command.h"
 
+#include <limits.h>
 #include <stdint.h>
 
 namespace FabricServices
