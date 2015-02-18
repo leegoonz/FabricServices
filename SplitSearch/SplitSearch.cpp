@@ -4,26 +4,29 @@
 
 #include "SplitSearch.hpp"
 
+#include <ctype.h>
+#include <llvm/ADT/ArrayRef.h>
 #include <llvm/ADT/StringMap.h>
 #include <llvm/ADT/SmallString.h>
+#include <stdint.h>
 #include <vector>
 
 namespace FabricServices { namespace SplitSearch { namespace Impl {
 
-template<typename StringTy>
-void AppendLower( char const *cStr, StringTy &string )
+template<typename ArrayTy>
+void SplitDelimitedString(
+  llvm::StringRef delimitedStr,
+  char delimiter,
+  ArrayTy &result
+  )
 {
-  for (;;)
+  std::pair<llvm::StringRef, llvm::StringRef> split(
+    llvm::StringRef(), delimitedStr
+    );
+  while ( !split.second.empty() )
   {
-    char ch = *cStr++;
-    if ( !ch )
-      break;
-    if ( ch >= 'A' || ch <= 'Z' )
-    {
-      ch -= 'A';
-      ch += 'a';
-    }
-    string += ch;
+    split = split.second.split( delimiter );
+    result.push_back( split.first );
   }
 }
 
@@ -37,7 +40,8 @@ static inline unsigned CommonSuffixLength(
   {
     if ( length >= lhs.size()
       || length >= rhs.size()
-      || lhs[lhs.size()-length-1] != rhs[rhs.size()-length-1] )
+      || tolower( lhs[lhs.size()-length-1] )
+        != tolower( rhs[rhs.size()-length-1] ) )
       break;
     ++length;
   }
@@ -50,8 +54,7 @@ static inline unsigned RevMatch(
   )
 {
   unsigned best = 0;
-  while ( haystack.size() >= needle.size()
-    && best < needle.size() )
+  while ( best < needle.size() && best < haystack.size() )
   {
     unsigned commonSuffixLength = CommonSuffixLength( haystack, needle );
     if ( commonSuffixLength > best )
@@ -61,30 +64,45 @@ static inline unsigned RevMatch(
   return best;
 }
 
-static inline unsigned Score(
+static inline uint64_t Score(
   llvm::ArrayRef<llvm::StringRef> prefixes,
   llvm::StringRef needle
   )
 {
-  if ( prefixes.size() > 0 )
+  if ( !needle.empty() && !prefixes.empty() )
   {
     unsigned revMatch = RevMatch( prefixes.back(), needle );
-    if ( revMatch
+
+    llvm::StringRef subNeedle = needle.drop_back( revMatch );
+    llvm::ArrayRef<llvm::StringRef> subPrefixes = prefixes.drop_back();
+    uint64_t subScore = Score( subPrefixes, subNeedle );
+
+    if ( revMatch )
+    {
+      uint64_t score = needle.size() - revMatch + 1;
+      if ( subScore != UINT64_MAX )
+        score += 256 * subScore;
+      return score;
+    }
+    else if ( subScore != UINT64_MAX )
+      return 256 * subScore;
+    else
+      return UINT64_MAX;
   }
-  else return 0;
+  else return UINT64_MAX;
 }
 
 class Match
 {
-  void *m_userdata;
-  unsigned m_score;
+  void const *m_userdata;
+  uint64_t m_score;
 
 public:
 
-  Match( void *userdata, unsigned score ) :
+  Match( void const *userdata, unsigned score ) :
     m_userdata( userdata ), m_score( score ) {}
 
-  void *getUserdata() const { return m_userdata; }
+  void const *getUserdata() const { return m_userdata; }
 
   struct LessThan
   {
@@ -95,37 +113,84 @@ public:
   };
 };
 
-class Matches
+class Shareable
+{
+  unsigned _refCount;
+
+protected:
+
+  Shareable() : _refCount( 1 ) {}
+  virtual ~Shareable() {}
+
+public:
+
+  void retain()
+  {
+    ++_refCount;
+  }
+
+  void release()
+  {
+    if ( --_refCount == 0 )
+      delete this;
+  }
+};
+
+class Matches : public Shareable
 {
   std::vector<Match> m_impl;
+
+  Matches( Matches const & ) = delete;
+  Matches &operator=( Matches const & ) = delete;
+
+protected:
+
+  virtual ~Matches() {}
 
 public:
 
   Matches() {}
-  ~Matches() {}
 
-  void add( void *userdata, unsigned score )
+  void add( void const *userdata, unsigned score )
   {
+    m_impl.push_back( Match( userdata, score ) );
   }
 
   void sort() { std::sort( m_impl.begin(), m_impl.end(), Match::LessThan() ); }
 
-  unsigned size() const { return m_impl.size(); }
+  unsigned getSize() const { return m_impl.size(); }
 
-  void *getUserdataAt( unsigned index ) const
-    { return m_impl[index].getUserdata(); }
+  unsigned getUserdatas(
+    unsigned max,
+    void const **userdatas
+    ) const
+  {
+    unsigned index = 0;
+    while ( index < max && index < m_impl.size() )
+    {
+      userdatas[index] = m_impl[index].getUserdata();
+      ++index;
+    }
+    return index;
+  }
 };
+
+static inline llvm::ArrayRef<llvm::StringRef> DropFront(
+  llvm::ArrayRef<llvm::StringRef> strs
+  )
+{
+  return llvm::ArrayRef<llvm::StringRef>( strs.begin() + 1, strs.end() );
+}
 
 class Node
 {
-  Node *m_parent;
-  void *m_userdata;
+  void const *m_userdata;
   llvm::StringMap< std::unique_ptr<Node> > m_children;
 
 protected:
 
   void search(
-    llvm::SmallVector<llvm::StringRef> &prefixes,
+    llvm::SmallVector<llvm::StringRef, 8> &prefixes,
     llvm::StringRef needle,
     Matches *matches
     ) const
@@ -133,11 +198,14 @@ protected:
     for ( llvm::StringMap< std::unique_ptr<Node> >::const_iterator it =
       m_children.begin(); it != m_children.end(); ++it )
     {
-      prefixes.push_back( it.first() );
+      prefixes.push_back( it->first() );
 
-      unsigned score = Score( prefixes, needle );
-      if ( score )
-        matches->add( m_userdata, score );
+      if ( it->second->m_userdata )
+      {
+        uint64_t score = Score( prefixes, needle );
+        if ( score != UINT64_MAX )
+          matches->add( it->second->m_userdata, score );
+      }
 
       std::unique_ptr<Node> const &node = it->second;
       node->search( prefixes, needle, matches );
@@ -148,23 +216,22 @@ protected:
 
 public:
 
-  Node( Node *parent, void *userdata ) :
-    m_parent( parent ), m_userdata( userdata ) {}
+  Node( void *userdata ) : m_userdata( userdata ) {}
   Node( Node const & ) = delete;
   Node &operator=( Node const & ) = delete;
   ~Node() {}
 
-  bool add( unsigned numCStrs, char const * const *cStrs, void *userdata )
+  bool add(
+    llvm::ArrayRef<llvm::StringRef> strs,
+    void const *userdata
+    )
   {
-    if ( numCStrs > 0 )
+    if ( !strs.empty() )
     {
-      llvm::SmallString<64> firstSmallString;
-      AppendLower( cStrs[0], firstSmallString );
-
-      std::unique_ptr<Node> &child = m_children[firstSmallString];
+      std::unique_ptr<Node> &child = m_children[strs.front()];
       if ( !child )
-        child = std::unique_ptr<Node>( new Node( this, nullptr ) );
-      return child->add( numCStrs - 1, &cStrs[1], userdata );
+        child = std::unique_ptr<Node>( new Node( nullptr ) );
+      return child->add( DropFront( strs ), userdata );
     }
     else
     {
@@ -174,17 +241,17 @@ public:
     }
   }
 
-  bool remove( unsigned numCStrs, char const * const *cStrs, void *userdata )
+  bool remove(
+    llvm::ArrayRef<llvm::StringRef> strs,
+    void const *userdata
+    )
   {
-    if ( numCStrs > 0 )
+    if ( !strs.empty() )
     {
-      llvm::SmallString<64> firstSmallString;
-      AppendLower( cStrs[0], firstSmallString );
-
-      std::unique_ptr<Node> &child = m_children[firstSmallString];
+      std::unique_ptr<Node> &child = m_children[strs.front()];
       if ( !child )
         return false;
-      return child->remove( numCStrs - 1, &cStrs[1], userdata );
+      return child->remove( DropFront( strs ), userdata );
     }
     else
     {
@@ -204,30 +271,40 @@ public:
     Matches *matches
     ) const
   {
-    llvm::SmallVector<llvm::StringRef> prefixes;
+    llvm::SmallVector<llvm::StringRef, 8> prefixes;
     search( prefixes, needle, matches );
   }
 };
 
-class Dict
+class Dict : public Shareable
 {
   Node m_root;
 
-public:
-
-  Dict() : m_root( nullptr, nullptr ) {}
   Dict( Dict const & ) = delete;
   Dict &operator=( Dict const & ) = delete;
-  ~Dict() {}
 
-  bool add( unsigned numCStrs, char const * const *cStrs, void *userdata )
+protected:
+
+  virtual ~Dict() {}
+
+public:
+
+  Dict() : m_root( nullptr ) {}
+
+  bool add(
+    llvm::ArrayRef<llvm::StringRef> strs,
+    void const *userdata
+    )
   {
-    return m_root.add( numCStrs, cStrs, userdata );
+    return m_root.add( strs, userdata );
   }
 
-  bool remove( unsigned numCStrs, char const * const *cStrs, void *userdata )
+  bool remove(
+    llvm::ArrayRef<llvm::StringRef> strs,
+    void const *userdata
+    )
   {
-    return m_root.remove( numCStrs, cStrs, userdata );
+    return m_root.remove( strs, userdata );
   }
 
   void clear()
@@ -235,22 +312,56 @@ public:
     m_root.clear();
   }
 
-  std::unique_ptr<Matches> search( char const *cStr ) const
+  Matches *search( llvm::StringRef needle ) const
   {
-    llvm::SmallString<64> lowerString;
-    AppendLower( cStr, lowerString );
-
-    std::unique_ptr<Matches> matches( new Matches );
-    m_root.search( lowerString, matches.get() );
+    Matches *matches = new Matches;
+    m_root.search( needle, matches );
     matches->sort();
-    return std::move( matches );
+    return matches;
   }
 };
 
 } } }
 
-using Dict = FabricServices::SplitSearch::Impl::Dict;
-using Matches = FabricServices::SplitSearch::Impl::Matches;
+using namespace FabricServices::SplitSearch::Impl;
+
+FABRICSERICES_SPLITSEARCH_DECL
+void FabricServices_SplitSearch_Matches_Retain(
+  FabricServices_SplitSearch_Matches _matches
+  )
+{
+  Matches *matches = static_cast<Matches *>( _matches );
+  matches->retain();
+}
+
+FABRICSERICES_SPLITSEARCH_DECL
+void FabricServices_SplitSearch_Matches_Release(
+  FabricServices_SplitSearch_Matches _matches
+  )
+{
+  Matches *matches = static_cast<Matches *>( _matches );
+  matches->release();
+}
+
+FABRICSERICES_SPLITSEARCH_DECL
+unsigned FabricServices_SplitSearch_Matches_GetSize(
+  FabricServices_SplitSearch_Matches _matches
+  )
+{
+  Matches *matches = static_cast<Matches *>( _matches );
+  return matches->getSize();
+}
+
+FABRICSERICES_SPLITSEARCH_DECL
+unsigned FabricServices_SplitSearch_Matches_GetUserdatas(
+  FabricServices_SplitSearch_Matches _matches,
+  unsigned max,
+  void const **userdatas
+  )
+{
+  Matches *matches = static_cast<Matches *>( _matches );
+  return matches->getUserdatas( max, userdatas );
+}
 
 FABRICSERICES_SPLITSEARCH_DECL
 FabricServices_SplitSearch_Dict FabricServices_SplitSearch_Dict_Create()
@@ -263,11 +374,28 @@ bool FabricServices_SplitSearch_Dict_Add(
   FabricServices_SplitSearch_Dict _dict,
   unsigned numCStrs,
   char const * const *cStrs,
-  void *userdata
+  void const *userdata
   )
 {
   Dict *dict = static_cast<Dict *>( _dict );
-  return dict->add( numCStrs, cStrs, userdata );
+  llvm::SmallVector<llvm::StringRef, 8> strs;
+  while ( numCStrs-- > 0 )
+    strs.push_back( *cStrs++ );
+  return dict->add( strs, userdata );
+}
+
+FABRICSERICES_SPLITSEARCH_DECL
+bool FabricServices_SplitSearch_Dict_Add_Delimited(
+  FabricServices_SplitSearch_Dict _dict,
+  char const *delimitedCStr,
+  char delimiter,
+  void const *userdata
+  )
+{
+  Dict *dict = static_cast<Dict *>( _dict );
+  llvm::SmallVector<llvm::StringRef, 8> strs;
+  SplitDelimitedString( delimitedCStr, delimiter, strs );
+  return dict->add( strs, userdata );
 }
 
 FABRICSERICES_SPLITSEARCH_DECL
@@ -275,11 +403,28 @@ bool FabricServices_SplitSearch_Dict_Remove(
   FabricServices_SplitSearch_Dict _dict,
   unsigned numCStrs,
   char const * const *cStrs,
-  void *userdata
+  void const *userdata
   )
 {
   Dict *dict = static_cast<Dict *>( _dict );
-  return dict->remove( numCStrs, cStrs, userdata );
+  llvm::SmallVector<llvm::StringRef, 8> strs;
+  while ( numCStrs-- > 0 )
+    strs.push_back( *cStrs++ );
+  return dict->remove( strs, userdata );
+}
+
+FABRICSERICES_SPLITSEARCH_DECL
+bool FabricServices_SplitSearch_Dict_Remove_Delimited(
+  FabricServices_SplitSearch_Dict _dict,
+  char const *delimitedCStr,
+  char delimiter,
+  void const *userdata
+  )
+{
+  Dict *dict = static_cast<Dict *>( _dict );
+  llvm::SmallVector<llvm::StringRef, 8> strs;
+  SplitDelimitedString( delimitedCStr, delimiter, strs );
+  return dict->remove( strs , userdata );
 }
 
 FABRICSERICES_SPLITSEARCH_DECL
@@ -298,24 +443,23 @@ FabricServices_SplitSearch_Matches FabricServices_SplitSearch_Dict_Search(
   )
 {
   Dict *dict = static_cast<Dict *>( _dict );
-  std::unique_ptr<Matches> matches( dict->search( cStr ) );
-  return matches.release();
+  return dict->search( cStr );
 }
 
 FABRICSERICES_SPLITSEARCH_DECL
-void FabricServices_SplitSearch_Matches_Destroy(
-  FabricServices_SplitSearch_Matches _matches
-  )
-{
-  Matches *matches = static_cast<Matches *>( _matches );
-  delete matches;
-}
-
-FABRICSERICES_SPLITSEARCH_DECL
-void FabricServices_SplitSearch_Dict_Destroy(
+void FabricServices_SplitSearch_Dict_Retain(
   FabricServices_SplitSearch_Dict _dict
   )
 {
   Dict *dict = static_cast<Dict *>( _dict );
-  delete dict;
+  dict->retain();
+}
+
+FABRICSERICES_SPLITSEARCH_DECL
+void FabricServices_SplitSearch_Dict_Release(
+  FabricServices_SplitSearch_Dict _dict
+  )
+{
+  Dict *dict = static_cast<Dict *>( _dict );
+  dict->release();
 }

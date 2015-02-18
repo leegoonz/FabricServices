@@ -29,18 +29,59 @@
 # define FABRICSERICES_SPLITSEARCH_DECL FABRICSERICES_SPLITSEARCH_IMPORT
 #endif
 
-typedef void *FabricServices_SplitSearch_Dict;
 typedef void *FabricServices_SplitSearch_Matches;
 
 FABRICSERICES_SPLITSEARCH_DECL
+unsigned FabricServices_SplitSearch_Matches_GetSize(
+  FabricServices_SplitSearch_Matches _matches
+  );
+
+FABRICSERICES_SPLITSEARCH_DECL
+unsigned FabricServices_SplitSearch_Matches_GetUserdatas(
+  FabricServices_SplitSearch_Matches _matches,
+  unsigned max,
+  void const **userdatas
+  );
+
+FABRICSERICES_SPLITSEARCH_DECL
+void FabricServices_SplitSearch_Matches_Retain(
+  FabricServices_SplitSearch_Matches _matches
+  );
+
+FABRICSERICES_SPLITSEARCH_DECL
+void FabricServices_SplitSearch_Matches_Release(
+  FabricServices_SplitSearch_Matches _matches
+  );
+
+typedef void *FabricServices_SplitSearch_Dict;
+
+FABRICSERICES_SPLITSEARCH_DECL
 FabricServices_SplitSearch_Dict FabricServices_SplitSearch_Dict_Create();
+
+FABRICSERICES_SPLITSEARCH_DECL
+void FabricServices_SplitSearch_Dict_Retain(
+  FabricServices_SplitSearch_Dict dict
+  );
+
+FABRICSERICES_SPLITSEARCH_DECL
+void FabricServices_SplitSearch_Dict_Release(
+  FabricServices_SplitSearch_Dict dict
+  );
 
 FABRICSERICES_SPLITSEARCH_DECL
 bool FabricServices_SplitSearch_Dict_Add(
   FabricServices_SplitSearch_Dict dict,
   unsigned numCStrs,
   char const * const *cStrs,
-  void *userdata
+  void const *userdata
+  );
+
+FABRICSERICES_SPLITSEARCH_DECL
+bool FabricServices_SplitSearch_Dict_Add_Delimited(
+  FabricServices_SplitSearch_Dict dict,
+  char const *delimitedCStr,
+  char delimiter,
+  void const *userdata
   );
 
 FABRICSERICES_SPLITSEARCH_DECL
@@ -48,7 +89,15 @@ bool FabricServices_SplitSearch_Dict_Remove(
   FabricServices_SplitSearch_Dict dict,
   unsigned numCStrs,
   char const * const *cStrs,
-  void *userdata
+  void const *userdata
+  );
+
+FABRICSERICES_SPLITSEARCH_DECL
+bool FabricServices_SplitSearch_Dict_Remove_Delimited(
+  FabricServices_SplitSearch_Dict dict,
+  char const *delimitedCStr,
+  char delimiter,
+  void const *userdata
   );
 
 FABRICSERICES_SPLITSEARCH_DECL
@@ -62,25 +111,63 @@ FabricServices_SplitSearch_Matches FabricServices_SplitSearch_Dict_Search(
   char const *cStr
   );
 
-FABRICSERICES_SPLITSEARCH_DECL
-void FabricServices_SplitSearch_Matches_Destroy(
-  FabricServices_SplitSearch_Matches _matches
-  );
-
-FABRICSERICES_SPLITSEARCH_DECL
-void FabricServices_SplitSearch_Dict_Destroy(
-  FabricServices_SplitSearch_Dict dict
-  );
-
 namespace FabricServices { namespace SplitSearch {
+
+class Dict;
+
+class Matches
+{
+  friend class Dict;
+
+  FabricServices_SplitSearch_Matches _matches;
+
+  Matches( FabricServices_SplitSearch_Matches _matches_in ) :
+    _matches( _matches_in ) {}
+
+public:
+
+  Matches() : _matches( 0 ) {}
+
+  Matches( Matches const &that ) : _matches( that._matches )
+  {
+    FabricServices_SplitSearch_Matches_Retain( _matches );
+  }
+
+  Matches &operator=( Matches const &that )
+  {
+    if ( _matches != that._matches )
+    {
+      if ( _matches )
+        FabricServices_SplitSearch_Matches_Release( _matches );
+      _matches = that._matches;
+      if ( _matches )
+        FabricServices_SplitSearch_Matches_Retain( _matches );
+    }
+    return *this;
+  }
+
+  ~Matches()
+  {
+    if ( _matches )
+      FabricServices_SplitSearch_Matches_Release( _matches );
+  }
+
+  unsigned getSize() const
+  {
+    return FabricServices_SplitSearch_Matches_GetSize( _matches );
+  }
+
+  unsigned getUserdatas( unsigned max, void const **userdatas ) const
+  {
+    return FabricServices_SplitSearch_Matches_GetUserdatas(
+      _matches, max, userdatas
+      );
+  }
+};
 
 class Dict
 {
-private:
-
-  // Deleted methods
-  Dict( Dict const & );
-  Dict &operator=( Dict const & );
+  FabricServices_SplitSearch_Dict _dict;
 
 public:
 
@@ -89,15 +176,31 @@ public:
     _dict = FabricServices_SplitSearch_Dict_Create();
   }
 
+  Dict( Dict const &that ) : _dict( that._dict )
+  {
+    FabricServices_SplitSearch_Dict_Retain( _dict );
+  }
+
+  Dict &operator=( Dict const &that )
+  {
+    if ( _dict != that._dict )
+    {
+      FabricServices_SplitSearch_Dict_Release( _dict );
+      _dict = that._dict;
+      FabricServices_SplitSearch_Dict_Retain( _dict );
+    }
+    return *this;
+  }
+
   ~Dict()
   {
-    FabricServices_SplitSearch_Dict_Destroy( _dict );
+    FabricServices_SplitSearch_Dict_Release( _dict );
   }
 
   bool add(
     unsigned numCStrs,
     char const * const *cStrs,
-    void *userdata
+    void const *userdata
     )
   {
     return FabricServices_SplitSearch_Dict_Add(
@@ -108,10 +211,24 @@ public:
       );
   }
 
+  bool add(
+    char const *delimitedCStr,
+    char delimiter,
+    void const *userdata
+    )
+  {
+    return FabricServices_SplitSearch_Dict_Add_Delimited(
+      _dict,
+      delimitedCStr,
+      delimiter,
+      userdata
+      );
+  }
+
   bool remove(
     unsigned numCStrs,
     char const * const *cStrs,
-    void *userdata
+    void const *userdata
     )
   {
     return FabricServices_SplitSearch_Dict_Remove(
@@ -122,14 +239,29 @@ public:
       );
   }
 
+  bool remove(
+    char const *delimitedCStr,
+    char delimiter,
+    void const *userdata
+    )
+  {
+    return FabricServices_SplitSearch_Dict_Remove_Delimited(
+      _dict,
+      delimitedCStr,
+      delimiter,
+      userdata
+      );
+  }
+
   void clear()
   {
     FabricServices_SplitSearch_Dict_Clear( _dict );
   }
 
-private:
-
-  FabricServices_SplitSearch_Dict _dict;
+  Matches search( char const *needle ) const
+  {
+    return Matches( FabricServices_SplitSearch_Dict_Search( _dict, needle ) );
+  }
 };
 
 
