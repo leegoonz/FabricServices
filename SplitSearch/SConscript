@@ -1,0 +1,32 @@
+#
+# Copyright 2010-2015 Fabric Software Inc. All rights reserved.
+#
+
+Import(
+  'parentEnv',
+  'llvmFlags',
+  )
+
+env = parentEnv.CloneSubStage('SplitSearch')
+env.Append(CPPDEFINES = ['FABRICSERVICES_SPLITSEARCH_BUILDING'])
+if env['FABRIC_BUILD_OS'] != 'Windows':
+  env.Append(CXXFLAGS=['-stdlib=libc++', '-std=c++11', '-Werror'])
+  env.Append(LINKFLAGS = ['-stdlib=libc++'])
+
+env.MergeFlags(llvmFlags)
+
+sources = Glob('*.cpp')
+
+splitSearchLib = env.SharedLibrary('FabricSplitSearch', sources)
+
+splitSearchIncludeDir = env.Dir('.').dir.srcnode()
+
+splitSearchFlags = {
+  'CPPPATH': [splitSearchIncludeDir],
+  'LIBPATH': [splitSearchLib[0].dir],
+  'LIBS': ['FabricSplitSearch'],
+  }
+
+Export('splitSearchLib', 'splitSearchIncludeDir', 'splitSearchFlags')
+Alias('splitSearch', splitSearchLib)
+Return('splitSearchLib')
