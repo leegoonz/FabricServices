@@ -69,27 +69,25 @@ static inline uint64_t Score(
   llvm::StringRef needle
   )
 {
-  if ( !needle.empty() && !prefixes.empty() )
+  unsigned revMatch = RevMatch( prefixes.back(), needle );
+
+  uint64_t subScore;
+  llvm::StringRef subNeedle = needle.drop_back( revMatch );
+  if ( !subNeedle.empty() )
   {
-    unsigned revMatch = RevMatch( prefixes.back(), needle );
-
-    llvm::StringRef subNeedle = needle.drop_back( revMatch );
-    llvm::ArrayRef<llvm::StringRef> subPrefixes = prefixes.drop_back();
-    uint64_t subScore = Score( subPrefixes, subNeedle );
-
-    if ( revMatch )
+    if ( prefixes.size() > 1 )
     {
-      uint64_t score = needle.size() - revMatch + 1;
-      if ( subScore != UINT64_MAX )
-        score += 256 * subScore;
-      return score;
+      llvm::ArrayRef<llvm::StringRef> subPrefixes = prefixes.drop_back();
+      subScore = Score( subPrefixes, subNeedle );
     }
-    else if ( subScore != UINT64_MAX )
-      return 256 * subScore;
-    else
-      return UINT64_MAX;
+    else subScore = UINT64_MAX;
   }
-  else return UINT64_MAX;
+  else subScore = 0;
+
+  if ( subScore != UINT64_MAX )
+    return needle.size() - revMatch + 1 + 256 * subScore;
+  else
+    return UINT64_MAX;
 }
 
 class Match
@@ -204,7 +202,7 @@ protected:
       {
         uint64_t score = Score( prefixes, needle );
         if ( score != UINT64_MAX )
-          matches->add( it->second->m_userdata, score );
+          matches->add( it->second->m_userdata, prefixes.size() * score );
       }
 
       std::unique_ptr<Node> const &node = it->second;
@@ -314,6 +312,9 @@ public:
 
   Matches *search( llvm::StringRef needle ) const
   {
+    if ( needle.empty() )
+      return nullptr;
+
     Matches *matches = new Matches;
     m_root.search( needle, matches );
     matches->sort();

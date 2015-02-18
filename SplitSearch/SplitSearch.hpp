@@ -130,7 +130,8 @@ public:
 
   Matches( Matches const &that ) : _matches( that._matches )
   {
-    FabricServices_SplitSearch_Matches_Retain( _matches );
+    if ( _matches )
+      FabricServices_SplitSearch_Matches_Retain( _matches );
   }
 
   Matches &operator=( Matches const &that )
@@ -178,7 +179,8 @@ public:
 
   Dict( Dict const &that ) : _dict( that._dict )
   {
-    FabricServices_SplitSearch_Dict_Retain( _dict );
+    if ( _dict )
+      FabricServices_SplitSearch_Dict_Retain( _dict );
   }
 
   Dict &operator=( Dict const &that )
@@ -194,7 +196,8 @@ public:
 
   ~Dict()
   {
-    FabricServices_SplitSearch_Dict_Release( _dict );
+    if ( _dict )
+      FabricServices_SplitSearch_Dict_Release( _dict );
   }
 
   bool add(
