@@ -5,6 +5,7 @@
 Import(
   'parentEnv',
   'llvmFlags',
+  'stageDir',
   )
 
 env = parentEnv.CloneSubStage('SplitSearch')
@@ -21,12 +22,15 @@ splitSearchLib = env.SharedLibrary('FabricSplitSearch', sources)
 
 splitSearchIncludeDir = env.Dir('.').dir.srcnode()
 
+splitSearchInstalledLib = env.Install(stageDir.Dir('bin'), splitSearchLib[0])
+
 splitSearchFlags = {
   'CPPPATH': [splitSearchIncludeDir],
   'LIBPATH': [splitSearchLib[0].dir],
   'LIBS': ['FabricSplitSearch'],
   }
 
-Export('splitSearchLib', 'splitSearchIncludeDir', 'splitSearchFlags')
+
+Export('splitSearchLib', 'splitSearchIncludeDir', 'splitSearchFlags', 'splitSearchInstalledLib')
 Alias('splitSearch', splitSearchLib)
 Return('splitSearchLib')
