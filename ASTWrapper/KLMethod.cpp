@@ -141,7 +141,10 @@ const KLComment * KLMethod::getComments() const
 {
   const KLComment * comments = KLFunction::getComments();
   if(comments)
-    return comments;
+  {
+    if(!comments->isEmpty())
+      return comments;
+  }
 
   const KLType* thisType = getASTManager()->getKLTypeByName(m_thisType.c_str(), this);
   if(thisType)
@@ -155,12 +158,11 @@ const KLComment * KLMethod::getComments() const
       const KLMethod* method = parents[i]->getMethod(getLabel().c_str());
       if(method)
       {
-        comments = method->getComments();
-        if(comments)
-          break;
+        if(method->getComments())
+          return method->getComments();
       }
     }
   }
-  return NULL;
+  return comments;
 }
 
