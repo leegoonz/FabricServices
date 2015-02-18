@@ -7,68 +7,68 @@
 
 #if defined(_MSC_VER) || defined(SWIGWIN)
 # if defined(__cplusplus)
-#  define FABRICSERICES_SPLITSEARCH_IMPORT extern "C" __declspec(dllimport)
-#  define FABRICSERICES_SPLITSEARCH_EXPORT extern "C" __declspec(dllexport)
+#  define FABRICSERVICES_SPLITSEARCH_IMPORT extern "C" __declspec(dllimport)
+#  define FABRICSERVICES_SPLITSEARCH_EXPORT extern "C" __declspec(dllexport)
 # else
-#  define FABRICSERICES_SPLITSEARCH_IMPORT __declspec(dllimport)
-#  define FABRICSERICES_SPLITSEARCH_EXPORT __declspec(dllexport)
+#  define FABRICSERVICES_SPLITSEARCH_IMPORT __declspec(dllimport)
+#  define FABRICSERVICES_SPLITSEARCH_EXPORT __declspec(dllexport)
 # endif
 #else
 # if defined(SWIG)
-#  define FABRICSERICES_SPLITSEARCH_IMPORT extern "C"
-#  define FABRICSERICES_SPLITSEARCH_EXPORT extern "C"
+#  define FABRICSERVICES_SPLITSEARCH_IMPORT extern "C"
+#  define FABRICSERVICES_SPLITSEARCH_EXPORT extern "C"
 # else
-#  define FABRICSERICES_SPLITSEARCH_IMPORT extern "C" __attribute__ ((visibility("default")))
-#  define FABRICSERICES_SPLITSEARCH_EXPORT extern "C" __attribute__ ((visibility("default")))
+#  define FABRICSERVICES_SPLITSEARCH_IMPORT extern "C" __attribute__ ((visibility("default")))
+#  define FABRICSERVICES_SPLITSEARCH_EXPORT extern "C" __attribute__ ((visibility("default")))
 # endif
 #endif
 
-#if defined(FABRICSERICES_SPLITSEARCH_BUILDING)
-# define FABRICSERICES_SPLITSEARCH_DECL FABRICSERICES_SPLITSEARCH_EXPORT
+#if defined(FABRICSERVICES_SPLITSEARCH_BUILDING)
+# define FABRICSERVICES_SPLITSEARCH_DECL FABRICSERVICES_SPLITSEARCH_EXPORT
 #else
-# define FABRICSERICES_SPLITSEARCH_DECL FABRICSERICES_SPLITSEARCH_IMPORT
+# define FABRICSERVICES_SPLITSEARCH_DECL FABRICSERVICES_SPLITSEARCH_IMPORT
 #endif
 
 typedef void *FabricServices_SplitSearch_Matches;
 
-FABRICSERICES_SPLITSEARCH_DECL
+FABRICSERVICES_SPLITSEARCH_DECL
 unsigned FabricServices_SplitSearch_Matches_GetSize(
   FabricServices_SplitSearch_Matches _matches
   );
 
-FABRICSERICES_SPLITSEARCH_DECL
+FABRICSERVICES_SPLITSEARCH_DECL
 unsigned FabricServices_SplitSearch_Matches_GetUserdatas(
   FabricServices_SplitSearch_Matches _matches,
   unsigned max,
   void const **userdatas
   );
 
-FABRICSERICES_SPLITSEARCH_DECL
+FABRICSERVICES_SPLITSEARCH_DECL
 void FabricServices_SplitSearch_Matches_Retain(
   FabricServices_SplitSearch_Matches _matches
   );
 
-FABRICSERICES_SPLITSEARCH_DECL
+FABRICSERVICES_SPLITSEARCH_DECL
 void FabricServices_SplitSearch_Matches_Release(
   FabricServices_SplitSearch_Matches _matches
   );
 
 typedef void *FabricServices_SplitSearch_Dict;
 
-FABRICSERICES_SPLITSEARCH_DECL
+FABRICSERVICES_SPLITSEARCH_DECL
 FabricServices_SplitSearch_Dict FabricServices_SplitSearch_Dict_Create();
 
-FABRICSERICES_SPLITSEARCH_DECL
+FABRICSERVICES_SPLITSEARCH_DECL
 void FabricServices_SplitSearch_Dict_Retain(
   FabricServices_SplitSearch_Dict dict
   );
 
-FABRICSERICES_SPLITSEARCH_DECL
+FABRICSERVICES_SPLITSEARCH_DECL
 void FabricServices_SplitSearch_Dict_Release(
   FabricServices_SplitSearch_Dict dict
   );
 
-FABRICSERICES_SPLITSEARCH_DECL
+FABRICSERVICES_SPLITSEARCH_DECL
 bool FabricServices_SplitSearch_Dict_Add(
   FabricServices_SplitSearch_Dict dict,
   unsigned numCStrs,
@@ -76,7 +76,7 @@ bool FabricServices_SplitSearch_Dict_Add(
   void const *userdata
   );
 
-FABRICSERICES_SPLITSEARCH_DECL
+FABRICSERVICES_SPLITSEARCH_DECL
 bool FabricServices_SplitSearch_Dict_Add_Delimited(
   FabricServices_SplitSearch_Dict dict,
   char const *delimitedCStr,
@@ -84,7 +84,7 @@ bool FabricServices_SplitSearch_Dict_Add_Delimited(
   void const *userdata
   );
 
-FABRICSERICES_SPLITSEARCH_DECL
+FABRICSERVICES_SPLITSEARCH_DECL
 bool FabricServices_SplitSearch_Dict_Remove(
   FabricServices_SplitSearch_Dict dict,
   unsigned numCStrs,
@@ -92,7 +92,7 @@ bool FabricServices_SplitSearch_Dict_Remove(
   void const *userdata
   );
 
-FABRICSERICES_SPLITSEARCH_DECL
+FABRICSERVICES_SPLITSEARCH_DECL
 bool FabricServices_SplitSearch_Dict_Remove_Delimited(
   FabricServices_SplitSearch_Dict dict,
   char const *delimitedCStr,
@@ -100,12 +100,12 @@ bool FabricServices_SplitSearch_Dict_Remove_Delimited(
   void const *userdata
   );
 
-FABRICSERICES_SPLITSEARCH_DECL
+FABRICSERVICES_SPLITSEARCH_DECL
 void FabricServices_SplitSearch_Dict_Clear(
   FabricServices_SplitSearch_Dict dict
   );
 
-FABRICSERICES_SPLITSEARCH_DECL
+FABRICSERVICES_SPLITSEARCH_DECL
 FabricServices_SplitSearch_Matches FabricServices_SplitSearch_Dict_Search(
   FabricServices_SplitSearch_Dict _dict,
   char const *cStr

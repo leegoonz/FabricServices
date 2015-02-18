@@ -326,7 +326,7 @@ public:
 
 using namespace FabricServices::SplitSearch::Impl;
 
-FABRICSERICES_SPLITSEARCH_DECL
+FABRICSERVICES_SPLITSEARCH_DECL
 void FabricServices_SplitSearch_Matches_Retain(
   FabricServices_SplitSearch_Matches _matches
   )
@@ -335,7 +335,7 @@ void FabricServices_SplitSearch_Matches_Retain(
   matches->retain();
 }
 
-FABRICSERICES_SPLITSEARCH_DECL
+FABRICSERVICES_SPLITSEARCH_DECL
 void FabricServices_SplitSearch_Matches_Release(
   FabricServices_SplitSearch_Matches _matches
   )
@@ -344,7 +344,7 @@ void FabricServices_SplitSearch_Matches_Release(
   matches->release();
 }
 
-FABRICSERICES_SPLITSEARCH_DECL
+FABRICSERVICES_SPLITSEARCH_DECL
 unsigned FabricServices_SplitSearch_Matches_GetSize(
   FabricServices_SplitSearch_Matches _matches
   )
@@ -353,7 +353,7 @@ unsigned FabricServices_SplitSearch_Matches_GetSize(
   return matches->getSize();
 }
 
-FABRICSERICES_SPLITSEARCH_DECL
+FABRICSERVICES_SPLITSEARCH_DECL
 unsigned FabricServices_SplitSearch_Matches_GetUserdatas(
   FabricServices_SplitSearch_Matches _matches,
   unsigned max,
@@ -364,13 +364,13 @@ unsigned FabricServices_SplitSearch_Matches_GetUserdatas(
   return matches->getUserdatas( max, userdatas );
 }
 
-FABRICSERICES_SPLITSEARCH_DECL
+FABRICSERVICES_SPLITSEARCH_DECL
 FabricServices_SplitSearch_Dict FabricServices_SplitSearch_Dict_Create()
 {
   return new Dict;
 }
 
-FABRICSERICES_SPLITSEARCH_DECL
+FABRICSERVICES_SPLITSEARCH_DECL
 bool FabricServices_SplitSearch_Dict_Add(
   FabricServices_SplitSearch_Dict _dict,
   unsigned numCStrs,
@@ -385,7 +385,7 @@ bool FabricServices_SplitSearch_Dict_Add(
   return dict->add( strs, userdata );
 }
 
-FABRICSERICES_SPLITSEARCH_DECL
+FABRICSERVICES_SPLITSEARCH_DECL
 bool FabricServices_SplitSearch_Dict_Add_Delimited(
   FabricServices_SplitSearch_Dict _dict,
   char const *delimitedCStr,
@@ -399,7 +399,7 @@ bool FabricServices_SplitSearch_Dict_Add_Delimited(
   return dict->add( strs, userdata );
 }
 
-FABRICSERICES_SPLITSEARCH_DECL
+FABRICSERVICES_SPLITSEARCH_DECL
 bool FabricServices_SplitSearch_Dict_Remove(
   FabricServices_SplitSearch_Dict _dict,
   unsigned numCStrs,
@@ -414,7 +414,7 @@ bool FabricServices_SplitSearch_Dict_Remove(
   return dict->remove( strs, userdata );
 }
 
-FABRICSERICES_SPLITSEARCH_DECL
+FABRICSERVICES_SPLITSEARCH_DECL
 bool FabricServices_SplitSearch_Dict_Remove_Delimited(
   FabricServices_SplitSearch_Dict _dict,
   char const *delimitedCStr,
@@ -428,7 +428,7 @@ bool FabricServices_SplitSearch_Dict_Remove_Delimited(
   return dict->remove( strs , userdata );
 }
 
-FABRICSERICES_SPLITSEARCH_DECL
+FABRICSERVICES_SPLITSEARCH_DECL
 void FabricServices_SplitSearch_Dict_Clear(
   FabricServices_SplitSearch_Dict _dict
   )
@@ -437,7 +437,7 @@ void FabricServices_SplitSearch_Dict_Clear(
   dict->clear();
 }
 
-FABRICSERICES_SPLITSEARCH_DECL
+FABRICSERVICES_SPLITSEARCH_DECL
 FabricServices_SplitSearch_Matches FabricServices_SplitSearch_Dict_Search(
   FabricServices_SplitSearch_Dict _dict,
   char const *cStr
@@ -447,7 +447,7 @@ FabricServices_SplitSearch_Matches FabricServices_SplitSearch_Dict_Search(
   return dict->search( cStr );
 }
 
-FABRICSERICES_SPLITSEARCH_DECL
+FABRICSERVICES_SPLITSEARCH_DECL
 void FabricServices_SplitSearch_Dict_Retain(
   FabricServices_SplitSearch_Dict _dict
   )
@@ -456,7 +456,7 @@ void FabricServices_SplitSearch_Dict_Retain(
   dict->retain();
 }
 
-FABRICSERICES_SPLITSEARCH_DECL
+FABRICSERVICES_SPLITSEARCH_DECL
 void FabricServices_SplitSearch_Dict_Release(
   FabricServices_SplitSearch_Dict _dict
   )
