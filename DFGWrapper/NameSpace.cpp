@@ -54,6 +54,38 @@ std::vector<NameSpace> NameSpace::getNameSpaces(bool recursive)
   return result;
 }
 
+std::vector<Object> NameSpace::getPresets(bool recursive)
+{
+  std::vector<Object> result;
+
+  std::string prefix = getPath();
+  if(prefix.length() > 0)
+    prefix += ".";
+
+  FabricCore::DFGStringResult jsonStr = getWrappedCoreHost().getPresetDesc(getPath().c_str());
+  FabricCore::Variant jsonVar = FabricCore::Variant::CreateFromJSON(jsonStr.getCString());
+  const FabricCore::Variant * membersVar = jsonVar.getDictValue("members");
+  for(FabricCore::Variant::DictIter memberIter(*membersVar); !memberIter.isDone(); memberIter.next())
+  {
+    std::string name = memberIter.getKey()->getStringData();
+    const FabricCore::Variant * memberVar = memberIter.getValue();
+    const FabricCore::Variant * objectTypeVar = memberVar->getDictValue("objectType");
+    std::string objectType = objectTypeVar->getStringData();
+    if(objectType == "Func" || objectType == "Graph")
+    {
+      result.push_back(Object(getWrappedCoreHost(), prefix + name));
+    }
+    else if(objectType == "NameSpace" && recursive)
+    {
+      NameSpace ns(getWrappedCoreHost(), prefix + name);
+      std::vector<Object> childResult = ns.getPresets(recursive);
+      result.insert(result.end(), childResult.begin(), childResult.end());
+    }
+  }
+
+  return result;
+}
+
 std::vector<Func> NameSpace::getFuncs(bool recursive)
 {
   std::vector<Func> result;

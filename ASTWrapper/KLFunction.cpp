@@ -2,6 +2,7 @@
 
 #include "KLFunction.h"
 #include "KLMethod.h"
+#include "KLExtension.h"
 
 #include <vector>
 #include <string>
@@ -90,6 +91,21 @@ const KLParameter * KLFunction::getParameter(uint32_t index) const
 const KLCompoundStmt * KLFunction::getBody() const
 {
   return m_body;
+}
+
+bool KLFunction::hasUniqueName() const
+{
+  std::vector<const KLFunction*> funcs = getExtension()->getFunctions();
+
+  for(size_t i=0;i<funcs.size();i++)
+  {
+    if(funcs[i] == this)
+      continue;
+    if(funcs[i]->getName() == getName())
+      return false;
+  }
+
+  return true;
 }
 
 bool KLFunction::isMethod() const
