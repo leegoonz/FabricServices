@@ -11,7 +11,9 @@ Import(
 env = parentEnv.CloneSubStage('SplitSearch')
 env.Append(CPPDEFINES = ['FABRICSERVICES_SPLITSEARCH_BUILDING'])
 if env['FABRIC_BUILD_OS'] != 'Windows':
-  env.Append(CXXFLAGS=['-stdlib=libc++', '-std=c++11', '-Werror'])
+  env.Append(CXXFLAGS=['-std=c++11', '-Werror'])
+if env['FABRIC_BUILD_OS'] == 'Darwin':
+  env.Append(CXXFLAGS=['-stdlib=libc++'])
   env.Append(LINKFLAGS = ['-stdlib=libc++'])
 
 env.MergeFlags(llvmFlags)
