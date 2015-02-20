@@ -27,6 +27,7 @@ namespace FabricServices
       virtual ~NameSpace();
 
       std::vector<NameSpace> getNameSpaces(bool recursive = false);
+      std::vector<Object> getPresets(bool recursive = false);
       std::vector<Func> getFuncs(bool recursive = false);
       std::vector<Graph> getGraphs(bool recursive = false);
 

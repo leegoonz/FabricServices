@@ -4,6 +4,10 @@
 
 using namespace FabricServices::DFGWrapper;
 
+Executable::Executable()
+{
+}
+
 Executable::Executable(FabricCore::DFGBinding binding, std::string path)
 {
   m_binding = binding;
@@ -21,11 +25,20 @@ Executable::~Executable()
 {
 }
 
-bool Executable::isValid() const
+bool Executable::isValid()
 {
-  return m_binding.isValid();
+  if(!m_binding.isValid())
+    return false;
+  try
+  {
+    getDesc();
+    return true;
+  }
+  catch(FabricCore::Exception e)
+  {
+  }
+  return false;
 }
-
 
 FabricCore::DFGBinding Executable::getWrappedCoreBinding() const
 {

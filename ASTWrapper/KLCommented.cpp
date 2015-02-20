@@ -36,9 +36,9 @@ bool KLCommented::isOfDeclType(KLDeclType type) const
 
 bool KLCommented::isInternal() const
 {
-  if(!m_comments)
+  if(!getComments())
     return false;
-  return m_comments->hasQualifier("internal");
+  return getComments()->hasQualifier("internal");
 }
 
 const KLComment * KLCommented::getComments() const

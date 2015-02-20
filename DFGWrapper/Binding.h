@@ -19,6 +19,7 @@ namespace FabricServices
 
     public:
 
+      Binding();
       Binding(FabricCore::DFGBinding binding);
       Binding(const Binding & other);
       virtual ~Binding();
@@ -32,6 +33,10 @@ namespace FabricServices
       GraphExecutable getGraph();
 
       void execute();
+
+      void setNotificationCallback(FabricCore::DFGNotificationCallback callback, void * userData);
+
+      bool canConnect(char const *pathA, char const *pathB);
 
     private:
       FabricCore::DFGBinding m_binding;      

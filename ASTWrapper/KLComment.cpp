@@ -96,6 +96,7 @@ bool KLComment::hasQualifier(const char * qualifier) const
   {
     std::string l = m_content[i];
     boost::trim(l);
+    boost::to_lower(l);
     if(l.substr(0, q.length()+1) == "\\"+q)
       return true;
   }

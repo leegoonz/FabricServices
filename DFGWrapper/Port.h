@@ -5,6 +5,7 @@
 
 #include <FabricCore.h>
 #include <string>
+#include <vector>
 
 namespace FabricServices
 {
@@ -25,22 +26,38 @@ namespace FabricServices
       Port(const Port & other);
       virtual ~Port();
 
-      bool isValid() const;
+      bool isValid();
       FabricCore::DFGBinding getWrappedCoreBinding() const;
 
       std::string getPath() const;
       std::string getName() const;
-      void setName(char const *name);
+      std::string setName(char const *name);
       FabricCore::DFGPortType getPortType();
       std::string getDataType();
+      bool isArray();
+      unsigned int getArraySize();
 
       virtual std::string getDesc();
 
-      virtual bool canConnectTo(Port other);
+      virtual bool hasMetadata(char const * key);
+      virtual std::string getMetadata(char const * key);
+      virtual void setMetadata(char const * key, char const * metadata, bool canUndo);
+      virtual bool hasOption(char const * key);
+      virtual FabricCore::Variant getOption(char const * key);
+      virtual void setOption(char const * key, const FabricCore::Variant * var);
+
+      virtual bool canConnect(Port other);
       virtual void connect(const Port & other);
       virtual void disconnect(const Port & other);
+      virtual bool isConnected();
+      virtual std::vector<std::string> getSources();
+      virtual std::vector<std::string> getDestinations();
 
-      void setDefaultValue(FabricCore::RTVal defaultValue);
+      virtual FabricCore::RTVal getDefaultValue(char const * dataType = NULL);
+      virtual void setDefaultValue(FabricCore::RTVal value);
+
+      virtual FabricCore::RTVal getRTVal();
+      virtual void setRTVal(FabricCore::RTVal value);
 
     protected:
       

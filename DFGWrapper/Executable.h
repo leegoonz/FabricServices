@@ -18,13 +18,14 @@ namespace FabricServices
     class Executable
     {
       friend class Node;
+      friend class View;
 
     public:
 
       Executable(const Executable & other);
       virtual ~Executable();
 
-      bool isValid() const;
+      bool isValid();
       FabricCore::DFGBinding getWrappedCoreBinding() const;
 
       std::string getDesc();
@@ -55,6 +56,7 @@ namespace FabricServices
 
     protected:
       
+      Executable();
       Executable(FabricCore::DFGBinding binding, std::string path);
 
     private:

@@ -4,14 +4,21 @@
 
 using namespace FabricServices::Commands;
 
+unsigned int Command::s_maxID = 1;
+
 Command::Command()
 {
-
+  m_id = s_maxID++;
 }
 
 Command::~Command()
 {
 
+}
+
+unsigned int Command::getID() const
+{
+  return m_id;
 }
 
 void Command::destroy()

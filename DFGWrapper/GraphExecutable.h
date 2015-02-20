@@ -18,6 +18,7 @@ namespace FabricServices
     {
       friend class Binding;
       friend class Node;
+      friend class View;
 
     public:
 
@@ -39,6 +40,7 @@ namespace FabricServices
 
     protected:
       
+      GraphExecutable();
       GraphExecutable(FabricCore::DFGBinding binding, std::string path);
 
     };

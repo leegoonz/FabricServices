@@ -66,12 +66,16 @@ void CommandStack::clear()
   m_redoCommands.clear();
 }
 
-bool CommandStack::undo()
+bool CommandStack::undo(unsigned int id)
 {
   if(m_undoCommands.size() == 0)
     return false;
 
   Command * command = m_undoCommands.back();
+
+  if(id != UINT_MAX && command->getID() != id)
+    return false;
+
   m_undoCommands.pop_back();
 
   if(command->undo())
@@ -88,12 +92,16 @@ bool CommandStack::undo()
   return false;
 }
 
-bool CommandStack::redo()
+bool CommandStack::redo(unsigned int id)
 {
   if(m_redoCommands.size() == 0)
     return false;
 
   Command * command = m_redoCommands.back();
+
+  if(id != UINT_MAX && command->getID() != id)
+    return false;
+
   m_redoCommands.pop_back();
 
   if(command->redo())

@@ -5,6 +5,7 @@
 
 #include "Command.h"
 
+#include <limits.h>
 #include <stdint.h>
 
 namespace FabricServices
@@ -25,8 +26,8 @@ namespace FabricServices
 
       virtual bool add(Command * command);
       virtual void clear();
-      virtual bool undo();
-      virtual bool redo();
+      virtual bool undo(unsigned int id = UINT_MAX);
+      virtual bool redo(unsigned int id = UINT_MAX);
 
     private:
 

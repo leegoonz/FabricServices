@@ -45,6 +45,7 @@ void KLSyntaxHighlighter::initRules()
   addRule(HighlightRuleType_Keyword, "\\bcreateConstValue\\b");
   addRule(HighlightRuleType_Keyword, "\\bcreateReduce\\b");
   addRule(HighlightRuleType_Keyword, "\\bcreateValueGenerator\\b");
+  addRule(HighlightRuleType_Keyword, "\\bdfgEntry\\b");
   addRule(HighlightRuleType_Keyword, "\\belse\\b");
   addRule(HighlightRuleType_Keyword, "\\bfor\\b");
   addRule(HighlightRuleType_Keyword, "\\bfunction\\b");

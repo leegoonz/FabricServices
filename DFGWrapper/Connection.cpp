@@ -20,7 +20,7 @@ Connection::~Connection()
 {
 }
 
-bool Connection::isValid() const
+bool Connection::isValid()
 {
   return m_src.isValid() && m_dst.isValid();
 }

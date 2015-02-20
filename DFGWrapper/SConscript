@@ -2,11 +2,11 @@
 # Copyright 2010-2015 Fabric Software Inc. All rights reserved.
 #
 
-Import('parentEnv', 'capiIncludeDir', 'boostFlags')
+Import('parentEnv', 'capiIncludeDir', 'legacyBoostFlags')
 
 env = parentEnv.CloneSubStage('DFGWrapper')
 
-env.MergeFlags(boostFlags)
+env.MergeFlags(legacyBoostFlags)
 env.Append(CPPDEFINES = ['FEC_SHARED'])
 env.Append(CPPPATH = [capiIncludeDir])
 

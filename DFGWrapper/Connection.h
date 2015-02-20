@@ -22,7 +22,7 @@ namespace FabricServices
       Connection(const Connection & other);
       virtual ~Connection();
 
-      bool isValid() const;
+      bool isValid();
 
       Port getSrc() const;
       Port getDst() const;
