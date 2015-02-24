@@ -4,10 +4,8 @@
 #include "KLASTManager.h"
 #include "KLTypeOp.h"
 
-#include <boost/algorithm/string.hpp>
-#include <boost/range/algorithm/remove_if.hpp>
-#include <boost/filesystem/path.hpp>
-#include <boost/filesystem/operations.hpp>
+#include <FTL/Env.h>
+#include <FTL/FS.h>
 
 using namespace FabricServices::ASTWrapper;
 
@@ -125,38 +123,49 @@ const KLExtension* KLASTManager::loadExtension(const char * jsonFilePath)
 
 void KLASTManager::loadAllExtensionsInFolder(const char * extensionFolder, bool parseExtensions)
 {
-  std::vector<boost::filesystem::path> folders;
+  std::vector<std::string> folders;
   folders.push_back(extensionFolder);
 
   for(uint32_t i=0;i<folders.size();i++)
   {
-    if( boost::filesystem::exists(folders[i])) {
-      for ( boost::filesystem::directory_iterator end, dir(folders[i]); dir != end; ++dir ) {
-        std::string fileName = dir->path().filename().string();
-        if(fileName == "." || fileName == "..")
-          continue;
-        if(boost::filesystem::is_directory(dir->path()))
-        {
-          folders.push_back(dir->path().string());
-        }
-        else
-        {
-          if(fileName.length() <=9)
-            continue;
-          if(fileName.substr(fileName.length()-9, 9) == ".fpm.json")
+    std::string const &folder = folders[i];
+
+    std::vector<std::string> entries;
+    if ( !FTL::FSDirAppendEntries( folder, entries ) )
+      continue;
+
+    for ( std::vector<std::string>::const_iterator it = entries.begin();
+      it != entries.end(); ++it )
+    {
+      std::string const &entry = *it;
+      std::string entryPath = FTL::PathJoin( folder, entry );
+      FTL::FSStatInfo entryStatInfo;
+      if ( !FTL::FSStat( entryPath, entryStatInfo ) )
+        continue;
+      switch ( entryStatInfo.type )
+      {
+        case FTL::FSStatInfo::Dir:
+          folders.push_back( entryPath );
+          break;
+
+        case FTL::FSStatInfo::File:
+          if(entry.substr(entry.length()-9, 9) == ".fpm.json")
           {
             try
             {
-              KLExtension * extension = new KLExtension(this, dir->path().string().c_str());
+              KLExtension * extension = new KLExtension(this, entryPath.c_str());
               onExtensionLoaded(extension);
               m_extensions.push_back(extension);
             }
             catch(FabricCore::Exception e)
             {
-              printf("[KLASTManager] Ignoring extension '%s': '%s'.\n", dir->path().string().c_str(), e.getDesc_cstr());
+              printf("[KLASTManager] Ignoring extension '%s': '%s'.\n", entryPath.c_str(), e.getDesc_cstr());
             }
           }
-        }
+          break;
+
+        default:
+          break;
       }
     }
   }
@@ -177,16 +186,9 @@ bool KLASTManager::loadAllExtensionsFromExtsPath(bool parseExtensions)
   if(m_extensions.size() >  0)
     return false;
 
-  const char * FABRIC_EXTS_PATH = getenv("FABRIC_EXTS_PATH");
-  if(!FABRIC_EXTS_PATH)
-    return false;
-
   std::vector<std::string> folders;
-#ifdef _WIN32
-  boost::split(folders, FABRIC_EXTS_PATH, boost::is_any_of(";"));
-#else
-  boost::split(folders, FABRIC_EXTS_PATH, boost::is_any_of(":"));
-#endif
+  if ( !FTL::EnvGetList( "FABRIC_EXTS_PATH", folders ) )
+    return false;
 
   for(size_t i=0;i<folders.size();i++)
   {
@@ -206,59 +208,84 @@ bool KLASTManager::loadAllExtensionsFromExtsPath(bool parseExtensions)
   return m_extensions.size() > 0;
 }
 
+const KLExtension* KLASTManager::loadExtensionFromFolder(
+  const char * name,
+  std::string const &folder
+  )
+{
+  std::vector<std::string> entries;
+  FTL::FSDirAppendEntries( folder, entries );
+
+  KLExtension const *result = NULL;
+  for ( std::vector<std::string>::const_iterator it = entries.begin();
+    !result && it != entries.end(); ++it )
+  {
+    std::string const &entry = *it;
+    std::string entryPath = FTL::PathJoin( folder, entry );
+
+    FTL::FSStatInfo statInfo;
+    if ( !FSStat( entryPath, statInfo ) )
+      continue;
+
+    switch ( statInfo.type )
+    {
+      case FTL::FSStatInfo::Dir:
+        result = loadExtensionFromFolder( name, entryPath );
+        break;
+
+      case FTL::FSStatInfo::File:
+        if ( entry == std::string(name) + ".fpm.json" )
+        {
+          try
+          {
+            KLExtension *klExtension =
+              new KLExtension(this, entryPath.c_str());
+            onExtensionLoaded(result);
+            m_extensions.push_back(result);
+            klExtension->parse();
+            onExtensionParsed(result);
+            result = klExtension;
+          }
+          catch(FabricCore::Exception e)
+          {
+            printf("[KLASTManager] Ignoring extension '%s': '%s'.\n", entryPath.c_str(), e.getDesc_cstr());
+          }
+        }
+        break;
+
+      default:
+        break;
+    }
+  }
+  return result;
+}
+
+const KLExtension* KLASTManager::loadExtensionFromFolders(
+  const char * name,
+  std::vector<std::string> const &folders
+  )
+{
+  KLExtension const *result = NULL;
+  for(uint32_t i=0;i<folders.size();i++)
+  {
+    std::string const &folder = folders[i];
+    result = loadExtensionFromFolder( name, folder );
+    if ( result )
+      break;
+  }
+  return result;
+}
+
 const KLExtension* KLASTManager::loadExtensionFromExtsPath(const char * name)
 {
   if(getExtension(name))
     return NULL;
 
-  const char * FABRIC_EXTS_PATH = getenv("FABRIC_EXTS_PATH");
-  if(!FABRIC_EXTS_PATH)
+  std::vector<std::string> folders;
+  if ( !FTL::EnvGetList( "FABRIC_EXTS_PATH", folders ) )
     return NULL;
 
-  std::vector<std::string> foldersStr;
-#ifdef _WIN32
-  boost::split(foldersStr, FABRIC_EXTS_PATH, boost::is_any_of(";"));
-#else
-  boost::split(foldersStr, FABRIC_EXTS_PATH, boost::is_any_of(":"));
-#endif
-
-  std::vector<boost::filesystem::path> folders;
-  for(size_t i=0;i<foldersStr.size();i++)
-    folders.push_back(foldersStr[i]);
-
-  for(uint32_t i=0;i<folders.size();i++)
-  {
-    if( boost::filesystem::exists(folders[i])) {
-      for ( boost::filesystem::directory_iterator end, dir(folders[i]); dir != end; ++dir ) {
-        std::string fileName = dir->path().filename().string();
-        if(fileName == "." || fileName == "..")
-          continue;
-        if(boost::filesystem::is_directory(dir->path()))
-        {
-          folders.push_back(dir->path().string());
-        }
-        else
-        {
-          if(fileName != std::string(name) + ".fpm.json")
-            continue;
-          try
-          {
-            KLExtension * extension = new KLExtension(this, dir->path().string().c_str());
-            onExtensionLoaded(extension);
-            m_extensions.push_back(extension);
-            extension->parse();
-            onExtensionParsed(extension);
-            return extension;
-          }
-          catch(FabricCore::Exception e)
-          {
-            printf("[KLASTManager] Ignoring extension '%s': '%s'.\n", dir->path().string().c_str(), e.getDesc_cstr());
-          }
-        }
-      }
-    }
-  }
-  return NULL;
+  return loadExtensionFromFolders( name, folders );
 }
 
 bool KLASTManager::removeExtension(const char * name, const char * versionRequirement)
@@ -478,8 +505,7 @@ const KLExtension* KLASTManager::getExtension(const char * name, const char * ve
     extensions.insert(std::pair<KLExtension::Version, const KLExtension*>(m_extensions[i]->getVersion(), m_extensions[i]));
   }
   
-  std::string r = versionRequirement;
-  r.erase(boost::remove_if(r, boost::is_any_of(" \t")), r.end());
+  std::string r = FTL::StrFilterWhitespace( versionRequirement );
 
   KLTypeOp::OpType op = KLTypeOp::OpType_Equal;
   if(r.substr(0, 2) == "==")
@@ -517,7 +543,7 @@ const KLExtension* KLASTManager::getExtension(const char * name, const char * ve
   if(r.length() > 1)
   {
     std::vector<std::string> strParts;
-    boost::split(strParts, r, boost::is_any_of("."));
+    FTL::StrSplit< FTL::FnMatchChar<'.'> >( r, strParts, true /* strict */ );
 
     std::vector<int> intParts;
     for(uint32_t i=0;i<strParts.size();i++)

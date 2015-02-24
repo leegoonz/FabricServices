@@ -2,10 +2,8 @@
 
 #include "KLComment.h"
 
-#include <boost/algorithm/string.hpp>
-#include <boost/range/algorithm/count.hpp>
-#include <boost/range/algorithm/remove_if.hpp>
-#include <boost/regex.hpp>
+#include <FTL/MatchCharAny.h>
+#include <FTL/Str.h>
 
 using namespace FabricServices::ASTWrapper;
 
@@ -42,18 +40,25 @@ void KLComment::gatherDoxygenContent() const
   bool inBlock = false;
   for(uint32_t i=0;i<getArraySize();i++)
   {
-    std::vector<std::string> lines;
     const char * content = getStringArrayElement(i);
     if(!content)
       continue;
 
-    boost::split(lines, content, boost::is_any_of("\n"));
+    std::vector<std::string> lines;
+    FTL::StrSplit<'\n'>( content, lines );
     for(uint32_t j=0;j<lines.size();j++)
     {
       std::string l0 = lines[j];
       std::string l1 = lines[j];
-      boost::trim_if(l0, boost::is_any_of(" \t\n\r"));
-      boost::trim_if(l1, boost::is_any_of("/*\n\r"));
+      FTL::StrTrimWhitespace( l0 );
+      FTL::StrTrim<
+        FTL::MatchCharAny<
+          FTL::MatchCharSingle<'/'>,
+          FTL::MatchCharSingle<'*'>,
+          FTL::MatchCharSingle<'\n'>,
+          FTL::MatchCharSingle<'\r'>
+          >
+        >( l1 );
 
       if(l0.substr(0, 3) == "///")
       {
@@ -85,8 +90,8 @@ bool KLComment::hasQualifier(const char * qualifier) const
   if(qualifier)
   {
     q = qualifier;
-    boost::to_lower(q);
-    boost::trim(q);
+    FTL::StrToLower(q);
+    FTL::StrTrimWhitespace(q);
   }
 
   if(q.length() == 0)
@@ -95,8 +100,8 @@ bool KLComment::hasQualifier(const char * qualifier) const
   for(uint32_t i=0;i<m_content.size();i++)
   {
     std::string l = m_content[i];
-    boost::trim(l);
-    boost::to_lower(l);
+    FTL::StrTrimWhitespace(l);
+    FTL::StrToLower(l);
     if(l.substr(0, q.length()+1) == "\\"+q)
       return true;
   }
@@ -109,8 +114,8 @@ std::string KLComment::getQualifier(const char * qualifier, const char * default
   if(qualifier)
   {
     q = qualifier;
-    boost::to_lower(q);
-    boost::trim(q);
+    FTL::StrToLower(q);
+    FTL::StrTrimWhitespace(q);
   }
 
   std::map<std::string, std::string>::iterator it = m_qualifiers.find(q);
@@ -123,16 +128,16 @@ std::string KLComment::getQualifier(const char * qualifier, const char * default
   for(uint32_t i=0;i<m_content.size();i++)
   {
     std::string l = m_content[i];
-    boost::trim(l);
+    FTL::StrTrimWhitespace(l);
 
     if(l.substr(0, q.length()+1) == "\\"+q && q != "")
     {
       std::string l2 = l.substr(q.length()+1, 10000);
-      boost::trim(l2);
+      FTL::StrTrimWhitespace(l2);
       content.push_back(l2);
     }
 
-    if(l.substr(0, 1) == "\\" && boost::count(l, ' ') == 0)
+    if(l.substr(0, 1) == "\\" && FTL::StrCount<' '>(l) == 0)
     {
       if(insideQualifier.length() > 0)
       {
@@ -174,7 +179,7 @@ std::string KLComment::getSingleQualifier(const char * qualifier, const char * d
     return q;
 
   std::vector<std::string> lines;
-  boost::split(lines, q, boost::is_any_of("\n"));
+  FTL::StrSplit<'\n'>(q, lines);
 
   return lines[0];
 }
@@ -184,8 +189,8 @@ std::string KLComment::getQualifierBracket(const char * qualifier, const char * 
   if(!qualifier)
     return "";
   std::string q1 = qualifier;
-  boost::to_lower(q1);
-  boost::trim(q1);
+  FTL::StrToLower(q1);
+  FTL::StrTrimWhitespace(q1);
 
   if(q1.length() == 0)
     return "";
@@ -203,7 +208,12 @@ std::string KLComment::getQualifierBracket(const char * qualifier, const char * 
   for(uint32_t i=0;i<m_content.size();i++)
   {
     std::string l = m_content[i];
-    boost::trim_left_if(l, boost::is_any_of(" \t"));
+    FTL::StrTrimLeft<
+      FTL::MatchCharAny<
+        FTL::MatchCharSingle<' '>,
+        FTL::MatchCharSingle<'\t'>
+        >
+      >(l);
 
     if(inBlock)
     {

@@ -75,6 +75,9 @@ namespace FabricServices
       void onFileParsed(const KLFile * file);
       void onASTChanged();
 
+      const KLExtension* loadExtensionFromFolder(const char * name, std::string const &folder);
+      const KLExtension* loadExtensionFromFolders(const char * name, std::vector<std::string> const &folders);
+
     private:
       const FabricCore::Client * m_client;
       std::vector<const KLExtension*> m_extensions;
