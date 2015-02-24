@@ -6,6 +6,8 @@
 
 #include <FTL/Env.h>
 #include <FTL/FS.h>
+#include <FTL/StrFilterWhitespace.h>
+#include <FTL/StrSplit.h>
 
 using namespace FabricServices::ASTWrapper;
 
@@ -543,7 +545,7 @@ const KLExtension* KLASTManager::getExtension(const char * name, const char * ve
   if(r.length() > 1)
   {
     std::vector<std::string> strParts;
-    FTL::StrSplit< FTL::FnMatchChar<'.'> >( r, strParts, true /* strict */ );
+    FTL::StrSplit<'.'>( r, strParts, true /* strict */ );
 
     std::vector<int> intParts;
     for(uint32_t i=0;i<strParts.size();i++)

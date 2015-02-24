@@ -2,7 +2,8 @@
 
 #include "KLComment.h"
 
-#include <FTL/MatchCharAny.h>
+#include <FTL/MatchChar.h>
+#include <FTL/MatchPrefix.h>
 #include <FTL/Str.h>
 
 using namespace FabricServices::ASTWrapper;
@@ -263,10 +264,58 @@ std::string KLComment::getQualifierBracket(const char * qualifier, const char * 
 
 std::string KLComment::removeRstRoles(const char * text)
 {
-  std::string r = text;
-  r.erase(boost::remove_if(r, boost::is_any_of("`")), r.end());
-  boost::regex re(":[a-zA-Z0-9\\-_]+:");
-  return boost::regex_replace(r, re, "");
+  // [pzion 201450224] Replace eg. ":role:`some text`" by "some text"
+
+  std::string result = text;
+
+  FTL::MatchPrefixSeq<
+    FTL::MatchPrefixChar< FTL::MatchCharSingle<':'> >,
+    FTL::MatchPrefixOneOrMore<
+      FTL::MatchPrefixChar<
+        FTL::MatchCharAny<
+          FTL::MatchCharRange<'a', 'z'>,
+          FTL::MatchCharRange<'A', 'Z'>,
+          FTL::MatchCharRange<'0', '9'>,
+          FTL::MatchCharSingle<'\\'>,
+          FTL::MatchCharSingle<'-'>,
+          FTL::MatchCharSingle<'_'>
+          >
+        >
+      >,
+    FTL::MatchPrefixChar< FTL::MatchCharSingle<':'> >,
+    FTL::MatchPrefixChar< FTL::MatchCharSingle<'`'> >
+    > prefixMatchSeq;
+
+  std::string::iterator itBegin = result.begin();
+  std::string::iterator itEnd = result.end();
+  std::string::iterator it = itBegin;
+  for (;;)
+  {
+    FTL::MatchPrefixRange r( it, itEnd );
+    if ( prefixMatchSeq( r ) )
+    {
+      FTL::MatchPrefixPos p = r.b;
+      while ( r.b != itEnd )
+      {
+        if ( *r.b++ == '`' )
+        {
+          size_t headLength = it - itBegin;
+          size_t textLength = r.b - p;
+          memmove( &result[headLength], &result[p-itBegin], textLength );
+          size_t tailLength = itEnd-r.b;
+          memmove( &result[headLength+textLength], &result[r.b-itBegin], tailLength );
+          result.resize( headLength + textLength + tailLength );
+
+          itBegin = result.begin();
+          itEnd = result.end();
+          it = itBegin + tailLength;
+
+          continue;
+        }
+      }
+    }
+    ++it;
+  }
 }
 
 std::string KLComment::getPlainText() const
