@@ -2,9 +2,9 @@
 
 #include "KLExtension.h"
 
-#include <boost/algorithm/string.hpp>
-#include <boost/filesystem/path.hpp>
-#include <boost/filesystem/operations.hpp>
+#include <FTL/FS.h>
+#include <FTL/Path.h>
+#include <FTL/StrSplit.h>
 
 using namespace FabricServices::ASTWrapper;
 
@@ -40,8 +40,9 @@ KLExtension::KLExtension(const KLASTManager* astManager, const char * jsonFilePa
 {
   m_astManager = (KLASTManager*)astManager;
 
-  boost::filesystem::path jsonPath = jsonFilePath;
-  m_name = jsonPath.filename().string();
+  std::pair<FTL::StrRef, FTL::StrRef> jsonFilePathSplit =
+    FTL::PathSplit( jsonFilePath );
+  m_name = jsonFilePathSplit.second;
   if(m_name.length() > 9)
   {
     if(m_name.substr(m_name.length()-9, 9) == ".fpm.json")
@@ -80,14 +81,14 @@ KLExtension::KLExtension(const KLASTManager* astManager, const char * jsonFilePa
   std::vector<std::string> klContent;
   for(uint32_t i=0;i<klFileRelPaths.size();i++)
   {
-    boost::filesystem::path klFilePath = klFileRelPaths[i];
-    if(!klFilePath.is_absolute())
-      klFilePath = jsonPath.parent_path() / klFilePath;
+    std::string klFilePath = klFileRelPaths[i];
+    if ( !FTL::PathIsAbsolute( klFilePath ) )
+      klFilePath = FTL::PathJoin( jsonFilePathSplit.first, klFilePath );
 
-    if(!boost::filesystem::exists(klFilePath))
+    if ( !FTL::FSExists( klFilePath ) )
     {
       std::string message = "KLExtension: '" + m_name + "' uses a non existing KL file '";
-      message += klFilePath.string();
+      message += klFilePath;
       message += "'.";
       throw(FabricCore::Exception(message.c_str()));
     }
@@ -95,7 +96,7 @@ KLExtension::KLExtension(const KLASTManager* astManager, const char * jsonFilePa
     klContent.resize( klContent.size() + 1 );
     std::string &fileContent = klContent.back();
 
-    FILE * klFile = fopen(klFilePath.string().c_str(), "rb");
+    FILE * klFile = fopen(klFilePath.c_str(), "rb");
     for (;;)
     {
       size_t oldSize = fileContent.size();
@@ -153,7 +154,7 @@ void KLExtension::init(const char * jsonContent, uint32_t numKLFiles, const char
     {
       std::string version = versionVar->getStringData();
       std::vector<std::string> strParts;
-      boost::split(strParts, version, boost::is_any_of("."));
+      FTL::StrSplit<'.'>( version, strParts );
 
       std::vector<int> intParts;
       for(uint32_t i=0;i<strParts.size();i++)

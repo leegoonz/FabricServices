@@ -2,9 +2,7 @@
 
 #include "KLParameter.h"
 
-#include <vector>
-#include <string>
-#include <boost/algorithm/string.hpp>
+#include <FTL/StrSplit.h>
 
 using namespace FabricServices::ASTWrapper;
 
@@ -48,7 +46,7 @@ const std::string & KLParameter::getType() const
 std::string KLParameter::getTypeNoArray() const
 {
   std::vector<std::string> parts;
-  boost::split(parts, m_type, boost::is_any_of("["));
+  FTL::StrSplit<'['>( m_type, parts );
   std::string type = parts[0];
   if(type.substr(type.length()-2, 2) == "<>")
     type = type.substr(0, type.length()-2);
@@ -62,7 +60,7 @@ std::string KLParameter::getTypeArraySuffix() const
   if(m_type.substr(m_type.length()-1, 1) == "]")
   {
     std::vector<std::string> parts;
-    boost::split(parts, m_type, boost::is_any_of("["));
+    FTL::StrSplit<'['>( m_type, parts );
     return "[" + parts[1];
   }
   return "";

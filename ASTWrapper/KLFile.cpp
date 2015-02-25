@@ -3,8 +3,8 @@
 #include "KLFile.h"
 #include "KLLocation.h"
 
-#include <boost/filesystem/path.hpp>
-#include <boost/algorithm/string.hpp>
+#include <FTL/Path.h>
+#include <FTL/StrTrim.h>
 
 using namespace FabricServices::ASTWrapper;
 
@@ -13,12 +13,13 @@ KLFile::KLFile(const KLExtension* extension, const char * filePath, const char *
   m_extension = (KLExtension*)extension;
   m_filePath = filePath;
 
-  boost::filesystem::path path = m_filePath;
-  m_fileName = path.stem().string() + ".kl";
+  std::pair<FTL::StrRef, FTL::StrRef> pathSplit =
+    FTL::PathSplit( m_filePath );
+  m_fileName = pathSplit.first;
+  m_fileName += ".kl";
 
-  path = extension->getFilePath();
-  path = path.parent_path() / m_filePath;
-  m_absFilePath = path.string();
+  pathSplit = FTL::PathSplit( extension->getFilePath() );
+  m_absFilePath = FTL::PathJoin( pathSplit.first, m_filePath );
   
   m_klCode = klCode;
   m_parsed = false;
@@ -117,7 +118,7 @@ void KLFile::parse()
         {
           KLFunction function(this, element);
           std::string thisType = function.getName();
-          boost::trim_left_if(thisType, boost::is_any_of("~"));
+          FTL::StrTrimLeft<'~'>( thisType );
           KLMethod * e = new KLMethod(this, element, thisType);
           const KLType * klType = m_extension->getASTManager()->getKLTypeByName(thisType.c_str(), e);
           if(klType)

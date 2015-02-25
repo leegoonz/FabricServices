@@ -6,7 +6,6 @@
 
 #include <vector>
 #include <string>
-#include <boost/algorithm/string.hpp>
 
 using namespace FabricServices::ASTWrapper;
 

@@ -2,7 +2,7 @@
 
 #include "KLTypeOp.h"
 
-#include <boost/algorithm/string.hpp>
+#include <FTL/StrToLower.h>
 
 using namespace FabricServices::ASTWrapper;
 
@@ -57,7 +57,7 @@ KLTypeOp::KLTypeOp(const KLFile* klFile, JSONData data)
   else if(type == "BinOpImpl")
   {
     std::string binOpType = getStringDictValue("binOpType");
-    boost::to_lower(binOpType);
+    FTL::StrToLower( binOpType );
     if(binOpType == "add")
     {
       m_op = OpType_Add;
@@ -86,7 +86,7 @@ KLTypeOp::KLTypeOp(const KLFile* klFile, JSONData data)
   else if(type == "ASTUniOpDecl")
   {
     std::string uniOpType = getStringDictValue("uniOpType");
-    boost::to_lower(uniOpType);
+    FTL::StrToLower(uniOpType);
     if(uniOpType == "neg")
     {
       m_op = OpType_Neg;

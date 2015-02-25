@@ -286,32 +286,34 @@ std::string KLComment::removeRstRoles(const char * text)
     FTL::MatchPrefixChar< FTL::MatchCharSingle<'`'> >
     > prefixMatchSeq;
 
-  std::string::iterator itBegin = result.begin();
-  std::string::iterator itEnd = result.end();
-  std::string::iterator it = itBegin;
+  FTL::StrRef resultStr = result;
+  FTL::StrRef::IT itBegin = resultStr.begin();
+  FTL::StrRef::IT itEnd = resultStr.end();
+  FTL::StrRef::IT it = itBegin;
   for (;;)
   {
-    FTL::MatchPrefixRange r( it, itEnd );
-    if ( prefixMatchSeq( r ) )
+    FTL::StrRef::IT itPrefixEnd = it;
+    if ( prefixMatchSeq( itPrefixEnd, itEnd ) )
     {
-      FTL::MatchPrefixPos p = r.b;
-      while ( r.b != itEnd )
+      FTL::StrRef::IT itCloseBackTick =
+        resultStr.find( itPrefixEnd, itEnd, '`' );
+      if ( itCloseBackTick != itEnd )
       {
-        if ( *r.b++ == '`' )
-        {
-          size_t headLength = it - itBegin;
-          size_t textLength = r.b - p;
-          memmove( &result[headLength], &result[p-itBegin], textLength );
-          size_t tailLength = itEnd-r.b;
-          memmove( &result[headLength+textLength], &result[r.b-itBegin], tailLength );
-          result.resize( headLength + textLength + tailLength );
+        size_t headLength = it - itBegin;
+        size_t textStart = itCloseBackTick - itBegin;
+        size_t textLength = itCloseBackTick - itPrefixEnd;
+        memmove( &result[headLength], &result[textStart], textLength );
+        size_t tailStart = itCloseBackTick + 1 - itBegin;
+        size_t tailLength = itEnd - itCloseBackTick - 1;
+        memmove( &result[headLength+textLength], &result[tailStart], tailLength );
+        result.resize( headLength + textLength + tailLength );
 
-          itBegin = result.begin();
-          itEnd = result.end();
-          it = itBegin + tailLength;
+        resultStr = result;
+        itBegin = resultStr.begin();
+        itEnd = resultStr.end();
+        it = itBegin + tailLength;
 
-          continue;
-        }
+        continue;
       }
     }
     ++it;
