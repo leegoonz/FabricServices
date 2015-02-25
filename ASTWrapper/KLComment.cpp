@@ -5,6 +5,7 @@
 #include <FTL/MatchChar.h>
 #include <FTL/MatchPrefix.h>
 #include <FTL/Str.h>
+#include <limits.h>
 
 using namespace FabricServices::ASTWrapper;
 
@@ -318,6 +319,8 @@ std::string KLComment::removeRstRoles(const char * text)
     }
     ++it;
   }
+
+  return result;
 }
 
 std::string KLComment::getPlainText() const

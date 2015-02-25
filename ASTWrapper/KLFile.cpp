@@ -5,6 +5,7 @@
 
 #include <FTL/Path.h>
 #include <FTL/StrTrim.h>
+#include <limits.h>
 
 using namespace FabricServices::ASTWrapper;
 
