@@ -151,7 +151,8 @@ void KLASTManager::loadAllExtensionsInFolder(const char * extensionFolder, bool 
           break;
 
         case FTL::FSStatInfo::File:
-          if(entry.substr(entry.length()-9, 9) == ".fpm.json")
+          if ( entry.length() >= 9
+              && entry.substr(entry.length()-9, 9) == ".fpm.json" )
           {
             try
             {

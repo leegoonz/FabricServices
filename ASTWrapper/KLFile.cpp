@@ -16,8 +16,7 @@ KLFile::KLFile(const KLExtension* extension, const char * filePath, const char *
 
   std::pair<FTL::StrRef, FTL::StrRef> pathSplit =
     FTL::PathSplit( m_filePath );
-  m_fileName = pathSplit.first;
-  m_fileName += ".kl";
+  m_fileName = pathSplit.second;
 
   pathSplit = FTL::PathSplit( extension->getFilePath() );
   m_absFilePath = FTL::PathJoin( pathSplit.first, m_filePath );
