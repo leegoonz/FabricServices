@@ -4,6 +4,14 @@
 
 Import('parentEnv')
 
+env = parentEnv.CloneSubStage('Services')
+
+if env['FABRIC_BUILD_OS'] != 'Windows':
+  env.Append(CXXFLAGS = ['-std=c++03', '-Werror'])
+if env['FABRIC_BUILD_OS'] == 'Darwin':
+  env.Append(CXXFLAGS = ['-stdlib=libstdc++'])
+  env.Append(LINKFLAGS = ['-stdlib=libstdc++'])
+
 SConscript(
   dirs = [
     'Commands',
@@ -12,5 +20,5 @@ SConscript(
     'CodeCompletion',
     'SplitSearch',
     ],
-  exports = {'parentEnv': parentEnv.CloneSubStage('Services')}
+  exports = {'parentEnv': env}
   )
