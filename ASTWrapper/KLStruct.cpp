@@ -86,7 +86,6 @@ const KLMember * KLStruct::getMember(uint32_t index, bool includeInherited) cons
 
   std::vector<const KLType*> parents = getParents();
   uint32_t offset = index;
-  uint32_t result = 0;
   for(uint32_t i=0;i<parents.size();i++)
   {
     if(parents[i]->getKLType() == std::string("struct") || parents[i]->getKLType() == std::string("object")) 

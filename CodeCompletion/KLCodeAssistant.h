@@ -60,7 +60,6 @@ namespace FabricServices
       void init();
       const char * resolveAliases(const char * name) const;
 
-      ASTWrapper::KLASTManager * m_manager;
       KLSyntaxHighlighter * m_highlighter;
       bool m_owningHighlighter;
 

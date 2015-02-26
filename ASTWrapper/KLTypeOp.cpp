@@ -189,6 +189,7 @@ const std::string & KLTypeOp::getName() const
         m_name = "-";
         break;
       }
+      case(OpType_NumElements): break;
     }
   }
   return m_name;
@@ -223,6 +224,7 @@ const std::string & KLTypeOp::getReturnType() const
       {
         break;
       }
+      case(OpType_NumElements): break;
     }
   }
   return m_returnType;
@@ -310,6 +312,7 @@ std::string KLTypeOp::getKLCode(bool includeReturnType, bool includeKeyWord, boo
       code += getLhs()+"()";
       break;
     }
+    case(OpType_NumElements): break;
   }
 
   return code;

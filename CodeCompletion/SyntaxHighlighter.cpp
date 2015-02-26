@@ -88,7 +88,6 @@ const std::vector<SyntaxHighlighter::Format> & SyntaxHighlighter::getHighlightFo
     return m_lastFormats;
 
   std::vector<Format> formats;
-  uint32_t pos = 0;
   
   for(size_t i=0;i<m_rules.size();i++)
   {
