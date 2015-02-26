@@ -128,6 +128,8 @@ void KLASTManager::loadAllExtensionsInFolder(const char * extensionFolder, bool 
   std::vector<std::string> folders;
   folders.push_back(extensionFolder);
 
+  std::vector<std::string> additionalFolders;
+
   for(uint32_t i=0;i<folders.size();i++)
   {
     std::string const &folder = folders[i];
@@ -147,7 +149,7 @@ void KLASTManager::loadAllExtensionsInFolder(const char * extensionFolder, bool 
       switch ( entryStatInfo.type )
       {
         case FTL::FSStatInfo::Dir:
-          folders.push_back( entryPath );
+          additionalFolders.push_back( entryPath );
           break;
 
         case FTL::FSStatInfo::File:
@@ -181,6 +183,12 @@ void KLASTManager::loadAllExtensionsInFolder(const char * extensionFolder, bool 
       klExtension->parse();
       onExtensionParsed(klExtension);
     }
+  }
+
+  for ( std::vector<std::string>::const_iterator it = additionalFolders.begin();
+    it != additionalFolders.end(); ++it )
+  {
+    loadAllExtensionsInFolder( it->c_str(), parseExtensions );
   }
 }
 
