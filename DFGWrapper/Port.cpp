@@ -53,7 +53,7 @@ std::string Port::getName() const
 {
   if(m_path.length() == 0)
     return "";
-  int pos = m_path.rfind('.');
+  size_t pos = m_path.rfind('.');
   if(pos == std::string::npos)
     return m_path;
   return m_path.substr(pos+1, m_path.length());
