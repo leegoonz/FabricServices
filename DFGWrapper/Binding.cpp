@@ -58,15 +58,14 @@ void Binding::setNotificationCallback(FabricCore::DFGNotificationCallback callba
   m_binding.setNotificationCallback(callback, userData);
 }
 
-bool Binding::canConnect(char const *pathA, char const *pathB)
+bool Binding::canConnect(char const *pathA, char const *pathB, std::string &failureDesc)
 {
   FabricCore::DFGStringResult result = m_binding.canConnect(pathA, pathB);
-  printf("Binding::canConnect pathA '%s'\n", pathA);
-  printf("Binding::canConnect pathB '%s'\n", pathB);
-  printf("Binding::canConnect '%d' '%s'\n", (result.getCString() == NULL)  ? 1 : 0, result.getCString());
-  if(result.getCString() == NULL)
-    return false;
-  if(std::string(result.getCString()) == "(null)")
-    return false;
-  return true;
+  char const *failureDescData;
+  uint32_t failureDescLength;
+  result.getStringDataAndLength( failureDescData, failureDescLength );
+  failureDesc = std::string( failureDescData, failureDescLength );
+  if ( !failureDesc.empty() )
+    printf("Binding::canConnect returning false: '%s'\n", failureDesc.c_str());
+  return failureDesc.empty();
 }
