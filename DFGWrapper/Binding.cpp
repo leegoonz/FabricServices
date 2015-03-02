@@ -65,7 +65,5 @@ bool Binding::canConnect(char const *pathA, char const *pathB, std::string &fail
   uint32_t failureDescLength;
   result.getStringDataAndLength( failureDescData, failureDescLength );
   failureDesc = std::string( failureDescData, failureDescLength );
-  if ( !failureDesc.empty() )
-    printf("Binding::canConnect returning false: '%s'\n", failureDesc.c_str());
   return failureDesc.empty();
 }
