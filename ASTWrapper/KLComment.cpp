@@ -131,8 +131,10 @@ std::string KLComment::getQualifier(const char * qualifier, const char * default
   {
     std::string l = m_content[i];
     FTL::StrTrimWhitespace(l);
+    std::string lPrefix = l.substr(0, q.length() + 1);
+    FTL::StrToLower(lPrefix);
 
-    if(l.substr(0, q.length()+1) == "\\"+q && q != "")
+    if(lPrefix == "\\"+q && q != "")
     {
       std::string l2 = l.substr(q.length()+1, 10000);
       FTL::StrTrimWhitespace(l2);
@@ -346,4 +348,16 @@ std::string KLComment::getRst() const
 std::string KLComment::getExample() const
 {
   return getQualifierBracket("example", "");
+}
+
+std::string KLComment::getContent() const
+{
+  std::string result;
+  for(size_t i=0;i<m_content.size();i++)
+  {
+    if(i > 0)
+      result += "\n";
+    result += m_content[i];
+  }
+  return result;
 }

@@ -39,6 +39,7 @@ namespace FabricServices
       std::string getCategory() const;
       std::string getRst() const;
       std::string getExample() const;
+      std::string getContent() const;
 
     protected:
 
