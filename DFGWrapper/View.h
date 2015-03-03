@@ -50,6 +50,8 @@ namespace FabricServices
       virtual void onPinRenamed(Pin pin, const char * oldName) = 0;
       virtual void onExecMetadataChanged(Executable exec, const char * key, const char * metadata) = 0;
       virtual void onExtDepAdded(const char * extension, const char * version) = 0;
+      virtual void onNodeCacheRuleChanged(const char * path, const char * rule) = 0;
+      virtual void onExecCacheRuleChanged(const char * path, const char * rule) = 0;
 
     private:
 

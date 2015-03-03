@@ -162,6 +162,18 @@ void View::callback(void * userData, char const * jsonCString, uint32_t jsonLeng
       const FabricCore::Variant * versionRangeVar = notificationVar->getDictValue("versionRange");
       view->onExtDepAdded(nameVar->getStringData(), versionRangeVar->getStringData());
     }
+    else if(descStr == "nodeCacheRuleChanged")
+    {
+      const FabricCore::Variant * nodePathVar = notificationVar->getDictValue("nodePath");
+      const FabricCore::Variant * cacheRuleVar = notificationVar->getDictValue("cacheRule");
+      view->onNodeCacheRuleChanged(nodePathVar->getStringData(), cacheRuleVar->getStringData());
+    }
+    else if(descStr == "execCacheRuleChanged")
+    {
+      const FabricCore::Variant * execPathVar = notificationVar->getDictValue("execPath");
+      const FabricCore::Variant * cacheRuleVar = notificationVar->getDictValue("cacheRule");
+      view->onExecCacheRuleChanged(execPathVar->getStringData(), cacheRuleVar->getStringData());
+    }
     else
     {
       printf("View::callback: Unhandled desc '%s', '%s'\n", descStr.c_str(), jsonCString);

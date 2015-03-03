@@ -40,6 +40,9 @@ namespace FabricServices
       void removePort(char const * name);
       void removePort(uint32_t index);
 
+      FEC_DFGCacheRule getCacheRule() const;
+      void setCacheRule(FEC_DFGCacheRule rule);
+
       std::vector<std::string> getErrors();
 
       std::string exportJSON();

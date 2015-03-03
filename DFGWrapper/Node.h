@@ -38,6 +38,9 @@ namespace FabricServices
       void setTitle(char const *title);
       std::vector<std::string> getDataTypes();
 
+      FEC_DFGCacheRule getCacheRule() const;
+      void setCacheRule(FEC_DFGCacheRule rule);
+
       std::string getMetadata(char const * key);
       void setMetadata(char const * key, char const * metadata, bool canUndo);
 

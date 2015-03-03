@@ -143,6 +143,16 @@ std::string Executable::exportJSON()
   return m_binding.exportJSON(m_path.c_str()).getCString();
 }
 
+FEC_DFGCacheRule Executable::getCacheRule() const
+{
+  return m_binding.getExecCacheRule(m_path.c_str());
+}
+
+void Executable::setCacheRule(FEC_DFGCacheRule rule)
+{
+  m_binding.setExecCacheRule(m_path.c_str(), rule);
+}
+
 std::string Executable::getMetadata(char const * key)
 {
   return m_binding.getMetadata(m_path.c_str(), key);

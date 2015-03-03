@@ -90,6 +90,16 @@ std::vector<std::string> Node::getDataTypes()
   return result;
 }
 
+FEC_DFGCacheRule Node::getCacheRule() const
+{
+  return m_binding.getNodeCacheRule(m_path.c_str());
+}
+
+void Node::setCacheRule(FEC_DFGCacheRule rule)
+{
+  m_binding.setNodeCacheRule(m_path.c_str(), rule);
+}
+
 std::string Node::getMetadata(char const * key)
 {
   return m_binding.getInstanceMetadata(m_path.c_str(), key);
