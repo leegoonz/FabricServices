@@ -18,7 +18,7 @@ dfgWrapperIncludeDir = env.Dir('.').dir.srcnode()
 dfgWrapperFlags = {
   'CPPPATH': [dfgWrapperIncludeDir],
   'LIBS': [dfgWrapperLib]
-}
+  }
 
 Export('dfgWrapperLib', 'dfgWrapperIncludeDir', 'dfgWrapperFlags')
 Alias('dfgWrapper', dfgWrapperLib)
