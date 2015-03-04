@@ -90,14 +90,12 @@ if env['FABRIC_BUILD_OS'] == 'Darwin':
 
 splitSearchIncludeDir = env.Dir('.').dir.srcnode()
 
-splitSearchInstalledLib = env.Install(stageDir.Dir('bin'), splitSearchLib[0])
-
 splitSearchFlags = {
   'CPPPATH': [splitSearchIncludeDir],
-  'LIBPATH': [splitSearchLib[0].dir],
+  'LIBPATH': [libDir],
   'LIBS': ['FabricSplitSearch'],
   }
 
-Export('splitSearchLib', 'splitSearchIncludeDir', 'splitSearchFlags', 'splitSearchInstalledLib')
+Export('splitSearchLib', 'splitSearchIncludeDir', 'splitSearchFlags', 'splitSearchLib')
 Alias('splitSearch', splitSearchLib)
 Return('splitSearchLib')
