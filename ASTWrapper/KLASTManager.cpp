@@ -175,6 +175,12 @@ void KLASTManager::loadAllExtensionsInFolder(const char * extensionFolder, bool 
     }
   }
 
+  for ( std::vector<std::string>::const_iterator it = additionalFolders.begin();
+    it != additionalFolders.end(); ++it )
+  {
+    loadAllExtensionsInFolder( it->c_str(), false );
+  }
+
   if(parseExtensions)
   {
     for(uint32_t i=0;i<m_extensions.size();i++)
@@ -185,11 +191,6 @@ void KLASTManager::loadAllExtensionsInFolder(const char * extensionFolder, bool 
     }
   }
 
-  for ( std::vector<std::string>::const_iterator it = additionalFolders.begin();
-    it != additionalFolders.end(); ++it )
-  {
-    loadAllExtensionsInFolder( it->c_str(), parseExtensions );
-  }
 }
 
 bool KLASTManager::loadAllExtensionsFromExtsPath(bool parseExtensions)
