@@ -11,9 +11,12 @@
 
 using namespace FabricServices::ASTWrapper;
 
+KLASTManager * KLASTManager::s_manager = NULL;
+uint32_t KLASTManager::s_managerRefs = 0;
+
 KLASTManager::KLASTManager(const FabricCore::Client * client)
 {
-  m_client = client;
+  m_client = *client;
   m_maxDeclId = 0;
   m_isUpdatingASTClients = false;
 }
@@ -28,9 +31,30 @@ KLASTManager::~KLASTManager()
     m_astClients[i]->setASTManager(NULL);
 }
 
+KLASTManager * KLASTManager::retainGlobalManager(const FabricCore::Client * client)
+{
+  if(s_manager == NULL)
+    s_manager = new KLASTManager(client);
+  s_managerRefs++;
+  return s_manager;
+}
+
+void KLASTManager::releaseGlobalManager()
+{
+  if(s_managerRefs > 0)
+  {
+    s_managerRefs--;
+    if(s_managerRefs == 0 && s_manager != NULL)
+    {
+      delete(s_manager);
+      s_manager = NULL;
+    }
+  }
+}
+
 const FabricCore::Client* KLASTManager::getClient() const
 {
-  return m_client;
+  return &m_client;
 }
 
 void KLASTManager::registerASTClient(KLASTClient * client)
