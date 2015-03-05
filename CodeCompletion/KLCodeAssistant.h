@@ -20,7 +20,7 @@ namespace FabricServices
     public:
 
       KLCodeAssistant(ASTWrapper::KLASTManager * manager = NULL);
-      KLCodeAssistant::KLCodeAssistant(KLSyntaxHighlighter * highlighter);
+      KLCodeAssistant(KLSyntaxHighlighter * highlighter);
       virtual ~KLCodeAssistant();
 
       virtual bool setASTManager(ASTWrapper::KLASTManager * manager);
