@@ -124,6 +124,8 @@ bool KLCodeAssistant::updateCurrentCodeAndFile(const std::string & code, const s
       ((KLFile*)m_file)->updateKLCode(m_code.c_str());
 
     // update all error formats
+    /// todo: disable errors for now
+    /*
     m_highlighter->clearErrors();
     if(m_file->hasErrors())
     {
@@ -138,6 +140,7 @@ bool KLCodeAssistant::updateCurrentCodeAndFile(const std::string & code, const s
         }
       }
     }
+    */
   }
 
   return updateAST;

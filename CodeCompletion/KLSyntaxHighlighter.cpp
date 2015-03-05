@@ -11,6 +11,7 @@ KLSyntaxHighlighter::KLSyntaxHighlighter(ASTWrapper::KLASTManager * manager)
   m_enabled = true;
   m_basicTypesInitialized = false;
 
+  m_knownTokens.insert(std::pair<std::string, Token>("dfgEntry", Token_Keyword));
   m_knownTokens.insert(std::pair<std::string, Token>("report", Token_Function));
 }
 
@@ -50,8 +51,6 @@ const char * KLSyntaxHighlighter::getTokenName(Token token)
 
 const std::vector<KLSyntaxHighlighter::Format> & KLSyntaxHighlighter::getHighlightFormats(const std::string & text) const
 {
-  printf("m_enabled %d\n", m_enabled ? 1 : 0);
-  printf("hasASTManager() %d\n", hasASTManager() ? 1 : 0);
   if(!m_enabled || !hasASTManager())
   {
     m_lastFormats.clear();
@@ -63,8 +62,6 @@ const std::vector<KLSyntaxHighlighter::Format> & KLSyntaxHighlighter::getHighlig
     return m_lastFormats;
 
   std::vector<Format> formats;
-
-  printf("syntax highlighting '%s'\n", text.c_str());
 
   FabricCore::KLTokenStream klTokenStream = FabricCore::KLTokenStream::Create(*getASTManager()->getClient(), text.c_str(), text.length());
   for (;;)

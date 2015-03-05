@@ -7,7 +7,7 @@ using namespace FabricServices::ASTWrapper;
 
 KLError::KLError(JSONData data)
 {
-  printf("%s\n", data->getJSONEncoding().getStringData());
+  // printf("%s\n", data->getJSONEncoding().getStringData());
   m_fileName = data->getDictValue("filename")->getStringData();
   m_line = data->getDictValue("line")->getSInt32();
   m_column = data->getDictValue("column")->getSInt32();
