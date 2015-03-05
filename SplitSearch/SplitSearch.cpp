@@ -9,6 +9,7 @@
 #include <llvm/ADT/StringMap.h>
 #include <llvm/ADT/SmallString.h>
 #include <stdint.h>
+#include <stdio.h>
 #include <vector>
 
 namespace FabricServices { namespace SplitSearch { namespace Impl {
@@ -73,8 +74,9 @@ static inline uint64_t Score(
     return UINT64_MAX;
 
   llvm::StringRef lastNeedle = needle.back();
+  llvm::StringRef lastPrefix = prefixes.back();
   needle = needle.drop_back();
-  unsigned revMatch = RevMatch( prefixes.back(), lastNeedle );
+  unsigned revMatch = RevMatch( lastPrefix, lastNeedle );
 
   uint64_t subScore;
   llvm::StringRef subLastNeedle = lastNeedle.drop_back( revMatch );
@@ -95,7 +97,7 @@ static inline uint64_t Score(
   else subScore = 0;
 
   if ( subScore != UINT64_MAX )
-    return lastNeedle.size() - revMatch + 1 + 256 * subScore;
+    return lastPrefix.size() - revMatch + 1 + 256 * subScore;
   else
     return UINT64_MAX;
 }
@@ -111,6 +113,15 @@ public:
     m_userdata( userdata ), m_score( score ) {}
 
   void const *getUserdata() const { return m_userdata; }
+
+  void dump( size_t index )
+  {
+    printf( "index=%u score=%u userdata=%s\n",
+      unsigned( index ),
+      unsigned( m_score ),
+      (char const *)m_userdata
+      );
+  }
 
   struct LessThan
   {
@@ -166,6 +177,16 @@ public:
 
   void sort() { std::sort( m_impl.begin(), m_impl.end(), Match::LessThan() ); }
 
+  void dump()
+  {
+    for ( size_t i = 0; i < m_impl.size(); ++i )
+    {
+      if ( i >= 20 )
+        break;
+      m_impl[i].dump( i );
+    }
+  }
+
   unsigned getSize() const { return m_impl.size(); }
 
   unsigned getUserdatas(
@@ -212,7 +233,7 @@ protected:
       {
         uint64_t score = Score( prefixes, needle );
         if ( score != UINT64_MAX )
-          matches->add( it->second->m_userdata, prefixes.size() * score );
+          matches->add( it->second->m_userdata, score );
       }
 
       std::unique_ptr<Node> const &node = it->second;
@@ -328,6 +349,7 @@ public:
     Matches *matches = new Matches;
     m_root.search( needle, matches );
     matches->sort();
+    // matches->dump();
     return matches;
   }
 };
