@@ -8,82 +8,194 @@ using namespace FabricServices::CodeCompletion;
 KLSyntaxHighlighter::KLSyntaxHighlighter(ASTWrapper::KLASTManager * manager)
 : KLASTClient(manager)
 {
-  initRules();
+  m_enabled = true;
+  m_basicTypesInitialized = false;
+
+  m_knownTokens.insert(std::pair<std::string, Token>("dfgEntry", Token_Keyword));
+  m_knownTokens.insert(std::pair<std::string, Token>("report", Token_Function));
 }
 
 KLSyntaxHighlighter::~KLSyntaxHighlighter()
 {
 }
 
-void KLSyntaxHighlighter::initRules()
+bool KLSyntaxHighlighter::isEnabled() const
 {
-  // comment rules
-  // addRule(HighlightRuleType_Comment, "/\\*([^*]|[\\r\\n]|(\\*+([^*/]|[\\r\\n])))*\\*+/");
-  addRule(HighlightRuleType_Comment, "/\\*.*\\*/");
-  addRule(HighlightRuleType_Comment, "//[^\n]*");
+  return m_enabled;
+}
 
-  // string rules
-  addRule(HighlightRuleType_String, "\\\"([^\\\"]|\\\\.)*\\\"");
-  addRule(HighlightRuleType_String, "'([^']|\\\\.)*'");
+void KLSyntaxHighlighter::setEnabled(bool state)
+{
+  m_enabled = state;
+}
 
-  // number rules
-  addRule(HighlightRuleType_Number, "\\b[0-9][0-9\\.]+\\b");
-  addRule(HighlightRuleType_Number, "\\b[0-9]+[x]*[0-9]*\\b");
+const char * KLSyntaxHighlighter::getTokenName(Token token)
+{
+  switch ( token )
+  {
+    case Token_Comment: return "Comment";
+    case Token_String: return "String";
+    case Token_Number: return "Number";
+    case Token_Keyword: return "Keyword";
+    case Token_Other: return "Other";
+    case Token_Error: return "Error";
+    case Token_EOF: return "EOF";
+    case Token_Type: return "Type";
+    case Token_Constant: return "Constant";
+    case Token_Function: return "Function";
+    case Token_Method: return "Method";
+    case Token_Highlight: return "Highlight";
+    default: return "***UNKNOWN***";
+  }
+}
 
-  // keyword rules
-  addRule(HighlightRuleType_Keyword, "<<<");
-  addRule(HighlightRuleType_Keyword, ">>>");
-  addRule(HighlightRuleType_Keyword, "\\babs\\b");
-  addRule(HighlightRuleType_Keyword, "\\bacos\\b");
-  addRule(HighlightRuleType_Keyword, "\\basin\\b");
-  addRule(HighlightRuleType_Keyword, "\\batan\\b");
-  addRule(HighlightRuleType_Keyword, "\\bbreak\\b");
-  addRule(HighlightRuleType_Keyword, "\\bconst\\b");
-  addRule(HighlightRuleType_Keyword, "\\bcontinue\\b");
-  addRule(HighlightRuleType_Keyword, "\\bcos\\b");
-  addRule(HighlightRuleType_Keyword, "\\bcreateArrayGenerator\\b");
-  addRule(HighlightRuleType_Keyword, "\\bcreateConstValue\\b");
-  addRule(HighlightRuleType_Keyword, "\\bcreateReduce\\b");
-  addRule(HighlightRuleType_Keyword, "\\bcreateValueGenerator\\b");
-  addRule(HighlightRuleType_Keyword, "\\bdfgEntry\\b");
-  addRule(HighlightRuleType_Keyword, "\\belse\\b");
-  addRule(HighlightRuleType_Keyword, "\\bfor\\b");
-  addRule(HighlightRuleType_Keyword, "\\bfunction\\b");
-  addRule(HighlightRuleType_Keyword, "\\bif\\b");
-  addRule(HighlightRuleType_Keyword, "\\bin\\b");
-  addRule(HighlightRuleType_Keyword, "\\binline\\b");
-  addRule(HighlightRuleType_Keyword, "\\bio\\b");
-  addRule(HighlightRuleType_Keyword, "\\bnull\\b");
-  addRule(HighlightRuleType_Keyword, "\\block\\b");
-  addRule(HighlightRuleType_Keyword, "\\boperator\\b");
-  addRule(HighlightRuleType_Keyword, "\\bparent\\b");
-  addRule(HighlightRuleType_Keyword, "\\breport\\b");
-  addRule(HighlightRuleType_Keyword, "\\breturn\\b");
-  addRule(HighlightRuleType_Keyword, "\\bsetError\\b");
-  addRule(HighlightRuleType_Keyword, "\\bsin\\b");
-  addRule(HighlightRuleType_Keyword, "\\bsqrt\\b");
-  addRule(HighlightRuleType_Keyword, "\\binterface\\b");
-  addRule(HighlightRuleType_Keyword, "\\bobject\\b");
-  addRule(HighlightRuleType_Keyword, "\\bstruct\\b");
-  addRule(HighlightRuleType_Keyword, "\\btan\\b");
-  addRule(HighlightRuleType_Keyword, "\\btype\\b");
-  addRule(HighlightRuleType_Keyword, "\\brequire\\b");
-  addRule(HighlightRuleType_Keyword, "\\btrue\\b");
-  addRule(HighlightRuleType_Keyword, "\\bfalse\\b");
-  addRule(HighlightRuleType_Keyword, "\\bValueProducer\\b");
-  addRule(HighlightRuleType_Keyword, "\\bwhile\\b");
+const std::vector<KLSyntaxHighlighter::Format> & KLSyntaxHighlighter::getHighlightFormats(const std::string & text) const
+{
+  if(!m_enabled || !hasASTManager())
+  {
+    m_lastFormats.clear();
+    m_lastText = "";
+    return m_lastFormats;
+  }
 
-  // method rules
-  addRule(HighlightRuleType_Method, "\\.\\b[a-zA-Z0-9_]+\\b");
+  if(m_lastText == text)
+    return m_lastFormats;
 
-  m_basicTypesInitialized = false;
+  std::vector<Format> formats;
+
+  FabricCore::KLTokenStream klTokenStream = FabricCore::KLTokenStream::Create(*getASTManager()->getClient(), text.c_str(), text.length());
+  for (;;)
+  {
+    Format f;
+    f.token = (Token)(int)klTokenStream.getNext( &f.start, &f.length );
+    f.length = f.length - f.start;
+    
+    if(f.token == FEC_KLTokenType_EOF)
+      break;
+
+    if(f.token == Token_Other)
+    {
+      if(text[f.start] == ' ') continue;
+      if(text[f.start] == '\n') continue;
+      if(text[f.start] == '\r') continue;
+      if(text[f.start] == '\t') continue;
+      if(text[f.start] == '.') continue;
+      if(text[f.start] == ',') continue;
+      if(text[f.start] == '(') continue;
+      if(text[f.start] == ')') continue;
+      if(text[f.start] == '{') continue;
+      if(text[f.start] == '}') continue;
+      if(text[f.start] == '[') continue;
+      if(text[f.start] == ']') continue;
+      if(text[f.start] == '+') continue;
+      if(text[f.start] == '-') continue;
+      if(text[f.start] == '*') continue;
+      if(text[f.start] == '/') continue;
+      if(text[f.start] == ':') continue;
+      if(text[f.start] == ';') continue;
+
+      std::map<std::string, Token>::iterator it = m_knownTokens.find(text.substr(f.start, f.length));
+      if(it == m_knownTokens.end() && f.start == 0)
+        continue;
+      if(it == m_knownTokens.end())
+      {
+        if(text[f.start-1] == '.')
+          f.token = Token_Method;
+        else
+          continue;
+      }
+      else
+        f.token = it->second;
+    }
+
+    formats.push_back(f);
+  }
+
+  std::map<uint32_t, size_t> sortedIndices;
+  for(size_t i=0;i<formats.size();i++)
+  {
+    std::map<uint32_t, size_t>::iterator it = sortedIndices.find(formats[i].start);
+    if(it == sortedIndices.end())
+      sortedIndices.insert(std::pair<uint32_t, size_t>(formats[i].start, i));
+  }
+
+  m_lastText = text;
+  m_lastFormats.clear();
+  uint32_t end = 0;
+  for(std::map<uint32_t, size_t>::iterator it = sortedIndices.begin(); it != sortedIndices.end(); it++)
+  {
+    // ensure to avoid overlapping formats
+    Format f = formats[it->second];
+    if(f.start < end)
+      continue;
+    m_lastFormats.push_back(f);
+    end = f.start + f.length - 1;
+  }
+
+  m_lastFormats.insert(m_lastFormats.end(), m_errorFormats.begin(), m_errorFormats.end());
+  m_lastFormats.insert(m_lastFormats.end(), m_highlightFormats.begin(), m_highlightFormats.end());
+
+  return m_lastFormats;
+}
+
+std::string KLSyntaxHighlighter::getHighlightedText(const std::string & text) const
+{
+  const std::vector<Format> & formats = getHighlightFormats(text);
+  if(formats.size() == 0)
+    return text;
+
+  std::string result;
+  uint32_t end = 0;
+  for(size_t i=0;i<formats.size();i++)
+  {
+    if(formats[i].start > end)
+      result += text.substr(end, formats[i].start - end);
+    // result += formats[i].prefix;
+    result += text.substr(formats[i].start, formats[i].length);
+    // result += formats[i].suffix;
+    end = formats[i].start + formats[i].length;
+  }
+
+  if(end < text.length())
+    result += text.substr(end, text.length() - end);
+
+  return result;
+}
+
+void KLSyntaxHighlighter::reportError(uint32_t start, uint32_t length)
+{
+  Format f;
+  f.token = Token_Error;
+  f.start = start;
+  f.length = length;
+  m_errorFormats.push_back(f);
+  m_lastText = "";
+}
+
+void KLSyntaxHighlighter::clearErrors()
+{
+  m_errorFormats.clear();
+  m_lastText = "";
+}
+
+void KLSyntaxHighlighter::highlight(uint32_t start, uint32_t length)
+{
+  Format f;
+  f.token = Token_Highlight;
+  f.start = start;
+  f.length = length;
+  m_highlightFormats.push_back(f);
+  m_lastText = "";
+}
+
+void KLSyntaxHighlighter::clearHighlighting()
+{
+  m_highlightFormats.clear();
+  m_lastText = "";
 }
 
 void KLSyntaxHighlighter::onFileParsed(const ASTWrapper::KLFile * file)
 {
-  if(!hasASTManager())
-    return;
-
   if(!m_basicTypesInitialized)
   {
     // ask the ast manager for all basic types
@@ -100,8 +212,9 @@ void KLSyntaxHighlighter::onFileParsed(const ASTWrapper::KLFile * file)
         continue;
       if(GetRegisteredTypeIsInterface(*client, key.c_str()))
         continue;
-      HighlightRule * rule = addRule(HighlightRuleType_Type, "\\b"+key+"\\b");
-      m_typeRules.insert(std::pair<std::string, HighlightRule*>(key, rule));
+      if(m_knownTokens.find(key) != m_knownTokens.end())
+        continue;
+      m_knownTokens.insert(std::pair<std::string, Token>(key, Token_Type));
     }
 
     m_basicTypesInitialized = true;
@@ -114,35 +227,31 @@ void KLSyntaxHighlighter::onFileParsed(const ASTWrapper::KLFile * file)
 
   for(size_t i=0;i<constants.size();i++)
   {
-    if(m_constantRules.find(constants[i]->getName()) != m_constantRules.end())
+    if(m_knownTokens.find(constants[i]->getName()) != m_knownTokens.end())
       continue;
-    HighlightRule * rule = addRule(HighlightRuleType_Constant, "\\b"+constants[i]->getName()+"\\b");
-    m_constantRules.insert(std::pair<std::string, HighlightRule*>(constants[i]->getName(), rule));
+    m_knownTokens.insert(std::pair<std::string, Token>(constants[i]->getName(), Token_Constant));
   }
 
   for(size_t i=0;i<types.size();i++)
   {
-    if(m_typeRules.find(types[i]->getName()) != m_typeRules.end())
+    if(m_knownTokens.find(types[i]->getName()) != m_knownTokens.end())
       continue;
-    HighlightRule * rule = addRule(HighlightRuleType_Type, "\\b"+types[i]->getName()+"\\b");
-    m_typeRules.insert(std::pair<std::string, HighlightRule*>(types[i]->getName(), rule));
+    m_knownTokens.insert(std::pair<std::string, Token>(types[i]->getName(), Token_Type));
   }
 
   for(size_t i=0;i<aliases.size();i++)
   {
-    if(m_typeRules.find(aliases[i]->getNewUserName()) != m_typeRules.end())
+    if(m_knownTokens.find(aliases[i]->getNewUserName()) != m_knownTokens.end())
       continue;
-    HighlightRule * rule = addRule(HighlightRuleType_Type, "\\b"+aliases[i]->getNewUserName()+"\\b");
-    m_typeRules.insert(std::pair<std::string, HighlightRule*>(aliases[i]->getNewUserName(), rule));
+    m_knownTokens.insert(std::pair<std::string, Token>(aliases[i]->getNewUserName(), Token_Type));
   }
 
   for(size_t i=0;i<functions.size();i++)
   {
     if(functions[i]->getName().length() <= 2)
       continue;
-    if(m_functionRules.find(functions[i]->getName()) != m_functionRules.end())
+    if(m_knownTokens.find(functions[i]->getName()) != m_knownTokens.end())
       continue;
-    HighlightRule * rule = addRule(HighlightRuleType_Function, "\\b"+functions[i]->getName()+"\\b");
-    m_functionRules.insert(std::pair<std::string, HighlightRule*>(functions[i]->getName(), rule));
+    m_knownTokens.insert(std::pair<std::string, Token>(functions[i]->getName(), Token_Function));
   }
 }

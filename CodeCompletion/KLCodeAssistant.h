@@ -6,8 +6,8 @@
 #include "KLSyntaxHighlighter.h"
 #include "KLVariable.h"
 #include <ASTWrapper/KLASTManager.h>
+#include <ASTWrapper/KLASTClient.h>
 #include <map>
-#include <boost/regex.hpp>
 
 namespace FabricServices
 {

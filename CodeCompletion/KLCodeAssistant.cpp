@@ -1,13 +1,29 @@
 // Copyright 2010-2015 Fabric Software Inc. All rights reserved.
 
 #include "KLCodeAssistant.h"
-
-#include <boost/algorithm/string.hpp>
-#include <boost/range/algorithm/count.hpp>
-#include <boost/range/algorithm/remove_if.hpp>
+#include <FTL/StrFilter.h>
+#include <FTL/StrSplit.h>
 
 using namespace FabricServices::ASTWrapper;
 using namespace FabricServices::CodeCompletion;
+
+struct MatchCharBackSlashR
+{
+  MatchCharBackSlashR() {}
+  bool operator()( char ch ) const
+  {
+    return ch == '\r';
+  }
+};
+
+struct MatchCharBraces
+{
+  MatchCharBraces() {}
+  bool operator()( char ch ) const
+  {
+    return ch == '(' || ch == ')';
+  }
+};
 
 KLCodeAssistant::KLCodeAssistant(KLASTManager * manager)
 : ASTWrapper::KLASTClient(manager)
@@ -74,8 +90,9 @@ bool KLCodeAssistant::updateCurrentKLFile(const KLFile * file)
 
   m_fileName = m_file->getAbsoluteFilePath();
   m_code = m_file->getKLCode();
-  m_code.erase(boost::remove_if(m_code, boost::is_any_of("\r")), m_code.end());
-  boost::split(m_lines, m_code, boost::is_any_of("\n"));
+
+  m_code = FTL::StrFilter<MatchCharBackSlashR>( m_code );
+  FTL::StrSplit<'\n'>(m_code, m_lines);
   return true;
 }
 
@@ -88,14 +105,14 @@ bool KLCodeAssistant::updateCurrentCodeAndFile(const std::string & code, const s
     return false;
 
   std::string newCode = code;
-  newCode.erase(boost::remove_if(newCode, boost::is_any_of("\r")), newCode.end());
+  newCode = FTL::StrFilter<MatchCharBackSlashR>( newCode );
   if(m_code == newCode && m_fileName == fileName)
     return false;
 
   m_code = newCode;
   m_fileName = fileName;
   
-  boost::split(m_lines, m_code, boost::is_any_of("\n"));
+  FTL::StrSplit<'\n'>(m_code, m_lines);
 
   if(updateAST)
   {
@@ -107,6 +124,8 @@ bool KLCodeAssistant::updateCurrentCodeAndFile(const std::string & code, const s
       ((KLFile*)m_file)->updateKLCode(m_code.c_str());
 
     // update all error formats
+    /// todo: disable errors for now
+    /*
     m_highlighter->clearErrors();
     if(m_file->hasErrors())
     {
@@ -121,6 +140,7 @@ bool KLCodeAssistant::updateCurrentCodeAndFile(const std::string & code, const s
         }
       }
     }
+    */
   }
 
   return updateAST;
@@ -166,10 +186,10 @@ bool KLCodeAssistant::isCursorInsideCommentOrString(uint32_t cursor) const
   if(cursor >= m_code.length())
     return false;
 
-  const std::vector<SyntaxHighlighter::Format> & formats = m_highlighter->getHighlightFormats(m_code);
+  const std::vector<KLSyntaxHighlighter::Format> & formats = m_highlighter->getHighlightFormats(m_code);
   for(size_t i=0;i<formats.size();i++)
   {
-    if(formats[i].type == HighlightRuleType_Comment || formats[i].type == HighlightRuleType_String)
+    if(formats[i].token == FEC_KLTokenType_Comment || formats[i].token == FEC_KLTokenType_String)
     {
       if(formats[i].start <= cursor && formats[i].start + formats[i].length >= cursor)
         return true;
@@ -250,7 +270,7 @@ std::string KLCodeAssistant::getWordAtCursor(uint32_t line, uint32_t column, boo
   if(isWordChar(l[s]) && isWordChar(l[e]))
   {
     std::string result = l.substr(s, e - s + 1);
-    result.erase(boost::remove_if(result, boost::is_any_of("()")), result.end());
+    result = FTL::StrFilter<MatchCharBraces>( result );
     return result;
   }
 

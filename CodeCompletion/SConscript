@@ -2,13 +2,13 @@
 # Copyright 2010-2015 Fabric Software Inc. All rights reserved.
 #
 
-Import('parentEnv', 'capiIncludeDir', 'legacyBoostFlags', 'astWrapperIncludeDir')
+Import('parentEnv', 'capiIncludeDir', 'astWrapperIncludeDir')
 
 env = parentEnv.CloneSubStage('CodeCompletion')
 
-env.MergeFlags(legacyBoostFlags)
 env.Append(CPPDEFINES = ['FEC_SHARED'])
 env.Append(CPPPATH = [capiIncludeDir, astWrapperIncludeDir])
+env.Append(CPPPATH = [env.Dir('#')])
 
 sources = Glob('*.cpp')
 
