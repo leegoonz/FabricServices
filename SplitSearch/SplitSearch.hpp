@@ -108,7 +108,8 @@ void FabricServices_SplitSearch_Dict_Clear(
 FABRICSERVICES_SPLITSEARCH_DECL
 FabricServices_SplitSearch_Matches FabricServices_SplitSearch_Dict_Search(
   FabricServices_SplitSearch_Dict _dict,
-  char const *cStr
+  unsigned numCStrs,
+  char const * const *cStrs
   );
 
 namespace FabricServices { namespace SplitSearch {
@@ -261,9 +262,14 @@ public:
     FabricServices_SplitSearch_Dict_Clear( _dict );
   }
 
-  Matches search( char const *needle ) const
+  Matches search(
+    unsigned numCStrs,
+    char const * const *cStrs
+    ) const
   {
-    return Matches( FabricServices_SplitSearch_Dict_Search( _dict, needle ) );
+    return Matches(
+      FabricServices_SplitSearch_Dict_Search( _dict, numCStrs, cStrs )
+      );
   }
 };
 

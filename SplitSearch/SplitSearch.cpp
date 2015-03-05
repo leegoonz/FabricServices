@@ -66,17 +66,27 @@ static inline unsigned RevMatch(
 
 static inline uint64_t Score(
   llvm::ArrayRef<llvm::StringRef> prefixes,
-  llvm::StringRef needle
+  llvm::ArrayRef<llvm::StringRef> needle
   )
 {
-  unsigned revMatch = RevMatch( prefixes.back(), needle );
+  if ( needle.empty() )
+    return UINT64_MAX;
+
+  llvm::StringRef lastNeedle = needle.back();
+  needle = needle.drop_back();
+  unsigned revMatch = RevMatch( prefixes.back(), lastNeedle );
 
   uint64_t subScore;
-  llvm::StringRef subNeedle = needle.drop_back( revMatch );
-  if ( !subNeedle.empty() )
+  llvm::StringRef subLastNeedle = lastNeedle.drop_back( revMatch );
+  if ( !needle.empty() || !subLastNeedle.empty() )
   {
     if ( prefixes.size() > 1 )
     {
+      llvm::SmallVector<llvm::StringRef, 8> subNeedle;
+      subNeedle.append( needle.begin(), needle.end() );
+      if ( !subLastNeedle.empty() )
+        subNeedle.push_back( subLastNeedle );
+      
       llvm::ArrayRef<llvm::StringRef> subPrefixes = prefixes.drop_back();
       subScore = Score( subPrefixes, subNeedle );
     }
@@ -85,7 +95,7 @@ static inline uint64_t Score(
   else subScore = 0;
 
   if ( subScore != UINT64_MAX )
-    return needle.size() - revMatch + 1 + 256 * subScore;
+    return lastNeedle.size() - revMatch + 1 + 256 * subScore;
   else
     return UINT64_MAX;
 }
@@ -189,7 +199,7 @@ protected:
 
   void search(
     llvm::SmallVector<llvm::StringRef, 8> &prefixes,
-    llvm::StringRef needle,
+    llvm::ArrayRef<llvm::StringRef> needle,
     Matches *matches
     ) const
   {
@@ -265,7 +275,7 @@ public:
   }
 
   void search(
-    llvm::StringRef needle,
+    llvm::ArrayRef<llvm::StringRef> needle,
     Matches *matches
     ) const
   {
@@ -310,7 +320,7 @@ public:
     m_root.clear();
   }
 
-  Matches *search( llvm::StringRef needle ) const
+  Matches *search( llvm::ArrayRef<llvm::StringRef> needle ) const
   {
     if ( needle.empty() )
       return nullptr;
@@ -440,11 +450,15 @@ void FabricServices_SplitSearch_Dict_Clear(
 FABRICSERVICES_SPLITSEARCH_DECL
 FabricServices_SplitSearch_Matches FabricServices_SplitSearch_Dict_Search(
   FabricServices_SplitSearch_Dict _dict,
-  char const *cStr
+  unsigned numCStrs,
+  char const * const *cStrs
   )
 {
   Dict *dict = static_cast<Dict *>( _dict );
-  return dict->search( cStr );
+  llvm::SmallVector<llvm::StringRef, 8> needle;
+  for ( unsigned i = 0; i < numCStrs; ++i )
+    needle.push_back( cStrs[i] );
+  return dict->search( needle );
 }
 
 FABRICSERVICES_SPLITSEARCH_DECL
