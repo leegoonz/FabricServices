@@ -71,20 +71,9 @@ void Pin::removeDebugPin()
 
 FabricCore::RTVal Pin::getDefaultValue(char const * dataType)
 {
-  FabricCore::Variant descVar = FabricCore::Variant::CreateFromJSON(Pin::getDesc().c_str());
-  const FabricCore::Variant * defaultValuesVar = descVar.getDictValue("defaultValues");
-  if(defaultValuesVar)
-  {
-    std::string dataType = getDataType();
-    const FabricCore::Variant * defaultValueVar = defaultValuesVar->getDictValue(dataType.c_str());
-    if(defaultValueVar)
-    {
-      FabricCore::DFGHost host = getWrappedCoreBinding().getHost();
-      FabricCore::Context context = host.getContext();
-      return FabricCore::ConstructRTValFromJSON(context, dataType.c_str(), defaultValueVar->getJSONEncoding().getStringData());
-    }
-  }
-
+  FabricCore::RTVal value = getWrappedCoreBinding().getPinDefaultValue(m_path.c_str(), dataType);\
+  if(value.isValid())
+    return value;
   return Port::getDefaultValue(dataType);
 }
 
@@ -92,8 +81,3 @@ void Pin::setDefaultValue(FabricCore::RTVal value)
 {
   getWrappedCoreBinding().setPinDefaultValue(m_path.c_str(), value);
 }
-
-// void Pin::setPinDefaultValue(FabricCore::RTVal defaultValue)
-// {
-//   getWrappedCoreBinding().setPinDefaultValue(getPath().c_str(), defaultValue);
-// }

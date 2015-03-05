@@ -230,21 +230,7 @@ std::vector<std::string> Port::getDestinations()
 
 FabricCore::RTVal Port::getDefaultValue(char const * dataType)
 {
-  FabricCore::Variant descVar = FabricCore::Variant::CreateFromJSON(Port::getDesc().c_str());
-  const FabricCore::Variant * defaultValuesVar = descVar.getDictValue("defaultValues");
-  if(defaultValuesVar)
-  {
-    std::string dataType = getDataType();
-    const FabricCore::Variant * defaultValueVar = defaultValuesVar->getDictValue(dataType.c_str());
-    if(defaultValueVar)
-    {
-      FabricCore::DFGHost host = getWrappedCoreBinding().getHost();
-      FabricCore::Context context = host.getContext();
-      return FabricCore::ConstructRTValFromJSON(context, dataType.c_str(), defaultValueVar->getJSONEncoding().getStringData());
-    }
-  }
-  
-  return FabricCore::RTVal();
+  return getWrappedCoreBinding().getPortDefaultValue(m_path.c_str(), dataType);
 }
 
 void Port::setDefaultValue(FabricCore::RTVal value)
