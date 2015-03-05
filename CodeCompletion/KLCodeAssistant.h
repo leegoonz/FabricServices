@@ -6,8 +6,8 @@
 #include "KLSyntaxHighlighter.h"
 #include "KLVariable.h"
 #include <ASTWrapper/KLASTManager.h>
+#include <ASTWrapper/KLASTClient.h>
 #include <map>
-#include <boost/regex.hpp>
 
 namespace FabricServices
 {
@@ -20,7 +20,7 @@ namespace FabricServices
     public:
 
       KLCodeAssistant(ASTWrapper::KLASTManager * manager = NULL);
-      KLCodeAssistant(KLSyntaxHighlighter * highlighter);
+      KLCodeAssistant::KLCodeAssistant(KLSyntaxHighlighter * highlighter);
       virtual ~KLCodeAssistant();
 
       virtual bool setASTManager(ASTWrapper::KLASTManager * manager);
