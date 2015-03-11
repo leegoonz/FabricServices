@@ -175,6 +175,16 @@ void Port::connect(const Port & other)
   m_binding.connect(m_path.c_str(), other.m_path.c_str());
 }
 
+void Port::disconnectAll()
+{
+  std::vector<std::string> sources = getSources();
+  std::vector<std::string> destinations = getDestinations();
+  for(size_t i=0;i<sources.size();i++)
+    m_binding.disconnect(sources[i].c_str(), m_path.c_str());
+  for(size_t i=0;i<destinations.size();i++)
+    m_binding.disconnect(m_path.c_str(), destinations[i].c_str());
+}
+
 void Port::disconnect(const Port & other)
 {
   m_binding.disconnect(m_path.c_str(), other.m_path.c_str());

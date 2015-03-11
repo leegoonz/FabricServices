@@ -49,6 +49,7 @@ namespace FabricServices
       virtual bool canConnect(Port other);
       virtual void connect(const Port & other);
       virtual void disconnect(const Port & other);
+      virtual void disconnectAll();
       virtual bool isConnected();
       virtual std::vector<std::string> getSources();
       virtual std::vector<std::string> getDestinations();
