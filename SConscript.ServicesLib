@@ -53,7 +53,7 @@ for d in dirs:
 
 binDir = stageDir.Dir('bin')
 libDir = stageDir.Dir('lib')
-includeDir = stageDir.Dir('include')
+includeDir = stageDir.Dir('include').Dir('FabricServices')
 
 servicesFiles = []
 # servicesLib = env.SharedLibrary('FabricServices', sources)

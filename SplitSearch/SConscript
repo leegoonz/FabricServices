@@ -96,6 +96,11 @@ splitSearchFlags = {
   'LIBS': ['FabricSplitSearch'],
   }
 
-Export('splitSearchLib', 'splitSearchIncludeDir', 'splitSearchFlags', 'splitSearchLib')
-Alias('splitSearch', splitSearchLib)
+splitSearchHeaders = []
+if 'dist' in COMMAND_LINE_TARGETS:
+  splitSearchHeaders = env.Install(stageDir.Dir('include').Dir('FabricServices').Dir('SplitSearch'), Glob('*.hpp'))
+
+splitSearchFiles = splitSearchLib + splitSearchHeaders
+Export('splitSearchLib', 'splitSearchIncludeDir', 'splitSearchFlags', 'splitSearchFiles')
+Alias('splitSearch', splitSearchFiles)
 Return('splitSearchLib')
