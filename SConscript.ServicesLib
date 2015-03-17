@@ -1,0 +1,112 @@
+#
+# Copyright 2010-2015 Fabric Software Inc. All rights reserved.
+#
+
+import os
+Import('parentEnv', 'stageDir', 'dirs', 'capiSharedLibFlags', 'llvmFlags')
+
+env = parentEnv.CloneSubStage('FabricServices')
+
+
+env.MergeFlags(capiSharedLibFlags)
+env.MergeFlags(llvmFlags)
+
+# disable for now, we'll build a static library for now
+# env.Append(CPPDEFINES = ['FABRICSERVICES_BUILDING'])
+env.Append(CPPPATH = [env.Dir('.').srcnode().abspath])
+
+if env['FABRIC_BUILD_OS'] != 'Windows':
+  env.Append(CXXFLAGS=['-std=c++11', '-Werror'])
+if env['FABRIC_BUILD_OS'] == 'Darwin':
+  env.Append(CXXFLAGS=['-stdlib=libc++'])
+  env.Append(LINKFLAGS = ['-stdlib=libc++'])
+
+majMinVer = '.'.join([env['FABRIC_VERSION_MAJ'], env['FABRIC_VERSION_MIN']])
+majMinRevVer = '.'.join([env['FABRIC_VERSION_MAJ'], env['FABRIC_VERSION_MIN'], env['FABRIC_VERSION_REV']])
+
+# if env['FABRIC_BUILD_OS'] == 'Darwin':
+#   env.Append(SHLINKFLAGS = ','.join([
+#     '-Wl',
+#     '-current_version',
+#     majMinRevVer,
+#     '-compatibility_version',
+#     majMinVer,
+#     '-install_name',
+#     '@rpath/lib/' + '.'.join(['lib' + libName, majMinVer, 'dylib'])
+#     ]))
+# if env['FABRIC_BUILD_OS'] == 'Linux':
+#   env.Append(SHLINKFLAGS = ','.join([
+#     '-Wl',
+#     '-soname',
+#     '.'.join(['lib' + libName, 'so', majMinVer])
+#     ]))
+#   env.Append(SHLINKFLAGS = Literal(','.join([
+#     '-Wl',
+#     '-rpath',
+#     '$ORIGIN',
+#     ])))
+
+# build a single consecutive library
+sources = []
+for d in dirs:
+  sources += Glob(os.path.join(d, '*.cpp'))
+
+binDir = stageDir.Dir('bin')
+libDir = stageDir.Dir('lib')
+includeDir = stageDir.Dir('include')
+
+servicesFiles = []
+# servicesLib = env.SharedLibrary('FabricServices', sources)
+servicesLib = env.StaticLibrary('FabricServices', sources)
+servicesFiles += servicesLib
+
+servicesFiles += env.Install(libDir, servicesLib)
+
+for d in dirs:
+  targetDir = includeDir.Dir(d)
+  servicesFiles += env.Install(targetDir, Glob(os.path.join(d, '*.h')))
+  servicesFiles += env.Install(targetDir, Glob(os.path.join(d, '*.hpp')))
+
+# todo: enable this if going with a shared lib
+# if env['FABRIC_BUILD_OS'] == 'Windows':
+#   servicesLib = env.Install(binDir, servicesLib[:2])
+#   servicesFiles += servicesLib
+# if env['FABRIC_BUILD_OS'] == 'Linux':
+#   env.AddPostAction(
+#     servicesLib,
+#     [
+#       [
+#         'ln', '-snf',
+#         '.'.join(['lib' + libName, 'so', majMinRevVer]),
+#         libDir.File('.'.join(['lib' + libName, 'so', majMinVer])),
+#         ],
+#       [
+#         'ln', '-snf',
+#         '.'.join(['lib' + libName, 'so', majMinVer]),
+#         libDir.File('.'.join(['lib' + libName, 'so'])),
+#         ]
+#       ]
+#     )
+# if env['FABRIC_BUILD_OS'] == 'Darwin':
+#   env.AddPostAction(servicesLib, [[
+#     'ln', '-snf',
+#     '.'.join(['lib' + libName, majMinRevVer, 'dylib']),
+#     libDir.File('.'.join(['lib' + libName, majMinVer, 'dylib'])),
+#     ]])
+#   env.AddPostAction(servicesLib, [[
+#     'ln', '-snf',
+#     '.'.join(['lib' + libName, majMinVer, 'dylib']),
+#     libDir.File('.'.join(['lib' + libName, 'dylib'])),
+#     ]])
+
+servicesIncludeDir = env.Dir('.').srcnode()
+
+servicesFlags = {
+  'CPPPATH': [servicesIncludeDir],
+  'LIBPATH': [libDir],
+  'LIBS': ['FabricServices'],
+  }
+
+Export('servicesFlags', 'servicesIncludeDir', 'servicesFiles')
+
+env.Alias('servicesLib', servicesFiles)

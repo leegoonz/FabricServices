@@ -22,3 +22,15 @@ SConscript(
     ],
   exports = {'parentEnv': env}
   )
+
+servicesLibFiles = SConscript(
+  'SConscript.ServicesLib',
+  exports = {'parentEnv': env, 'dirs': [
+    'Commands',
+    'ASTWrapper',
+    'DFGWrapper',
+    'CodeCompletion',
+    # 'SplitSearch',
+    ]},
+  variant_dir = 'FabricServices'
+  )
