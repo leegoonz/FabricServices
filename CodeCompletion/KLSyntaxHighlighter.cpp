@@ -70,7 +70,7 @@ const std::vector<KLSyntaxHighlighter::Format> & KLSyntaxHighlighter::getHighlig
     f.token = (Token)(int)klTokenStream.getNext( &f.start, &f.length );
     f.length = f.length - f.start;
     
-    if(f.token == FEC_KLTokenType_EOF)
+    if(f.token == (Token)FEC_KLTokenType_EOF)
       break;
 
     if(f.token == Token_Other)

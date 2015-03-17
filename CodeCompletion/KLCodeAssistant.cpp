@@ -189,7 +189,8 @@ bool KLCodeAssistant::isCursorInsideCommentOrString(uint32_t cursor) const
   const std::vector<KLSyntaxHighlighter::Format> & formats = m_highlighter->getHighlightFormats(m_code);
   for(size_t i=0;i<formats.size();i++)
   {
-    if(formats[i].token == FEC_KLTokenType_Comment || formats[i].token == FEC_KLTokenType_String)
+    if(formats[i].token == Token(FEC_KLTokenType_Comment)
+      || formats[i].token == Token(FEC_KLTokenType_String))
     {
       if(formats[i].start <= cursor && formats[i].start + formats[i].length >= cursor)
         return true;
@@ -413,7 +414,7 @@ const KLDecl * KLCodeAssistant::getDeclAtCursor(uint32_t line, uint32_t column) 
       {
         if(delegates.size() == 0)
         {
-          int i2 = column;
+          size_t i2 = column;
           while(i2 < l.length())
           {
             c = l[i2++];
