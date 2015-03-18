@@ -25,12 +25,6 @@ env.MergeFlags(llvmFlags)
 # env.Append(CPPDEFINES = ['FABRICSERVICES_BUILDING'])
 env.Append(CPPPATH = [env.Dir('.').srcnode().abspath])
 
-if env['FABRIC_BUILD_OS'] != 'Windows':
-  env.Append(CXXFLAGS=['-std=c++11', '-Werror'])
-if env['FABRIC_BUILD_OS'] == 'Darwin':
-  env.Append(CXXFLAGS=['-stdlib=libc++'])
-  env.Append(LINKFLAGS = ['-stdlib=libc++'])
-
 majMinVer = '.'.join([env['FABRIC_VERSION_MAJ'], env['FABRIC_VERSION_MIN']])
 majMinRevVer = '.'.join([env['FABRIC_VERSION_MAJ'], env['FABRIC_VERSION_MIN'], env['FABRIC_VERSION_REV']])
 
