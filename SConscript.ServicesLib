@@ -5,8 +5,18 @@
 import os
 Import('parentEnv', 'stageDir', 'dirs', 'capiSharedLibFlags', 'llvmFlags')
 
-env = parentEnv.CloneSubStage('FabricServices')
-
+# todo: use visual studio 2013
+# env = parentEnv.CloneSubStage('FabricServices')
+env = Environment(MSVC_VERSION = '10.0')
+env['ENV'] = parentEnv['ENV']
+env['FABRIC_BUILD_OS'] = parentEnv['FABRIC_BUILD_OS']
+env['FABRIC_BUILD_DIST'] = parentEnv['FABRIC_BUILD_DIST']
+env['FABRIC_BUILD_ARCH'] = parentEnv['FABRIC_BUILD_ARCH']
+env['FABRIC_BUILD_TYPE'] = parentEnv['FABRIC_BUILD_TYPE']
+env['TARGET_ARCH'] = parentEnv['TARGET_ARCH']
+env['FABRIC_VERSION_MAJ'] = parentEnv['FABRIC_VERSION_MAJ']
+env['FABRIC_VERSION_MIN'] = parentEnv['FABRIC_VERSION_MIN']
+env['FABRIC_VERSION_REV'] = parentEnv['FABRIC_VERSION_REV']
 
 env.MergeFlags(capiSharedLibFlags)
 env.MergeFlags(llvmFlags)
@@ -57,7 +67,11 @@ includeDir = stageDir.Dir('include').Dir('FabricServices')
 
 servicesFiles = []
 # servicesLib = env.SharedLibrary('FabricServices', sources)
-servicesLib = env.StaticLibrary('FabricServices', sources)
+
+libName = 'FabricServices'
+if env['FABRIC_BUILD_OS'] == 'Windows': 
+  libName += '-MSVC-' + env['MSVC_VERSION']
+servicesLib = env.StaticLibrary(libName, sources)
 servicesFiles += servicesLib
 
 servicesFiles += env.Install(libDir, servicesLib)
