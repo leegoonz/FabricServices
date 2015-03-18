@@ -8,7 +8,7 @@ KLTypeDesc::KLTypeDesc(const std::string & type)
 {
   m_type = type;
 
-  int pos = m_type.find('[');
+  size_t pos = m_type.find('[');
   if(pos != std::string::npos)
   {
     m_arrayModifier = m_type.substr(pos, 10000);
