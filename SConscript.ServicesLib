@@ -107,7 +107,7 @@ for d in dirs:
 #     libDir.File('.'.join(['lib' + libName, 'dylib'])),
 #     ]])
 
-servicesIncludeDir = env.Dir('.').srcnode()
+servicesIncludeDir = env.Dir('#Native').Dir('Services')
 
 servicesFlags = {
   'CPPPATH': [servicesIncludeDir],
