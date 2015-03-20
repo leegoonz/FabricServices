@@ -16,7 +16,8 @@ View::View(GraphExecutable graph)
 
 View::~View()
 {
-  m_view.destroy();
+  if(m_view.isValid())
+    m_view.destroy();
 }
 
 bool View::isValid() const
