@@ -21,6 +21,12 @@ env['FABRIC_VERSION_REV'] = parentEnv['FABRIC_VERSION_REV']
 env.MergeFlags(capiSharedLibFlags)
 env.MergeFlags(llvmFlags)
 
+if env['FABRIC_BUILD_OS'] != 'Windows':
+  env.Append(CXXFLAGS = ['-std=c++03'])
+if env['FABRIC_BUILD_OS'] == 'Darwin':
+  env.Append(CXXFLAGS = ['-stdlib=libstdc++'])
+  env.Append(LINKFLAGS = ['-stdlib=libstdc++'])
+
 # disable for now, we'll build a static library for now
 # env.Append(CPPDEFINES = ['FABRICSERVICES_BUILDING'])
 env.Append(CPPPATH = [env.Dir('.').srcnode().abspath])
