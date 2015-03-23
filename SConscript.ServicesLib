@@ -3,11 +3,11 @@
 #
 
 import os
-Import('parentEnv', 'stageDir', 'dirs', 'capiSharedLibFlags', 'llvmFlags')
+Import('parentEnv', 'stageDir', 'dirs', 'capiSharedLibFlags', 'llvmFlags', 'buildArch')
 
 # todo: use visual studio 2013
 # env = parentEnv.CloneSubStage('FabricServices')
-env = Environment(MSVC_VERSION = '10.0')
+env = Environment(MSVC_VERSION = '10.0', TARGET_ARCH='x86_64')
 # env['ENV'] = parentEnv['ENV']
 env['FABRIC_BUILD_OS'] = parentEnv['FABRIC_BUILD_OS']
 env['FABRIC_BUILD_DIST'] = parentEnv['FABRIC_BUILD_DIST']
