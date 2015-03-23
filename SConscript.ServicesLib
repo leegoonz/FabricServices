@@ -3,11 +3,11 @@
 #
 
 import os
-Import('parentEnv', 'stageDir', 'dirs', 'capiSharedLibFlags', 'llvmFlags', 'buildArch')
+Import('parentEnv', 'stageDir', 'dirs', 'capiSharedLibFlags', 'llvmFlags', 'msvc_version')
 
 # todo: use visual studio 2013
 # env = parentEnv.CloneSubStage('FabricServices')
-env = Environment(MSVC_VERSION = '10.0', TARGET_ARCH='x86_64')
+env = Environment(MSVC_VERSION = msvc_version, TARGET_ARCH='x86_64')
 # env['ENV'] = parentEnv['ENV']
 env['FABRIC_BUILD_OS'] = parentEnv['FABRIC_BUILD_OS']
 env['FABRIC_BUILD_DIST'] = parentEnv['FABRIC_BUILD_DIST']
@@ -70,7 +70,7 @@ servicesFiles = []
 
 libName = 'FabricServices'
 if env['FABRIC_BUILD_OS'] == 'Windows': 
-  libName += '-MSVC-' + env['MSVC_VERSION']
+  libName += '-MSVC-' + msvc_version
 servicesLib = env.StaticLibrary(libName, sources)
 servicesFiles += servicesLib
 
@@ -113,14 +113,14 @@ for d in dirs:
 #     libDir.File('.'.join(['lib' + libName, 'dylib'])),
 #     ]])
 
-servicesIncludeDir = env.Dir('#Native').Dir('Services')
+servicesIncludeDir = env.Dir('#').Dir('Native').Dir('Services')
 
 servicesFlags = {
   'CPPPATH': [servicesIncludeDir],
   'LIBPATH': [libDir],
-  'LIBS': ['FabricServices'],
+  'LIBS': [libName],
   }
 
 Export('servicesFlags', 'servicesIncludeDir', 'servicesFiles')
 
-env.Alias('servicesLib', servicesFiles)
+Return('servicesFiles')
