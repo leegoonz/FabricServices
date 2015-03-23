@@ -71,7 +71,7 @@ std::vector<Object> NameSpace::getPresets(bool recursive)
     const FabricCore::Variant * memberVar = memberIter.getValue();
     const FabricCore::Variant * objectTypeVar = memberVar->getDictValue("objectType");
     std::string objectType = objectTypeVar->getStringData();
-    if(objectType == "Func" || objectType == "Graph")
+    if(objectType == "Preset")
     {
       result.push_back(Object(getWrappedCoreHost(), prefix + name));
     }
@@ -103,9 +103,12 @@ std::vector<Func> NameSpace::getFuncs(bool recursive)
     const FabricCore::Variant * memberVar = memberIter.getValue();
     const FabricCore::Variant * objectTypeVar = memberVar->getDictValue("objectType");
     std::string objectType = objectTypeVar->getStringData();
-    if(objectType == "Func")
+    if(objectType == "Preset")
     {
-      result.push_back(Func(getWrappedCoreHost(), prefix + name));
+      const FabricCore::Variant * execTypeVar = memberVar->getDictValue("execType");
+      std::string execType = execTypeVar->getStringData();
+      if ( execType == "Func" )
+        result.push_back(Func(getWrappedCoreHost(), prefix + name));
     }
     else if(objectType == "NameSpace" && recursive)
     {
@@ -135,9 +138,12 @@ std::vector<Graph> NameSpace::getGraphs(bool recursive)
     const FabricCore::Variant * memberVar = memberIter.getValue();
     const FabricCore::Variant * objectTypeVar = memberVar->getDictValue("objectType");
     std::string objectType = objectTypeVar->getStringData();
-    if(objectType == "Graph")
+    if(objectType == "Preset")
     {
-      result.push_back(Graph(getWrappedCoreHost(), prefix + name));
+      const FabricCore::Variant * execTypeVar = memberVar->getDictValue("execType");
+      std::string execType = execTypeVar->getStringData();
+      if ( execType == "Graph" )
+        result.push_back(Graph(getWrappedCoreHost(), prefix + name));
     }
     else if(objectType == "NameSpace" && recursive)
     {
