@@ -59,18 +59,25 @@ std::string Port::getName() const
   return m_path.substr(pos+1, m_path.length());
 }
 
-std::string Port::setName(char const *name)
+std::string Port::setName( char const *desiredName )
 {
-  std::string path = getPath();
-  std::string oldName = getName();
-  if(name == oldName)
-    return oldName;
+  std::string execPath;
+  std::string oldName;
+  size_t lastDotPos = m_path.rfind('.');
+  if ( lastDotPos != std::string::npos )
+  {
+    execPath = m_path.substr( 0, lastDotPos );
+    oldName = m_path.substr( lastDotPos + 1, std::string::npos );
+  }
+  else oldName = m_path;
 
-  std::string newName = m_binding.rename(path.c_str(), name).getCString();
-  if(path.rfind('.') != std::string::npos)
-    m_path = path.substr(0, path.rfind('.')) + newName;
-  else
-    m_path = newName;
+  char const *newName =
+    m_binding.renamePort( execPath.c_str(), oldName.c_str(), desiredName );
+  m_path = execPath;
+  if ( !m_path.empty() )
+    m_path += '.';
+  m_path += newName;
+
   return newName;
 }
 
