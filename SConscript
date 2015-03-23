@@ -6,9 +6,8 @@ Import('parentEnv')
 
 env = parentEnv.CloneSubStage('Services')
 
-if env['FABRIC_BUILD_OS'] != 'Windows':
-  env.Append(CXXFLAGS = ['-std=c++03'])
 if env['FABRIC_BUILD_OS'] == 'Darwin':
+  env.Append(CXXFLAGS = ['-std=c++03'])
   env.Append(CXXFLAGS = ['-stdlib=libstdc++'])
   env.Append(LINKFLAGS = ['-stdlib=libstdc++'])
 
