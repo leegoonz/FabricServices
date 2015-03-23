@@ -29,7 +29,6 @@ if 'servicesLib' in COMMAND_LINE_TARGETS and env['FABRIC_BUILD_OS'] == 'Windows'
 
 for msvc_version in msvc_versions:
 
-  print msvc_version
   allServicesLibFiles += SConscript(
     'SConscript.ServicesLib',
     exports = {
