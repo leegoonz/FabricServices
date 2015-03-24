@@ -9,8 +9,11 @@ GraphExecutable::GraphExecutable()
 {
 }
 
-GraphExecutable::GraphExecutable(FabricCore::DFGBinding binding, std::string path)
-: Executable(binding, path)
+GraphExecutable::GraphExecutable(
+  FabricCore::DFGBinding binding,
+  char const *graphPath
+  )
+: Executable(binding, graphPath)
 {
 }
 
@@ -30,26 +33,26 @@ GraphExecutable::~GraphExecutable()
 
 Node GraphExecutable::addNodeFromPreset(char const * preset)
 {
-  std::string name = getWrappedCoreBinding().addNodeFromPreset(getPath().c_str(), preset).getCString();
-  return Node(getWrappedCoreBinding(), name);
+  char const *nodePath = getWrappedCoreBinding().addNodeFromPreset(getGraphPath(), preset);
+  return Node(getWrappedCoreBinding(), getGraphPath(), nodePath);
 }
 
 Node GraphExecutable::addNodeWithNewGraph(char const * title)
 {
-  std::string name = getWrappedCoreBinding().addNodeWithNewGraph(getPath().c_str(), title).getCString();
-  return Node(getWrappedCoreBinding(), name);
+  char const *nodePath = getWrappedCoreBinding().addNodeWithNewGraph(getGraphPath(), title);
+  return Node(getWrappedCoreBinding(), getGraphPath(), nodePath);
 }
 
 Node GraphExecutable::addNodeWithNewFunc(char const * title)
 {
-  std::string name = getWrappedCoreBinding().addNodeWithNewFunc(getPath().c_str(), title).getCString();
-  return Node(getWrappedCoreBinding(), name);
+  char const *nodePath = getWrappedCoreBinding().addNodeWithNewFunc(getGraphPath(), title);
+  return Node(getWrappedCoreBinding(), getGraphPath(), nodePath);
 }
 
 Node GraphExecutable::addNodeFromJSON(char const * json)
 {
-  std::string name = getWrappedCoreBinding().addNodeFromJSON(getPath().c_str(), json).getCString();
-  return Node(getWrappedCoreBinding(), name);
+  char const *nodePath = getWrappedCoreBinding().addNodeFromJSON(getGraphPath(), json);
+  return Node(getWrappedCoreBinding(), getGraphPath(), nodePath);
 }
 
 std::vector<Node> GraphExecutable::getNodes()
@@ -59,31 +62,37 @@ std::vector<Node> GraphExecutable::getNodes()
   FabricCore::Variant descVar = FabricCore::Variant::CreateFromJSON(getDesc().c_str());
   const FabricCore::Variant * nodesVar = descVar.getDictValue("nodes");
 
-  std::string prefix = getPath();
-  if(prefix.length() > 0)
-    prefix += ".";
-  
   for(uint32_t i=0;i<nodesVar->getArraySize();i++)
   {
     const FabricCore::Variant * nodeVar = nodesVar->getArrayElement(i);
     const FabricCore::Variant * nameVar = nodeVar->getDictValue("name");
-    result.push_back(Node(getWrappedCoreBinding(), prefix + nameVar->getStringData()));
+    result.push_back(
+      Node(
+        getWrappedCoreBinding(),
+        getGraphPath(),
+        nameVar->getStringData()
+        )
+      );
   }
 
   return result; 
 }
 
-Node GraphExecutable::getNode(char const * name)
+Node GraphExecutable::getNode(char const * nodePath)
 {
-  std::string prefix = getPath();
-  if(prefix.length() > 0)
-    prefix += ".";
-  return Node(getWrappedCoreBinding(), prefix + name);
+  return Node(
+    getWrappedCoreBinding(),
+    getGraphPath(),
+    nodePath
+    );
 }
 
 void GraphExecutable::removeNode(Node node)
 {
-  getWrappedCoreBinding().destroy(node.getPath().c_str());
+  getWrappedCoreBinding().removeNode(
+    getGraphPath(),
+    node.getNodePath()
+    );
 }
 
 std::vector<Connection> GraphExecutable::getConnections()

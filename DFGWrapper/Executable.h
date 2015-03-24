@@ -25,12 +25,15 @@ namespace FabricServices
       Executable(const Executable & other);
       virtual ~Executable();
 
+      FabricCore::DFGBinding getWrappedCoreBinding() const
+        { return m_binding; }
+      char const *getExecPath() const
+        { return m_execPath.c_str(); }
+
       bool isValid();
-      FabricCore::DFGBinding getWrappedCoreBinding() const;
 
       std::string getDesc();
       std::string getObjectType();
-      std::string getPath();
       std::string getTitle();
       std::vector<Port> getPorts();
       Port getPort(char const * name);
@@ -60,12 +63,12 @@ namespace FabricServices
     protected:
       
       Executable();
-      Executable(FabricCore::DFGBinding binding, std::string path);
+      Executable( FabricCore::DFGBinding binding, char const *execPath );
 
     private:
 
       FabricCore::DFGBinding m_binding;
-      std::string m_path;
+      std::string m_execPath;
       std::string m_objectType;
     };
 

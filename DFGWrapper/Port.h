@@ -3,73 +3,136 @@
 #ifndef __DFGWrapper_Port__
 #define __DFGWrapper_Port__
 
-#include <FabricCore.h>
-#include <string>
-#include <vector>
+#include "EndPoint.h"
 
 namespace FabricServices
 {
 
   namespace DFGWrapper
   {
+    class Exec;
 
-    class Port
+    class Port : public EndPoint
     {
-      friend class Executable;
-      friend class GraphExecutable;
-      friend class Pin;
-      friend class Connection;
-      friend class View;
+      
+      friend class Exec;
 
     public:
 
-      Port(const Port & other);
-      virtual ~Port();
+      // Element - Type
 
-      bool isValid();
-      FabricCore::DFGBinding getWrappedCoreBinding() const;
+      virtual bool isPort() const { return true; }
 
-      std::string getPath() const;
-      std::string getName() const;
-      std::string setName(char const *name);
-      FabricCore::DFGPortType getPortType();
-      std::string getDataType();
-      bool isArray();
-      unsigned int getArraySize();
+      // Element - Validity
 
-      virtual std::string getDesc();
+      virtual bool isValid() const
+      {
+        return getWrappedCoreBinding()->isValidPort(
+          getExecPath(), getPortPath()
+          );
+      }
+      
+      // Element - Desc
 
-      virtual bool hasMetadata(char const * key);
-      virtual std::string getMetadata(char const * key);
-      virtual void setMetadata(char const * key, char const * metadata, bool canUndo);
-      virtual bool hasOption(char const * key);
-      virtual FabricCore::Variant getOption(char const * key);
-      virtual void setOption(char const * key, const FabricCore::Variant * var);
+      virtual std::string getDesc() const
+      {
+        FabricCore::StringResult result =
+          getWrappedCoreBinding()->getPortDesc(
+            getExecPath(), getPortPath()
+            );
+        return std::string(
+          result->getStringData(), result->getStringLength()
+          );
+      }
 
-      virtual bool canConnect(Port other);
-      virtual void connect(const Port & other);
-      virtual void disconnect(const Port & other);
-      virtual void disconnectAll();
-      virtual bool isConnected();
-      virtual std::vector<std::string> getSources();
-      virtual std::vector<std::string> getDestinations();
+      // Element - Metadata
 
-      virtual FabricCore::RTVal getDefaultValue(char const * dataType = NULL);
-      virtual void setDefaultValue(FabricCore::RTVal value);
+      virtual char const *getMetadata(char const * key) const
+      {
+        return getWrappedCoreBinding()->getPortMetadata(
+          getExecPath(), getPortPath(), key
+          );
+      }
+      virtual void setMetadata(char const * key, char const * value, bool canUndo)
+      {
+        getWrappedCoreBinding()->setPortMetadata(
+          getExecPath(), getPortPath(), key, value, canUndo
+          );
+      }
 
-      virtual FabricCore::RTVal getRTVal();
-      virtual void setRTVal(FabricCore::RTVal value);
+      virtual char const *getDataType() const;
+
+      // EndPoint - Default Values
+
+      virtual FabricCore::RTVal getDefaultValue( char const * type ) const
+      {
+        return getWrappedCoreBinding()->getPortDefaultValue(
+          getExecPath(), getPortPath(), type
+          );
+      }
+
+      virtual void setDefaultValue( FabricCore::RTVal const &value )
+      {
+        getWrappedCoreBinding()->setPortDefaultValue(
+          getExecPath(), getPortPath(), value
+          );
+      }
+
+      // Port - Accessors
+
+      char const *getPortPath() const
+        { return getEndPointPath(); }
+
+      char const *getName() const
+        { return getPortPath(); }
+      char const *setName(char const *desiredName)
+      {
+        char const *actualName =
+          getWrappedCoreBinding()->renamePort(
+            getExecPath(), getPortPath(), desiredName
+            );
+        m_portPath = actualName;
+        return actualName;
+      }
+
+      FabricCore::DFGPortType getPortType() const
+      {
+        return getWrappedCoreBinding()->getPortType(
+          getExecPath(), getPortPath()
+          );
+      }
+
+      // Port - RTVals
+
+      FabricCore::RTVal getRTVal()
+      {
+        if ( !getExecPath()[0] )
+          return getWrappedCoreBinding()->getArgValue( getPortPath() );
+        else
+          return FabricCore::RTVal();
+      }
+
+      void setRTVal(FabricCore::RTVal const &value)
+      {
+        if ( !getExecPath()[0] )
+          getWrappedCoreBinding()->setArgValue( getPortPath, value );
+      }
 
     protected:
       
-      Port(FabricCore::DFGBinding binding, std::string path, std::string portType = "", std::string dataType = "");
+      Port(
+        FabricCore::DFGBinding binding,
+        char const *execPath,
+        char const *portPath
+        )
+        : EndPoint(
+          binding,
+          execPath,
+          portPath
+          )
+      {
+      }
 
-    private:
-
-      FabricCore::DFGBinding m_binding;      
-      std::string m_path;
-      std::string m_portType;
-      std::string m_dataType;
     };
 
   };

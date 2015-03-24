@@ -27,8 +27,13 @@ namespace FabricServices
       Node(const Node & other);
       virtual ~Node();
 
-      bool isValid();
       FabricCore::DFGBinding getWrappedCoreBinding() const;
+      char const *getGraphPath() const
+        { return m_graphPath.c_str(); }
+      char const *getNodePath() const
+        { return m_nodePath.c_str(); }
+
+      bool isValid();
 
       Executable getExecutable();
 
@@ -50,12 +55,17 @@ namespace FabricServices
 
     protected:
       
-      Node(FabricCore::DFGBinding binding, std::string path);
+      Node(
+        FabricCore::DFGBinding binding,
+        char const *graphPath,
+        char const *nodePath
+        );
 
     private:
 
       FabricCore::DFGBinding m_binding;
-      std::string m_path;
+      std::string m_graphPath;
+      std::string m_nodePath;
       std::string m_objectType;
     };
 

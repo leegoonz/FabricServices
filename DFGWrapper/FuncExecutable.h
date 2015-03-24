@@ -23,12 +23,18 @@ namespace FabricServices
       FuncExecutable(const FuncExecutable & other);
       virtual ~FuncExecutable();
 
+      char const *getFuncPath() const
+        { return getExecPath(); }
+
       std::string getCode();
       void setCode(char const *code);
 
     protected:
       
-      FuncExecutable(FabricCore::DFGBinding binding, std::string path);
+      FuncExecutable(
+        FabricCore::DFGBinding binding,
+        char const *funcPath
+        );
 
     };
 

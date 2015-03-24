@@ -26,6 +26,8 @@ namespace FabricServices
       GraphExecutable(const GraphExecutable & other);
       virtual ~GraphExecutable();
 
+      char const *getGraphPath() const { return getExecPath(); }
+
       Node addNodeFromPreset(char const * preset);
       Node addNodeWithNewGraph(char const * title = 0);
       Node addNodeWithNewFunc(char const * title = 0);
@@ -41,7 +43,10 @@ namespace FabricServices
     protected:
       
       GraphExecutable();
-      GraphExecutable(FabricCore::DFGBinding binding, std::string path);
+      GraphExecutable(
+        FabricCore::DFGBinding binding,
+        char const *graphPath
+        );
 
     };
 

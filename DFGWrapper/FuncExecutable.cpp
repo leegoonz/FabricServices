@@ -4,8 +4,11 @@
 
 using namespace FabricServices::DFGWrapper;
 
-FuncExecutable::FuncExecutable(FabricCore::DFGBinding binding, std::string path)
-: Executable(binding, path)
+FuncExecutable::FuncExecutable(
+  FabricCore::DFGBinding binding,
+  char const *funcPath
+  )
+: Executable(binding, funcPath)
 {
 }
 
@@ -32,6 +35,6 @@ std::string FuncExecutable::getCode()
 
 void FuncExecutable::setCode(char const *code)
 {
-  getWrappedCoreBinding().setCode(getPath().c_str(), code);
+  getWrappedCoreBinding().setCode(getFuncPath(), code);
 }
 
