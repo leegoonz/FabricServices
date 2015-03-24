@@ -228,17 +228,21 @@ std::vector<std::string> Port::getDestinations()
 {
   std::vector<std::string> result;
   FabricCore::Variant descVar = FabricCore::Variant::CreateFromJSON(getDesc().c_str());
-  const FabricCore::Variant * connectionsVar = descVar.getDictValue("dsts");
+  const FabricCore::Variant * connectionsVar = descVar.getDictValue("connections");
   if(connectionsVar)
   {
-    for(unsigned int i=0;i<connectionsVar->getArraySize();i++)
+    const FabricCore::Variant * dstsVar = connectionsVar->getDictValue("dsts");
+    if(dstsVar)
     {
-      const FabricCore::Variant * connectionVar = connectionsVar->getArrayElement(i);
-      if(connectionVar->isString())
+      for(unsigned int i=0;i<dstsVar->getArraySize();i++)
       {
-        std::string name = connectionVar->getStringData();
-        if(name != getName())
-          result.push_back(name);
+        const FabricCore::Variant * connectionVar = dstsVar->getArrayElement(i);
+        if(connectionVar->isString())
+        {
+          std::string name = connectionVar->getStringData();
+          if(name != getName())
+            result.push_back(name);
+        }
       }
     }
   }
