@@ -60,7 +60,12 @@ namespace FabricServices
           );
       }
 
-      virtual char const *getDataType() const;
+      virtual char const *getResolvedType() const
+      {
+        return getWrappedCoreBinding()->getPortResolvedType(
+          getExecPath(), getPortPath()
+          );
+      }
 
       // EndPoint - Default Values
 
@@ -85,6 +90,7 @@ namespace FabricServices
 
       char const *getName() const
         { return getPortPath(); }
+      
       char const *setName(char const *desiredName)
       {
         char const *actualName =

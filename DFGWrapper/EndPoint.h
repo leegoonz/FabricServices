@@ -31,7 +31,7 @@ namespace FabricServices
           );
       }
 
-      virtual char const *getDataType() const = 0;
+      virtual char const *getResolvedType() const = 0;
 
       // EndPoint - Default Values
 
@@ -74,9 +74,6 @@ namespace FabricServices
           getExecPath(), getEndPointPath()
           );
       }
-
-      SharedPtr<EndPoint> getSource() const;
-      std::vector< SharedPtr<EndPoint> > getDestinations() const;
 
     protected:
       
