@@ -100,19 +100,17 @@ void View::callback(void * userData, char const * jsonCString, uint32_t jsonLeng
   {
     const FabricCore::Variant * srcEndPointPathVar = notificationVar.getDictValue("srcEndPointPath");
     const FabricCore::Variant * dstEndPointPathVar = notificationVar.getDictValue("dstEndPointPath");
-    // todo
-    // EndPointPtr src = new EndPoint(binding, exec.getWrappedCoreExec(), exec.getExecPath(), (prefix + srcEndPointPathVar->getStringData()).c_str());
-    // EndPointPtr dst = new EndPoint(binding, exec.getWrappedCoreExec(), exec.getExecPath(), (prefix + dstEndPointPathVar->getStringData()).c_str());
-    // view->onEndPointsConnected(src, dst);
+    EndPointPtr src = EndPoint::Create(binding, exec.getWrappedCoreExec(), exec.getExecPath(), (prefix + srcEndPointPathVar->getStringData()).c_str());
+    EndPointPtr dst = EndPoint::Create(binding, exec.getWrappedCoreExec(), exec.getExecPath(), (prefix + dstEndPointPathVar->getStringData()).c_str());
+    view->onEndPointsConnected(src, dst);
   }
   else if(descStr == "endPointsDisconnected")
   {
     const FabricCore::Variant * srcEndPointPathVar = notificationVar.getDictValue("srcEndPointPath");
     const FabricCore::Variant * dstEndPointPathVar = notificationVar.getDictValue("dstEndPointPath");
-    // todo
-    // EndPointPtr src = new EndPoint(binding, exec.getWrappedCoreExec(), exec.getExecPath(), (prefix + srcEndPointPathVar->getStringData()).c_str());
-    // EndPointPtr dst = new EndPoint(binding, exec.getWrappedCoreExec(), exec.getExecPath(), (prefix + dstEndPointPathVar->getStringData()).c_str());
-    // view->onEndPointsDisconnected(src, dst);
+    EndPointPtr src = EndPoint::Create(binding, exec.getWrappedCoreExec(), exec.getExecPath(), (prefix + srcEndPointPathVar->getStringData()).c_str());
+    EndPointPtr dst = EndPoint::Create(binding, exec.getWrappedCoreExec(), exec.getExecPath(), (prefix + dstEndPointPathVar->getStringData()).c_str());
+    view->onEndPointsDisconnected(src, dst);
   }
   else if(descStr == "nodeMetadataChanged")
   {

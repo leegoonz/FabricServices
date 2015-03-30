@@ -84,11 +84,8 @@ namespace FabricServices
 
       bool isConnected() const
       {
-        // todo
-        // return FabricCore::DFGExec(getWrappedCoreExec()).isConnected(
-        //   getEndPointPath()
-        // );
-        return false;
+        // todo: this needs cleanup
+        return FabricCore::DFGExec(getWrappedCoreExec()).isConnected(getEndPointPath(), "");
       }
 
     protected:
@@ -118,10 +115,16 @@ namespace FabricServices
       {
       }
 
-      mutable std::string m_name;
+      static EndPointPtr Create(
+        FabricCore::DFGBinding const &binding,
+        FabricCore::DFGExec const &exec,
+        char const *execPath,
+        char const *endPointPath
+      );
 
     private:
 
+      mutable std::string m_name;
       std::string m_endPointPath;
 
     };

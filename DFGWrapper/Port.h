@@ -20,6 +20,7 @@ namespace FabricServices
     {
       friend class Executable;
       friend class View;
+      friend class EndPoint;
 
     public:
 

@@ -40,7 +40,6 @@ void Port::setMetadata(char const * key, char const * value, bool canUndo)
 
 char const *Port::getName() const
 {
-  // todo: the last part of the port path...?
   return getPortPath();
 }
 

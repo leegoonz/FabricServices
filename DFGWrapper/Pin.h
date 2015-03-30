@@ -20,6 +20,7 @@ namespace FabricServices
     {
       friend class Node;
       friend class View;
+      friend class EndPoint;
 
     public:
 
