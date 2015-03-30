@@ -6,8 +6,9 @@
 
 using namespace FabricServices::DFGWrapper;
 
-Node::Node()
+NodePtr Node::Create(FabricCore::DFGBinding binding, FabricCore::DFGExec parentExec, char const * execPath, char const * nodePath)
 {
+  return new Node(binding, parentExec, execPath, nodePath);
 }
 
 Node::Node(FabricCore::DFGBinding binding, FabricCore::DFGExec parentExec, char const * execPath, char const * nodePath)
@@ -16,23 +17,20 @@ Node::Node(FabricCore::DFGBinding binding, FabricCore::DFGExec parentExec, char 
   m_execPath = execPath;
 }
 
-Node::Node(const Node & other)
-: Element(other)
-{
-}
-
 Node::~Node()
 {
 }
 
-Executable Node::getParentExecutable()
+GraphExecutablePtr Node::getOwningGraphExecutable()
 {
-  return Executable(m_binding, m_exec, m_execPath.c_str());
+  return GraphExecutablePtr::StaticCast(
+    Executable::Create(m_binding, m_exec, m_execPath.c_str())
+    );
 }
 
-Executable Node::getExecutable()
+ExecutablePtr Node::getExecutable()
 {
-  return getParentExecutable().getSubExec(getNodePath());
+  return getOwningGraphExecutable()->getSubExec(getNodePath());
 }
 
 std::string Node::getDesc()

@@ -16,6 +16,9 @@ namespace FabricServices
   namespace DFGWrapper
   {
 
+    class Executable;
+    typedef FTL::SharedPtr<Executable> ExecutablePtr;
+
     class Executable : public Element
     {
       friend class Binding;
@@ -26,20 +29,20 @@ namespace FabricServices
 
       virtual bool isExec() const { return true; }
 
-      Executable(const Executable & other);
+      static ExecutablePtr Create( FabricCore::DFGBinding binding, FabricCore::DFGExec exec, const char * execPath );
       virtual ~Executable();
 
       FabricCore::DFGExecType getExecType() const;
 
-      virtual char const *getExecPath() const 
+      char const *getExecPath() const 
         { return getElementPath(); }
 
-      virtual std::string getDesc();
+      std::string getDesc();
       
-      virtual std::string getTitle();
-      virtual void setTitle(const char * title);
+      std::string getTitle();
+      void setTitle(const char * title);
 
-      Executable getSubExec(const char * subExecPath);
+      ExecutablePtr getSubExec(const char * subExecPath);
 
       std::vector<PortPtr> getPorts();
       PortPtr getPort(char const * name);
@@ -68,7 +71,6 @@ namespace FabricServices
 
     protected:
       
-      Executable();
       Executable( FabricCore::DFGBinding binding, FabricCore::DFGExec exec, const char * execPath );
     };
 

@@ -1,11 +1,26 @@
 // Copyright 2010-2015 Fabric Software Inc. All rights reserved.
 
 #include "Executable.h"
+#include "FuncExecutable.h"
+#include "GraphExecutable.h"
 
 using namespace FabricServices::DFGWrapper;
 
-Executable::Executable()
+ExecutablePtr Executable::Create(
+  FabricCore::DFGBinding binding,
+  FabricCore::DFGExec exec,
+  const char * execPath
+  )
 {
+  switch ( exec.getType() )
+  {
+    case FabricCore::DFGExecType_Func:
+      return FuncExecutable::Create( binding, exec, execPath );
+    case FabricCore::DFGExecType_Graph:
+      return GraphExecutable::Create( binding, exec, execPath );
+    default:
+      return ExecutablePtr();
+  }
 }
 
 Executable::Executable(
@@ -14,11 +29,6 @@ Executable::Executable(
   const char * execPath
   )
 : Element(binding, exec, execPath)
-{
-}
-
-Executable::Executable(const Executable & other)
-: Element(other)
 {
 }
 
@@ -46,9 +56,9 @@ void Executable::setTitle(const char * title)
   m_exec.setTitle(title);
 }
 
-Executable Executable::getSubExec(const char * subExecPath)
+ExecutablePtr Executable::getSubExec(const char * subExecPath)
 {
-  return Executable(m_binding, m_exec.getSubExec(subExecPath), subExecPath);
+  return Executable::Create(m_binding, m_exec.getSubExec(subExecPath), subExecPath);
 }
 
 std::vector<std::string> Executable::getErrors()

@@ -9,14 +9,9 @@ Port::Port(FabricCore::DFGBinding binding, FabricCore::DFGExec exec, char const 
 {
 }
 
-Port::Port(const EndPoint & other)
-: EndPoint(other)
+PortPtr Port::Create(FabricCore::DFGBinding binding, FabricCore::DFGExec exec, char const * execPath, char const * portPath)
 {
-}
-
-Port::Port(const Port & other)
-: EndPoint(other)
-{
+  return new Port(binding, exec, execPath, portPath);
 }
 
 Port::~Port()

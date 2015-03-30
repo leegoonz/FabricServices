@@ -15,6 +15,12 @@ namespace FabricServices
   namespace DFGWrapper
   {
 
+    class GraphExecutable;
+    typedef FTL::SharedPtr<GraphExecutable> GraphExecutablePtr;
+
+    class Node;
+    typedef FTL::SharedPtr<Node> NodePtr;
+
     class Node : public Element
     {
       friend class Binding;
@@ -25,15 +31,19 @@ namespace FabricServices
 
       virtual bool isNode() const { return true; }
 
-      Node();
-      Node(const Node & other);
+      static NodePtr Create(
+        FabricCore::DFGBinding binding,
+        FabricCore::DFGExec parentExec,
+        char const *execPath,
+        char const *nodePath
+        );
       virtual ~Node();
 
       char const *getNodePath() const
         { return getElementPath(); }
 
-      Executable getParentExecutable();
-      Executable getExecutable();
+      GraphExecutablePtr getOwningGraphExecutable();
+      ExecutablePtr getExecutable();
 
       virtual std::string getDesc();
       char const* getTitle();

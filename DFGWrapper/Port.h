@@ -26,8 +26,8 @@ namespace FabricServices
 
       virtual bool isPort() const { return true; }
 
-      Port(const EndPoint & other);
-      Port(const Port & other);
+      static PortPtr Create(FabricCore::DFGBinding binding, FabricCore::DFGExec exec, char const * execPath, char const * portPath);
+
       virtual ~Port();
 
       char const *getPortPath() const

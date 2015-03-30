@@ -5,10 +5,6 @@
 
 using namespace FabricServices::DFGWrapper;
 
-GraphExecutable::GraphExecutable()
-{
-}
-
 GraphExecutable::GraphExecutable(
   FabricCore::DFGBinding binding,
   FabricCore::DFGExec exec,
@@ -18,51 +14,50 @@ GraphExecutable::GraphExecutable(
 {
 }
 
-GraphExecutable::GraphExecutable(const Executable & other)
-: Executable(other)
+GraphExecutablePtr GraphExecutable::Create(
+  FabricCore::DFGBinding binding,
+  FabricCore::DFGExec exec,
+  const char * graphPath
+  )
 {
-}
-
-GraphExecutable::GraphExecutable(const GraphExecutable & other)
-: Executable(other)
-{
+  return new GraphExecutable(binding, exec, graphPath);
 }
 
 GraphExecutable::~GraphExecutable()
 {
 }
 
-Node GraphExecutable::addNodeFromPreset(char const * preset)
+NodePtr GraphExecutable::addNodeFromPreset(char const * preset)
 {
   char const *nodePath = getWrappedCoreExec().addNodeFromPreset(preset);
-  return Node(getWrappedCoreBinding(), getWrappedCoreExec(), getGraphPath(), nodePath);
+  return Node::Create(getWrappedCoreBinding(), getWrappedCoreExec(), getGraphPath(), nodePath);
 }
 
-Node GraphExecutable::addNodeWithNewGraph(char const * title)
+NodePtr GraphExecutable::addNodeWithNewGraph(char const * title)
 {
   char const *nodePath = getWrappedCoreExec().addNodeWithNewGraph(title);
-  return Node(getWrappedCoreBinding(), getWrappedCoreExec(), getGraphPath(), nodePath);
+  return Node::Create(getWrappedCoreBinding(), getWrappedCoreExec(), getGraphPath(), nodePath);
 }
 
-Node GraphExecutable::addNodeWithNewFunc(char const * title)
+NodePtr GraphExecutable::addNodeWithNewFunc(char const * title)
 {
   char const *nodePath = getWrappedCoreExec().addNodeWithNewFunc(title);
-  return Node(getWrappedCoreBinding(), getWrappedCoreExec(), getGraphPath(), nodePath);
+  return Node::Create(getWrappedCoreBinding(), getWrappedCoreExec(), getGraphPath(), nodePath);
 }
 
-Node GraphExecutable::addNodeFromJSON(char const * json)
+NodePtr GraphExecutable::addNodeFromJSON(char const * json)
 {
   char const *nodePath = getWrappedCoreExec().addNodeFromJSON(json);
-  return Node(getWrappedCoreBinding(), getWrappedCoreExec(), getGraphPath(), nodePath);
+  return Node::Create(getWrappedCoreBinding(), getWrappedCoreExec(), getGraphPath(), nodePath);
 }
 
-std::vector<Node> GraphExecutable::getNodes()
+std::vector<NodePtr> GraphExecutable::getNodes()
 {
-  std::vector<Node> result;
+  std::vector<NodePtr> result;
   for(unsigned int i=0;i<m_exec.getNodeCount();i++)
   {
     result.push_back(
-      Node(
+      Node::Create(
         getWrappedCoreBinding(),
         getWrappedCoreExec(),
         getGraphPath(),
@@ -73,9 +68,9 @@ std::vector<Node> GraphExecutable::getNodes()
   return result; 
 }
 
-Node GraphExecutable::getNode(char const * nodePath)
+NodePtr GraphExecutable::getNode(char const * nodePath)
 {
-  return Node(
+  return Node::Create(
     getWrappedCoreBinding(),
     getWrappedCoreExec(),
     getGraphPath(),

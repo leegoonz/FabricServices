@@ -15,7 +15,10 @@ namespace FabricServices
   namespace DFGWrapper
   {
 
-    class Element
+    class Element;
+    typedef FTL::SharedPtr<Element> ElementPtr;
+
+    class Element : public FTL::Shareable
     {
     public:
 

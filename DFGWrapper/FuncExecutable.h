@@ -12,6 +12,9 @@ namespace FabricServices
   namespace DFGWrapper
   {
 
+    class FuncExecutable;
+    typedef FTL::SharedPtr<FuncExecutable> FuncExecutablePtr;
+
     class FuncExecutable : public Executable
     {
       friend class Binding;
@@ -22,8 +25,12 @@ namespace FabricServices
 
       virtual bool isFunc() const { return true; }
 
-      FuncExecutable(const Executable & other);
-      FuncExecutable(const FuncExecutable & other);
+      static FuncExecutablePtr Create(
+        FabricCore::DFGBinding binding,
+        FabricCore::DFGExec exec,
+        const char * funcPath
+      );
+
       virtual ~FuncExecutable();
 
       char const *getFuncPath() const

@@ -13,14 +13,13 @@ FuncExecutable::FuncExecutable(
 {
 }
 
-FuncExecutable::FuncExecutable(const Executable & other)
-: Executable(other)
+FuncExecutablePtr FuncExecutable::Create(
+  FabricCore::DFGBinding binding,
+  FabricCore::DFGExec exec,
+  const char * funcPath
+  )
 {
-}
-
-FuncExecutable::FuncExecutable(const FuncExecutable & other)
-: Executable(other)
-{
+  return new FuncExecutable( binding, exec, funcPath );
 }
 
 FuncExecutable::~FuncExecutable()

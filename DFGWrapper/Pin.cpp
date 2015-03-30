@@ -10,14 +10,9 @@ Pin::Pin(FabricCore::DFGBinding binding, FabricCore::DFGExec exec, char const * 
 {
 }
 
-Pin::Pin(const EndPoint & other)
-: EndPoint(other)
+PinPtr Pin::Create(FabricCore::DFGBinding binding, FabricCore::DFGExec exec, char const * execPath, char const * pinPath)
 {
-}
-
-Pin::Pin(const Pin & other)
-: EndPoint(other)
-{
+  return new Pin(binding, exec, execPath, pinPath);
 }
 
 Pin::~Pin()

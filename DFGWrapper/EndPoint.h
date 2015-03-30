@@ -13,7 +13,7 @@ namespace FabricServices
     class EndPoint;
     typedef FTL::SharedPtr<EndPoint> EndPointPtr;
 
-    class EndPoint : public FTL::Shareable, public Element
+    class EndPoint : public Element
     {
     public:
 
@@ -50,38 +50,37 @@ namespace FabricServices
 
       // EndPoint - Connections
 
-      bool canConnect( EndPointPtr dst ) const
+      bool canConnectTo( EndPointPtr dst ) const
       {
-        return FabricCore::DFGExec(getWrappedCoreExec()).canConnect(
+        return getWrappedCoreExec().canConnectTo(
           getEndPointPath(), dst->getEndPointPath()
           );
       }
 
-      void connect( EndPointPtr dst )
+      void connectTo( EndPointPtr dst )
       {
-        getWrappedCoreExec().connect(
+        getWrappedCoreExec().connectTo(
           getEndPointPath(), dst->getEndPointPath()
         );
       }
 
-      void disconnect( EndPointPtr dst )
+      void disconnectFrom( EndPointPtr dst )
       {
-        getWrappedCoreExec().disconnect(
+        getWrappedCoreExec().disconnectFrom(
           getEndPointPath(), dst->getEndPointPath()
         );
       }
 
-      void disconnectAll()
+      void disconnectFromAll()
       {
-        getWrappedCoreExec().disconnectAll(
+        getWrappedCoreExec().disconnectFromAll(
           getEndPointPath()
         );
       }
 
-      bool isConnected() const
+      bool isConnectedToAny() const
       {
-        // todo: this needs cleanup
-        return FabricCore::DFGExec(getWrappedCoreExec()).isConnected(getEndPointPath(), "");
+        return getWrappedCoreExec().isConnectedToAny(getEndPointPath());
       }
 
     protected:

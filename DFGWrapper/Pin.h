@@ -26,8 +26,7 @@ namespace FabricServices
 
       virtual bool isPin() const { return true; }
 
-      Pin(const EndPoint & other);
-      Pin(const Pin & other);
+      static PinPtr Create(FabricCore::DFGBinding binding, FabricCore::DFGExec exec, char const * execPath, char const * pinPath);
       virtual ~Pin();
 
       char const *getPinPath() const
@@ -39,11 +38,11 @@ namespace FabricServices
 
       virtual char const *getName() const
       {
-        return FabricCore::DFGExec(m_exec).getPinName( getPinPath() );
+        return getWrappedCoreExec().getPinName(getPinPath());
       }
       virtual char const *getResolvedType() const
       {
-        return FabricCore::DFGExec(m_exec).getPinResolvedType( getPinPath() );
+        return getWrappedCoreExec().getPinResolvedType(getPinPath());
       }
 
       void addDebugPin();

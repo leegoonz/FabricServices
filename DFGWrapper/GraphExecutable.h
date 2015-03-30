@@ -13,6 +13,8 @@ namespace FabricServices
 
   namespace DFGWrapper
   {
+    class GraphExecutable;
+    typedef FTL::SharedPtr<GraphExecutable> GraphExecutablePtr;
 
     class GraphExecutable : public Executable
     {
@@ -24,19 +26,22 @@ namespace FabricServices
 
       virtual bool isGraph() const { return true; }
 
-      GraphExecutable(const Executable & other);
-      GraphExecutable(const GraphExecutable & other);
+      static GraphExecutablePtr Create(
+        FabricCore::DFGBinding binding,
+        FabricCore::DFGExec exec,
+        const char * graphPath
+      );
       virtual ~GraphExecutable();
 
       char const *getGraphPath() const { return getExecPath(); }
 
-      Node addNodeFromPreset(char const * preset);
-      Node addNodeWithNewGraph(char const * title = 0);
-      Node addNodeWithNewFunc(char const * title = 0);
-      Node addNodeFromJSON(char const * json);
+      NodePtr addNodeFromPreset(char const * preset);
+      NodePtr addNodeWithNewGraph(char const * title = 0);
+      NodePtr addNodeWithNewFunc(char const * title = 0);
+      NodePtr addNodeFromJSON(char const * json);
 
-      std::vector<Node> getNodes();
-      Node getNode(char const * name);
+      std::vector<NodePtr> getNodes();
+      NodePtr getNode(char const * name);
       void removeNode(Node node);
 
       // todo
@@ -44,7 +49,6 @@ namespace FabricServices
 
     protected:
       
-      GraphExecutable();
       GraphExecutable(
         FabricCore::DFGBinding binding,
         FabricCore::DFGExec exec,

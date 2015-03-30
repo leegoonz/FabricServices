@@ -5,17 +5,9 @@
 
 using namespace FabricServices::DFGWrapper;
 
-View::View()
-{
-}
-
-View::View(GraphExecutable graph)
+View::View(GraphExecutablePtr graph)
 {
   setGraph(graph);
-}
-
-View::~View()
-{
 }
 
 bool View::isValid() const
@@ -23,21 +15,21 @@ bool View::isValid() const
   return m_view.isValid();
 }
 
-void View::setGraph(GraphExecutable graph)
+void View::setGraph(GraphExecutablePtr graph)
 {
-  if(!graph.isValid())
+  if(!graph->isValid())
   {
-    m_graph = GraphExecutable();
+    m_graph = GraphExecutablePtr();
     m_view = FabricCore::DFGView();
   }
   else
   {
     m_graph = graph;
-    m_view = m_graph.getWrappedCoreExec().createView(&callback, this);
+    m_view = m_graph->getWrappedCoreExec().createView(&callback, this);
   } 
 }
 
-GraphExecutable View::getGraph()
+GraphExecutablePtr View::getGraph()
 {
   return m_graph;
 }
@@ -46,11 +38,11 @@ void View::callback(void * userData, char const * jsonCString, uint32_t jsonLeng
 {
   View * view = (View *)userData;
   view->onNotification(jsonCString);
-  Executable exec(view->m_graph);
+  ExecutablePtr exec(view->m_graph);
 
-  FabricCore::DFGBinding binding = exec.getWrappedCoreBinding();
+  FabricCore::DFGBinding binding = exec->getWrappedCoreBinding();
 
-  std::string prefix = exec.getExecPath();
+  std::string prefix = exec->getExecPath();
   if(prefix.length() > 0)
     prefix += ".";
 
@@ -63,53 +55,53 @@ void View::callback(void * userData, char const * jsonCString, uint32_t jsonLeng
   if(descStr == "nodeInserted")
   {
     const FabricCore::Variant * nodePathVar = notificationVar.getDictValue("nodePath");
-    Node node(binding, exec.getWrappedCoreExec(), exec.getExecPath(), (prefix + nodePathVar->getStringData()).c_str());
+    NodePtr node = Node::Create(binding, exec->getWrappedCoreExec(), exec->getExecPath(), (prefix + nodePathVar->getStringData()).c_str());
     view->onNodeInserted(node);
   }
   else if(descStr == "nodeRemoved")
   {
     const FabricCore::Variant * nodePathVar = notificationVar.getDictValue("nodePath");
-    Node node(binding, exec.getWrappedCoreExec(), exec.getExecPath(), (prefix + nodePathVar->getStringData()).c_str());
+    NodePtr node = Node::Create(binding, exec->getWrappedCoreExec(), exec->getExecPath(), (prefix + nodePathVar->getStringData()).c_str());
     view->onNodeRemoved(node);
   }
   else if(descStr == "pinInserted")
   {
     const FabricCore::Variant * pinPathVar = notificationVar.getDictValue("pinPath");
-    PinPtr pin = new Pin(binding, exec.getWrappedCoreExec(), exec.getExecPath(), (prefix + pinPathVar->getStringData()).c_str());
+    PinPtr pin = Pin::Create(binding, exec->getWrappedCoreExec(), exec->getExecPath(), (prefix + pinPathVar->getStringData()).c_str());
     view->onPinInserted(pin);
   }
   else if(descStr == "pinRemoved")
   {
     const FabricCore::Variant * pinPathVar = notificationVar.getDictValue("pinPath");
-    PinPtr pin = new Pin(binding, exec.getWrappedCoreExec(), exec.getExecPath(), (prefix + pinPathVar->getStringData()).c_str());
+    PinPtr pin = Pin::Create(binding, exec->getWrappedCoreExec(), exec->getExecPath(), (prefix + pinPathVar->getStringData()).c_str());
     view->onPinRemoved(pin);
   }
   else if(descStr == "portInserted")
   {
     const FabricCore::Variant * portPathVar = notificationVar.getDictValue("portPath");
-    PortPtr port = new Port(binding, exec.getWrappedCoreExec(), exec.getExecPath(), (prefix + portPathVar->getStringData()).c_str());
+    PortPtr port = Port::Create(binding, exec->getWrappedCoreExec(), exec->getExecPath(), (prefix + portPathVar->getStringData()).c_str());
     view->onPortInserted(port);
   }
   else if(descStr == "portRemoved")
   {
     const FabricCore::Variant * portPathVar = notificationVar.getDictValue("portPath");
-    PortPtr port = new Port(binding, exec.getWrappedCoreExec(), exec.getExecPath(), (prefix + portPathVar->getStringData()).c_str());
+    PortPtr port = Port::Create(binding, exec->getWrappedCoreExec(), exec->getExecPath(), (prefix + portPathVar->getStringData()).c_str());
     view->onPortRemoved(port);
   }
   else if(descStr == "endPointsConnected")
   {
     const FabricCore::Variant * srcEndPointPathVar = notificationVar.getDictValue("srcEndPointPath");
     const FabricCore::Variant * dstEndPointPathVar = notificationVar.getDictValue("dstEndPointPath");
-    EndPointPtr src = EndPoint::Create(binding, exec.getWrappedCoreExec(), exec.getExecPath(), (prefix + srcEndPointPathVar->getStringData()).c_str());
-    EndPointPtr dst = EndPoint::Create(binding, exec.getWrappedCoreExec(), exec.getExecPath(), (prefix + dstEndPointPathVar->getStringData()).c_str());
+    EndPointPtr src = EndPoint::Create(binding, exec->getWrappedCoreExec(), exec->getExecPath(), (prefix + srcEndPointPathVar->getStringData()).c_str());
+    EndPointPtr dst = EndPoint::Create(binding, exec->getWrappedCoreExec(), exec->getExecPath(), (prefix + dstEndPointPathVar->getStringData()).c_str());
     view->onEndPointsConnected(src, dst);
   }
   else if(descStr == "endPointsDisconnected")
   {
     const FabricCore::Variant * srcEndPointPathVar = notificationVar.getDictValue("srcEndPointPath");
     const FabricCore::Variant * dstEndPointPathVar = notificationVar.getDictValue("dstEndPointPath");
-    EndPointPtr src = EndPoint::Create(binding, exec.getWrappedCoreExec(), exec.getExecPath(), (prefix + srcEndPointPathVar->getStringData()).c_str());
-    EndPointPtr dst = EndPoint::Create(binding, exec.getWrappedCoreExec(), exec.getExecPath(), (prefix + dstEndPointPathVar->getStringData()).c_str());
+    EndPointPtr src = EndPoint::Create(binding, exec->getWrappedCoreExec(), exec->getExecPath(), (prefix + srcEndPointPathVar->getStringData()).c_str());
+    EndPointPtr dst = EndPoint::Create(binding, exec->getWrappedCoreExec(), exec->getExecPath(), (prefix + dstEndPointPathVar->getStringData()).c_str());
     view->onEndPointsDisconnected(src, dst);
   }
   else if(descStr == "nodeMetadataChanged")
@@ -117,14 +109,14 @@ void View::callback(void * userData, char const * jsonCString, uint32_t jsonLeng
     const FabricCore::Variant * nodePathVar = notificationVar.getDictValue("nodePath");
     const FabricCore::Variant * keyVar = notificationVar.getDictValue("key");
     const FabricCore::Variant * valueVar = notificationVar.getDictValue("value");
-    Node node(binding, exec.getWrappedCoreExec(), exec.getExecPath(), (prefix + nodePathVar->getStringData()).c_str());
+    NodePtr node = Node::Create(binding, exec->getWrappedCoreExec(), exec->getExecPath(), (prefix + nodePathVar->getStringData()).c_str());
     view->onNodeMetadataChanged(node, keyVar->getStringData(), valueVar->getStringData());
   }
   else if(descStr == "nodeTitleChanged")
   {
     const FabricCore::Variant * nodePathVar = notificationVar.getDictValue("nodePath");
     const FabricCore::Variant * titleVar = notificationVar.getDictValue("title");
-    Node node(binding, exec.getWrappedCoreExec(), exec.getExecPath(), std::string(prefix + nodePathVar->getStringData()).c_str());
+    NodePtr node = Node::Create(binding, exec->getWrappedCoreExec(), exec->getExecPath(), std::string(prefix + nodePathVar->getStringData()).c_str());
     view->onNodeTitleChanged(node, titleVar->getStringData());
   }
   else if(descStr == "portRenamed")
@@ -134,7 +126,7 @@ void View::callback(void * userData, char const * jsonCString, uint32_t jsonLeng
     std::string oldPath = oldPathVar->getStringData();
     if(oldPath.rfind('.') != std::string::npos)
       oldPath = oldPath.substr(oldPath.find('.')+1, oldPath.length());
-    PortPtr port = new Port(binding, exec.getWrappedCoreExec(), exec.getExecPath(), (prefix + newPathVar->getStringData()).c_str());
+    PortPtr port = Port::Create(binding, exec->getWrappedCoreExec(), exec->getExecPath(), (prefix + newPathVar->getStringData()).c_str());
     view->onPortRenamed(port, oldPath.c_str());
   }
   else if(descStr == "pinRenamed")
@@ -144,7 +136,7 @@ void View::callback(void * userData, char const * jsonCString, uint32_t jsonLeng
     std::string oldPath = oldPathVar->getStringData();
     if(oldPath.rfind('.') != std::string::npos)
       oldPath = oldPath.substr(oldPath.find('.')+1, oldPath.length());
-    PinPtr pin = new Pin(binding, exec.getWrappedCoreExec(), exec.getExecPath(), (prefix + newPathVar->getStringData()).c_str());
+    PinPtr pin = Pin::Create(binding, exec->getWrappedCoreExec(), exec->getExecPath(), (prefix + newPathVar->getStringData()).c_str());
     view->onPinRenamed(pin, oldPath.c_str());
   }
   else if(descStr == "execMetadataChanged")
