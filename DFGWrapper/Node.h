@@ -46,9 +46,9 @@ namespace FabricServices
       virtual char const *getMetadata(char const * key) const;
       virtual void setMetadata(char const * key, char const * metadata, bool canUndo);
 
-      std::vector<Pin> getPins();
-      Pin getPin(char const * name);
-      Pin getPin(uint32_t index);
+      std::vector<PinPtr> getPins();
+      PinPtr getPin(char const * name);
+      PinPtr getPin(uint32_t index);
 
     protected:
       

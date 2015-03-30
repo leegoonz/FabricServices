@@ -107,11 +107,11 @@ void Executable::setImportPathname( char const *importPathname )
   m_exec.setImportPathname(importPathname);
 }
 
-std::vector<Port> Executable::getPorts()
+std::vector<PortPtr> Executable::getPorts()
 {
   // todo
   // this should eventually be done with getNumPorts and getPort(index) something like that
-  std::vector<Port> result;
+  std::vector<PortPtr> result;
 
   FabricCore::Variant descVar = FabricCore::Variant::CreateFromJSON(getDesc().c_str());
   const FabricCore::Variant * portsVar = descVar.getDictValue("ports");
@@ -121,15 +121,15 @@ std::vector<Port> Executable::getPorts()
     const FabricCore::Variant * nameVar = portVar->getDictValue("name");
     std::string nameStr = nameVar->getStringData();
     result.push_back(
-      Port( m_binding, m_exec, getExecPath(), nameStr.c_str() )
+      new Port( m_binding, m_exec, getExecPath(), nameStr.c_str() )
     );
   }
   return result;
 }
 
-Port Executable::getPort(char const * portPath)
+PortPtr Executable::getPort(char const * portPath)
 {
-  return Port(
+  return new Port(
     m_binding,
     m_exec,
     getExecPath(),
@@ -137,20 +137,15 @@ Port Executable::getPort(char const * portPath)
     );
 }
 
-Port Executable::getPort(uint32_t index)
+PortPtr Executable::getPort(uint32_t index)
 {
   return getPorts()[index];
 }
 
-Port Executable::addPort(char const *title, FabricCore::DFGPortType portType, char const *dataType)
+PortPtr Executable::addPort(char const *title, FabricCore::DFGPortType portType, char const *dataType)
 {
   char const *portPath = m_exec.addPort(title, portType, dataType);
-  return Port(m_binding, m_exec, getExecPath(), portPath);
-}
-
-void Executable::removePort(Port port)
-{
-  removePort(port.getName());
+  return new Port(m_binding, m_exec, getExecPath(), portPath);
 }
 
 void Executable::removePort(char const * portPath)
@@ -160,7 +155,7 @@ void Executable::removePort(char const * portPath)
 
 void Executable::removePort(uint32_t index)
 {
-  removePort(getPorts()[index]);
+  removePort(getPorts()[index]->getName());
 }
 
 void Executable::attachPreset(char const *parentPresetPath, char const *desiredName)

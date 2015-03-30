@@ -10,8 +10,10 @@ namespace FabricServices
 
   namespace DFGWrapper
   {
+    class EndPoint;
+    typedef FTL::SharedPtr<EndPoint> EndPointPtr;
 
-    class EndPoint : public Element
+    class EndPoint : public FTL::Shareable, public Element
     {
     public:
 
@@ -52,24 +54,24 @@ namespace FabricServices
 
       // EndPoint - Connections
 
-      bool canConnect( EndPoint const &dst ) const
+      bool canConnect( EndPointPtr dst ) const
       {
         FabricCore::DFGExec(getWrappedCoreExec()).canConnect(
-          getEndPointPath(), dst.getEndPointPath()
+          getEndPointPath(), dst->getEndPointPath()
         );
       }
 
-      void connect( EndPoint &dst )
+      void connect( EndPointPtr dst )
       {
         getWrappedCoreExec().connect(
-          getEndPointPath(), dst.getEndPointPath()
+          getEndPointPath(), dst->getEndPointPath()
         );
       }
 
-      void disconnect( EndPoint &dst )
+      void disconnect( EndPointPtr dst )
       {
         getWrappedCoreExec().disconnect(
-          getEndPointPath(), dst.getEndPointPath()
+          getEndPointPath(), dst->getEndPointPath()
         );
       }
 

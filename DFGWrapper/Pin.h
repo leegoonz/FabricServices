@@ -13,7 +13,9 @@ namespace FabricServices
 
   namespace DFGWrapper
   {
-
+    class Pin;
+    typedef FTL::SharedPtr<Pin> PinPtr;
+    
     class Pin : public EndPoint
     {
       friend class Node;
@@ -23,6 +25,7 @@ namespace FabricServices
 
       virtual bool isPin() const { return true; }
 
+      Pin(const EndPoint & other);
       Pin(const Pin & other);
       virtual ~Pin();
 

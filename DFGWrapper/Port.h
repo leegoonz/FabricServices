@@ -13,6 +13,8 @@ namespace FabricServices
 
   namespace DFGWrapper
   {
+    class Port;
+    typedef FTL::SharedPtr<Port> PortPtr;
 
     class Port : public EndPoint
     {
@@ -23,6 +25,7 @@ namespace FabricServices
 
       virtual bool isPort() const { return true; }
 
+      Port(const EndPoint & other);
       Port(const Port & other);
       virtual ~Port();
 

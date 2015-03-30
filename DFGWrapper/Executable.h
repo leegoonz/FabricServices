@@ -38,14 +38,10 @@ namespace FabricServices
 
       Executable getSubExec(const char * subExecPath);
 
-      // todo
-      // View createView()
-
-      std::vector<Port> getPorts();
-      Port getPort(char const * name);
-      Port getPort(uint32_t index);
-      Port addPort(char const *title, FabricCore::DFGPortType portType, char const *dataType = 0);
-      void removePort(Port port);
+      std::vector<PortPtr> getPorts();
+      PortPtr getPort(char const * name);
+      PortPtr getPort(uint32_t index);
+      PortPtr addPort(char const *title, FabricCore::DFGPortType portType, char const *dataType = 0);
       void removePort(char const * name);
       void removePort(uint32_t index);
 

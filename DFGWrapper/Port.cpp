@@ -9,6 +9,11 @@ Port::Port(FabricCore::DFGBinding binding, FabricCore::DFGExec exec, char const 
 {
 }
 
+Port::Port(const EndPoint & other)
+: EndPoint(other)
+{
+}
+
 Port::Port(const Port & other)
 : EndPoint(other)
 {

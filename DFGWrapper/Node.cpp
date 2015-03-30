@@ -90,11 +90,11 @@ void Node::setMetadata(char const *key, char const * metadata, bool canUndo)
   return m_exec.setNodeMetadata(getNodePath(), key, metadata, canUndo);
 }
 
-std::vector<Pin> Node::getPins()
+std::vector<PinPtr> Node::getPins()
 {
   // todo
   // this should eventually be done with getNumPins and getPin(index) something like that
-  std::vector<Pin> result;
+  std::vector<PinPtr> result;
 
   FabricCore::Variant descVar = FabricCore::Variant::CreateFromJSON(getDesc().c_str());
   const FabricCore::Variant * pinsVar = descVar.getDictValue("pins");
@@ -107,21 +107,21 @@ std::vector<Pin> Node::getPins()
     std::string path = getNodePath();
     path += ".";
     path += nameStr;
-    result.push_back(Pin(m_binding, m_exec, getNodePath(), path.c_str()));
+    result.push_back(new Pin(m_binding, m_exec, getNodePath(), path.c_str()));
   }
   return result;
 }
 
-Pin Node::getPin(char const * name)
+PinPtr Node::getPin(char const * name)
 {
   std::string path = getNodePath();
   if(path.length() > 0)
     path += ".";
   path += name;
-  return Pin(m_binding, m_exec, getNodePath(), path.c_str());
+  return new Pin(m_binding, m_exec, getNodePath(), path.c_str());
 }
 
-Pin Node::getPin(uint32_t index)
+PinPtr Node::getPin(uint32_t index)
 {
   return getPins()[index];
 }

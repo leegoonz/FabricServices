@@ -4,7 +4,7 @@
 
 using namespace FabricServices::DFGWrapper;
 
-Connection::Connection(Port src, Port dst)
+Connection::Connection(EndPointPtr src, EndPointPtr dst)
 : m_src(src)
 , m_dst(dst)
 {
@@ -22,15 +22,15 @@ Connection::~Connection()
 
 bool Connection::isValid()
 {
-  return m_src.isValid() && m_dst.isValid();
+  return m_src->isValid() && m_dst->isValid();
 }
 
-Port Connection::getSrc() const
+EndPointPtr Connection::getSrc() const
 {
   return m_src;
 }
 
-Port Connection::getDst() const
+EndPointPtr Connection::getDst() const
 {
   return m_dst;
 }

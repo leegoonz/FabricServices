@@ -38,18 +38,19 @@ namespace FabricServices
       virtual void onNotification(char const * json) = 0;
       virtual void onNodeInserted(Node node) = 0;
       virtual void onNodeRemoved(Node node) = 0;
-      virtual void onPinInserted(Pin pin) = 0;
-      virtual void onPinRemoved(Pin pin) = 0;
-      virtual void onPortInserted(Port port) = 0;
-      virtual void onPortRemoved(Port port) = 0;
-      virtual void onEndPointsConnected(Port src, Port dst) = 0;
-      virtual void onEndPointsDisconnected(Port src, Port dst) = 0;
+      virtual void onPinInserted(PinPtr pin) = 0;
+      virtual void onPinRemoved(PinPtr pin) = 0;
+      virtual void onPortInserted(PortPtr port) = 0;
+      virtual void onPortRemoved(PortPtr port) = 0;
+      virtual void onEndPointsConnected(EndPointPtr src, EndPointPtr dst) = 0;
+      virtual void onEndPointsDisconnected(EndPointPtr src, EndPointPtr dst) = 0;
       virtual void onNodeMetadataChanged(Node node, const char * key, const char * metadata) = 0;
       virtual void onNodeTitleChanged(Node node, const char * title) = 0;
-      virtual void onPortRenamed(Port port, const char * oldName) = 0;
-      virtual void onPinRenamed(Pin pin, const char * oldName) = 0;
+      virtual void onPortRenamed(PortPtr port, const char * oldName) = 0;
+      virtual void onPinRenamed(PinPtr pin, const char * oldName) = 0;
       virtual void onExecMetadataChanged(Executable exec, const char * key, const char * metadata) = 0;
       virtual void onExtDepAdded(const char * extension, const char * version) = 0;
+      virtual void onExtDepRemoved(const char * extension, const char * version) = 0;
       virtual void onNodeCacheRuleChanged(const char * path, const char * rule) = 0;
       virtual void onExecCacheRuleChanged(const char * path, const char * rule) = 0;
 
