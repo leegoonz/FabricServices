@@ -57,7 +57,10 @@ namespace FabricServices
       // Element - Metadata
 
       bool hasMetadata(char const * key) const
-        { return getMetadata(key)[0] != NULL; }
+      {
+        char const *value = getMetadata( key );
+        return value && *value;
+      }
 
       virtual char const *getMetadata(char const * key) const = 0;
 

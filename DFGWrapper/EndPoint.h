@@ -17,6 +17,13 @@ namespace FabricServices
     {
     public:
 
+      static EndPointPtr Create(
+        FabricCore::DFGBinding const &binding,
+        FabricCore::DFGExec const &exec,
+        char const *execPath,
+        char const *endPointPath
+        );
+
       // Element - Type
 
       virtual bool isEndPoint() const { return true; }
@@ -56,9 +63,9 @@ namespace FabricServices
 
       bool canConnect( EndPointPtr dst ) const
       {
-        FabricCore::DFGExec(getWrappedCoreExec()).canConnect(
+        return FabricCore::DFGExec(getWrappedCoreExec()).canConnect(
           getEndPointPath(), dst->getEndPointPath()
-        );
+          );
       }
 
       void connect( EndPointPtr dst )
@@ -114,13 +121,6 @@ namespace FabricServices
         , m_endPointPath( other.m_endPointPath )
       {
       }
-
-      static EndPointPtr Create(
-        FabricCore::DFGBinding const &binding,
-        FabricCore::DFGExec const &exec,
-        char const *execPath,
-        char const *endPointPath
-      );
 
     private:
 
