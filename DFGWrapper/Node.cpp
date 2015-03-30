@@ -40,35 +40,17 @@ std::string Node::getDesc()
   return m_exec.getNodeDesc(getNodePath()).getCString();
 }
 
-std::string Node::getTitle()
+char const* Node::getTitle()
 {
-  // todo
-  FabricCore::Variant descVar = FabricCore::Variant::CreateFromJSON(getDesc().c_str());
-  return descVar.getDictValue("title")->getStringData();    
+  return m_exec.getNodeTitle(getNodePath());
 }
 
 void Node::setTitle(char const *title)
 {
-  // todo
-  // m_binding.setTitle(getNodePath(), title);
+  // todo we really should be using 
+  // setNodeTitle, but that doesn't exist just yet.
+  m_exec.setTitle(title);
 }
-
-// std::vector<std::string> Node::getDataTypes()
-// {
-//   std::vector<std::string> result;
-//   // todo
-//   // FabricCore::Variant descVar = FabricCore::Variant::CreateFromJSON(getDesc().c_str());
-//   // const FabricCore::Variant * typesVar = descVar.getDictValue("types");
-//   // for(uint32_t i=0;i<typesVar->getArraySize();i++)
-//   // {
-//   //   const FabricCore::Variant * typeVar = typesVar->getArrayElement(i);
-//   //   if(typeVar->isString())
-//   //     result.push_back(typeVar->getStringData());
-//   //   else
-//   //     result.push_back("");
-//   // }
-//   return result;
-// }
 
 FEC_DFGCacheRule Node::getCacheRule() const
 {
@@ -92,22 +74,14 @@ void Node::setMetadata(char const *key, char const * metadata, bool canUndo)
 
 std::vector<PinPtr> Node::getPins()
 {
-  // todo
-  // this should eventually be done with getNumPins and getPin(index) something like that
+  FabricCore::DFGExec exec = m_exec.getSubExec(getNodePath());
   std::vector<PinPtr> result;
-
-  FabricCore::Variant descVar = FabricCore::Variant::CreateFromJSON(getDesc().c_str());
-  const FabricCore::Variant * pinsVar = descVar.getDictValue("pins");
-  for(uint32_t i=0;i<pinsVar->getArraySize();i++)
+  for(unsigned int i=0;i<exec.getPortCount();i++)
   {
-    const FabricCore::Variant * pinVar = pinsVar->getArrayElement(i);
-    const FabricCore::Variant * nameVar = pinVar->getDictValue("name");
-    std::string nameStr = nameVar->getStringData();
-
     std::string path = getNodePath();
     path += ".";
-    path += nameStr;
-    result.push_back(new Pin(m_binding, m_exec, getNodePath(), path.c_str()));
+    path += exec.getPortName(i);
+    result.push_back(new Pin(m_binding, m_exec, m_execPath.c_str(), path.c_str()));
   }
   return result;
 }
@@ -118,7 +92,7 @@ PinPtr Node::getPin(char const * name)
   if(path.length() > 0)
     path += ".";
   path += name;
-  return new Pin(m_binding, m_exec, getNodePath(), path.c_str());
+  return new Pin(m_binding, m_exec, m_execPath.c_str(), path.c_str());
 }
 
 PinPtr Node::getPin(uint32_t index)

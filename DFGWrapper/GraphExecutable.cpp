@@ -59,24 +59,17 @@ Node GraphExecutable::addNodeFromJSON(char const * json)
 std::vector<Node> GraphExecutable::getNodes()
 {
   std::vector<Node> result;
-
-  FabricCore::Variant descVar = FabricCore::Variant::CreateFromJSON(getDesc().c_str());
-  const FabricCore::Variant * nodesVar = descVar.getDictValue("nodes");
-
-  for(uint32_t i=0;i<nodesVar->getArraySize();i++)
+  for(unsigned int i=0;i<m_exec.getNodeCount();i++)
   {
-    const FabricCore::Variant * nodeVar = nodesVar->getArrayElement(i);
-    const FabricCore::Variant * nameVar = nodeVar->getDictValue("name");
     result.push_back(
       Node(
         getWrappedCoreBinding(),
         getWrappedCoreExec(),
         getGraphPath(),
-        nameVar->getStringData()
+        m_exec.getNodeName(i)
       )
     );
   }
-
   return result; 
 }
 

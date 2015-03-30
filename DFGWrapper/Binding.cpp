@@ -43,10 +43,10 @@ void Binding::setArgValue(char const *name, FabricCore::RTVal value)
   m_binding.setArgValue(name, value);
 }
 
-// GraphExecutable Binding::getGraph()
-// {
-//   return GraphExecutable(m_binding, "");
-// }
+Executable Binding::getExec()
+{
+  return Executable(m_binding, m_binding.getExec(), "");
+}
 
 void Binding::execute()
 {

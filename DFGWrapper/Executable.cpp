@@ -26,6 +26,11 @@ Executable::~Executable()
 {
 }
 
+FabricCore::DFGExecType Executable::getExecType() const
+{
+  return m_exec.getType();
+}
+
 std::string Executable::getDesc()
 {
   return m_exec.getDesc().getCString();
@@ -109,19 +114,11 @@ void Executable::setImportPathname( char const *importPathname )
 
 std::vector<PortPtr> Executable::getPorts()
 {
-  // todo
-  // this should eventually be done with getNumPorts and getPort(index) something like that
   std::vector<PortPtr> result;
-
-  FabricCore::Variant descVar = FabricCore::Variant::CreateFromJSON(getDesc().c_str());
-  const FabricCore::Variant * portsVar = descVar.getDictValue("ports");
-  for(uint32_t i=0;i<portsVar->getArraySize();i++)
+  for(unsigned int i=0;i<m_exec.getPortCount();i++)
   {
-    const FabricCore::Variant * portVar = portsVar->getArrayElement(i);
-    const FabricCore::Variant * nameVar = portVar->getDictValue("name");
-    std::string nameStr = nameVar->getStringData();
     result.push_back(
-      new Port( m_binding, m_exec, getExecPath(), nameStr.c_str() )
+      new Port( m_binding, m_exec, getExecPath(), m_exec.getPortName(i) )
     );
   }
   return result;
@@ -134,7 +131,7 @@ PortPtr Executable::getPort(char const * portPath)
     m_exec,
     getExecPath(),
     portPath
-    );
+  );
 }
 
 PortPtr Executable::getPort(uint32_t index)

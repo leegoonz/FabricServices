@@ -11,19 +11,6 @@ env.Append(CPPPATH = [capiIncludeDir])
 
 sources = Glob('*.cpp')
 
-sources = [
-  env.File("Host.cpp"),
-  env.File("Binding.cpp"),
-  env.File("Executable.cpp"),
-  env.File("FuncExecutable.cpp"),
-  env.File("GraphExecutable.cpp"),
-  env.File("Node.cpp"),
-  env.File("Pin.cpp"),
-  env.File("Port.cpp"),
-  env.File("Connection.cpp"),
-  env.File("View.cpp"),
-]
-
 dfgWrapperLib = env.StaticLibrary('Fabric-DFGWrapper', sources)
 
 dfgWrapperIncludeDir = env.Dir('.').dir.srcnode()

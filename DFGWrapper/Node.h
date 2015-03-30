@@ -36,9 +36,8 @@ namespace FabricServices
       Executable getExecutable();
 
       virtual std::string getDesc();
-      std::string getTitle();
+      char const* getTitle();
       void setTitle(char const *title);
-      // std::vector<std::string> getDataTypes();
 
       FEC_DFGCacheRule getCacheRule() const;
       void setCacheRule(FEC_DFGCacheRule rule);

@@ -18,6 +18,7 @@ namespace FabricServices
 
     class Executable : public Element
     {
+      friend class Binding;
       friend class Node;
       friend class View;
 
@@ -27,6 +28,8 @@ namespace FabricServices
 
       Executable(const Executable & other);
       virtual ~Executable();
+
+      FabricCore::DFGExecType getExecType() const;
 
       virtual char const *getExecPath() const 
         { return getElementPath(); }

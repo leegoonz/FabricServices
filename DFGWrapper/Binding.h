@@ -5,8 +5,7 @@
 
 #include <FabricCore.h>
 #include <string>
-
-// #include "GraphExecutable.h"
+#include "Executable.h"
 
 namespace FabricServices
 {
@@ -31,7 +30,7 @@ namespace FabricServices
       FabricCore::RTVal getArgValue(char const *name);
       void setArgValue(char const *name, FabricCore::RTVal value);
 
-      // GraphExecutable getGraph();
+      Executable getExec();
 
       void execute();
 

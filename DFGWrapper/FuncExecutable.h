@@ -14,6 +14,7 @@ namespace FabricServices
 
     class FuncExecutable : public Executable
     {
+      friend class Binding;
       friend class GraphExecutable;
       friend class Node;
 
@@ -28,7 +29,7 @@ namespace FabricServices
       char const *getFuncPath() const
         { return getExecPath(); }
 
-      std::string getCode();
+      char const* getCode();
       void setCode(char const *code);
 
     protected:
