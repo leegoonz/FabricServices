@@ -39,17 +39,6 @@ void Pin::setMetadata(char const * key, char const * value, bool canUndo)
   m_exec.setPinMetadata(getPinPath(), key, value, canUndo);
 }
 
-char const *Pin::getDataType() const
-{
-  // todo...
-  return NULL;
-}
-
-char const *Pin::getResolvedType() const
-{
-  return FabricCore::DFGExec(m_exec).getPinResolvedType(getPinPath());
-}
-
 void Pin::addDebugPin()
 {
   m_exec.addDebugPin(getPinPath());

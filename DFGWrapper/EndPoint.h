@@ -40,18 +40,7 @@ namespace FabricServices
         );
       }
 
-      virtual char const *getName() const
-      {
-        if(m_name.length() == 0)
-        {
-          m_name = getEndPointPath();
-          int index = m_name.find('.');
-          if(index != std::string::npos)
-            m_name = m_name.substr(index + 1, m_name.length());
-        }
-        return m_name.c_str();
-      }
-      virtual char const *getDataType() const = 0;
+      virtual char const *getName() const = 0;
       virtual char const *getResolvedType() const = 0;
 
       // EndPoint - Default Values

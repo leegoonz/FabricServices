@@ -38,22 +38,6 @@ void Port::setMetadata(char const * key, char const * value, bool canUndo)
   m_exec.setPortMetadata(getPortPath(), key, value, canUndo);
 }
 
-char const *Port::getName() const
-{
-  return getPortPath();
-}
-
-char const *Port::getDataType() const
-{
-  // todo...
-  return NULL;
-}
-
-char const *Port::getResolvedType() const
-{
-  return FabricCore::DFGExec(m_exec).getPortResolvedType(getPortPath());
-}
-
 char const *Port::rename(char const * name)
 {
   return m_exec.renamePort(getName(), name);

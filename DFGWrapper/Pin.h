@@ -37,8 +37,14 @@ namespace FabricServices
       virtual char const *getMetadata(char const * key) const;
       virtual void setMetadata(char const * key, char const * value, bool canUndo = false);
 
-      virtual char const *getDataType() const;
-      virtual char const *getResolvedType() const;
+      virtual char const *getName() const
+      {
+        return FabricCore::DFGExec(m_exec).getPinName( getPinPath() );
+      }
+      virtual char const *getResolvedType() const
+      {
+        return FabricCore::DFGExec(m_exec).getPinResolvedType( getPinPath() );
+      }
 
       void addDebugPin();
       FabricCore::RTVal getDebugPinValue();
