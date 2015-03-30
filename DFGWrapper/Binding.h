@@ -4,8 +4,9 @@
 #define __DFGWrapper_Binding__
 
 #include <FabricCore.h>
+#include <string>
 
-#include "GraphExecutable.h"
+// #include "GraphExecutable.h"
 
 namespace FabricServices
 {
@@ -30,18 +31,19 @@ namespace FabricServices
       FabricCore::RTVal getArgValue(char const *name);
       void setArgValue(char const *name, FabricCore::RTVal value);
 
-      GraphExecutable getGraph();
+      // GraphExecutable getGraph();
 
       void execute();
 
       void setNotificationCallback(FabricCore::DFGNotificationCallback callback, void * userData);
 
-      bool canConnect(
-        char const *graphPath,
-        char const *srcPath,
-        char const *dstPath,
-        std::string &failureReason
-        );
+      // todo
+      // bool canConnect(
+      //   char const *graphPath,
+      //   char const *srcPath,
+      //   char const *dstPath,
+      //   std::string &failureReason
+      //   );
 
     private:
       FabricCore::DFGBinding m_binding;      

@@ -5,8 +5,8 @@
 
 #include <FabricCore.h>
 #include "Executable.h"
-#include "Connection.h"
 #include "Node.h"
+// #include "Connection.h"
 
 namespace FabricServices
 {
@@ -37,16 +37,17 @@ namespace FabricServices
       Node getNode(char const * name);
       void removeNode(Node node);
 
-
-      std::vector<Connection> getConnections();
+      // todo
+      // std::vector<Connection> getConnections();
 
     protected:
       
       GraphExecutable();
       GraphExecutable(
         FabricCore::DFGBinding binding,
-        char const *graphPath
-        );
+        FabricCore::DFGExec exec,
+        const char * graphPath
+      );
 
     };
 

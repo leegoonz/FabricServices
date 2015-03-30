@@ -31,6 +31,7 @@ namespace FabricServices
           );
       }
 
+      virtual char const *getDataType() const = 0;
       virtual char const *getResolvedType() const = 0;
 
       // EndPoint - Default Values

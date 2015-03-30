@@ -33,8 +33,9 @@ namespace FabricServices
       
       FuncExecutable(
         FabricCore::DFGBinding binding,
-        char const *funcPath
-        );
+        FabricCore::DFGExec exec,
+        const char * funcPath
+      );
 
     };
 

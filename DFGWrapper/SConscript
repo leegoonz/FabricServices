@@ -9,7 +9,16 @@ env = parentEnv.CloneSubStage('DFGWrapper')
 env.Append(CPPDEFINES = ['FEC_SHARED'])
 env.Append(CPPPATH = [capiIncludeDir])
 
-sources = Glob('*.cpp')
+# sources = Glob('*.cpp')
+
+sources = [
+  env.File("Host.cpp"),
+  env.File("Binding.cpp"),
+  env.File("Executable.cpp"),
+  env.File("FuncExecutable.cpp"),
+  env.File("GraphExecutable.cpp"),
+  env.File("Node.cpp"),
+]
 
 dfgWrapperLib = env.StaticLibrary('Fabric-DFGWrapper', sources)
 

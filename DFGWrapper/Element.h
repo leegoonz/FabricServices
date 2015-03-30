@@ -7,7 +7,7 @@
 #include <FTL/SharedPtr.h>
 #include <string>
 
-#include "Port.h"
+// #include "Port.h"
 
 namespace FabricServices
 {
@@ -33,14 +33,22 @@ namespace FabricServices
 
       FabricCore::DFGBinding const &getWrappedCoreBinding() const
         { return m_binding; }
-      char const *getExecPath() const
-        { return m_execPath.c_str(); }
-
-      virtual char const *getDataType() const = 0;
+      FabricCore::DFGExec const &getWrappedCoreExec() const
+        { return m_exec; }
+      FabricCore::DFGBinding &getWrappedCoreBinding()
+        { return m_binding; }
+      FabricCore::DFGExec &getWrappedCoreExec()
+        { return m_exec; }
+      FabricCore::DFGHost getHost() const
+        { return m_exec.getHost(); }
 
       // Element - Validity
 
-      virtual bool isValid() const = 0;
+      virtual bool isValid() const
+        { return m_binding.isValid() && m_exec.isValid(); }
+
+      virtual char const *getElementPath() const
+        { return m_elementPath.c_str(); }
 
       // Element - Desc
 
@@ -49,11 +57,11 @@ namespace FabricServices
       // Element - Metadata
 
       bool hasMetadata(char const * key) const
-        { return getMetadata(key)[0]; }
+        { return getMetadata(key)[0] != NULL; }
 
       virtual char const *getMetadata(char const * key) const = 0;
 
-      virtual void setMetadata(char const * key, char const * value, bool canUndo) = 0;
+      virtual void setMetadata(char const * key, char const * value, bool canUndo = false) = 0;
 
       // Element - Options (JSON-encoded metadata)
 
@@ -76,20 +84,35 @@ namespace FabricServices
       }
 
     protected:
+
+      Element()
+      {
+      }
       
       Element(
         FabricCore::DFGBinding const &binding,
-        char const *execPath
+        FabricCore::DFGExec const &exec,
+        const char * elementPath
         )
         : m_binding( binding )
-        , m_execPath( execPath )
+        , m_exec( exec )
+        , m_elementPath( elementPath )
       {
       }
 
-    private:
-      
+      Element(
+        Element const &other
+        )
+        : m_binding( other.m_binding )
+        , m_exec( other.m_exec )
+        , m_elementPath( other.m_elementPath )
+      {
+      }
+
       FabricCore::DFGBinding m_binding;
-      std::string m_execPath;
+      FabricCore::DFGExec m_exec;
+      std::string m_elementPath;
+      
     };
 
   };
