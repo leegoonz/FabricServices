@@ -22,6 +22,8 @@ namespace FabricServices
 
     public:
 
+      virtual bool isGraph() const { return true; }
+
       GraphExecutable(const Executable & other);
       GraphExecutable(const GraphExecutable & other);
       virtual ~GraphExecutable();

@@ -107,58 +107,61 @@ void Executable::setImportPathname( char const *importPathname )
   m_exec.setImportPathname(importPathname);
 }
 
-// std::vector<Port> Executable::getPorts()
-// {
-//   std::vector<Port> result;
+std::vector<Port> Executable::getPorts()
+{
+  // todo
+  // this should eventually be done with getNumPorts and getPort(index) something like that
+  std::vector<Port> result;
 
-//   FabricCore::Variant descVar = FabricCore::Variant::CreateFromJSON(getDesc().c_str());
-//   const FabricCore::Variant * portsVar = descVar.getDictValue("ports");
-//   for(uint32_t i=0;i<portsVar->getArraySize();i++)
-//   {
-//     const FabricCore::Variant * portVar = portsVar->getArrayElement(i);
-//     const FabricCore::Variant * nameVar = portVar->getDictValue("name");
-//     std::string nameStr = nameVar->getStringData();
-//     result.push_back(
-//       Port( m_binding, getExecPath(), nameStr.c_str() )
-//       );
-//   }
-//   return result;
-// }
+  FabricCore::Variant descVar = FabricCore::Variant::CreateFromJSON(getDesc().c_str());
+  const FabricCore::Variant * portsVar = descVar.getDictValue("ports");
+  for(uint32_t i=0;i<portsVar->getArraySize();i++)
+  {
+    const FabricCore::Variant * portVar = portsVar->getArrayElement(i);
+    const FabricCore::Variant * nameVar = portVar->getDictValue("name");
+    std::string nameStr = nameVar->getStringData();
+    result.push_back(
+      Port( m_binding, m_exec, getExecPath(), nameStr.c_str() )
+    );
+  }
+  return result;
+}
 
-// Port Executable::getPort(char const * portPath)
-// {
-//   return Port(
-//     m_binding,
-//     getExecPath(),
-//     portPath
-//     );
-// }
+Port Executable::getPort(char const * portPath)
+{
+  return Port(
+    m_binding,
+    m_exec,
+    getExecPath(),
+    portPath
+    );
+}
 
-// Port Executable::getPort(uint32_t index)
-// {
-//   return getPorts()[index];
-// }
+Port Executable::getPort(uint32_t index)
+{
+  return getPorts()[index];
+}
 
-// Port Executable::addPort(char const *title, FabricCore::DFGPortType portType, char const *dataType)
-// {
-//   char const *portPath = m_binding.addPort(getExecPath(), title, portType, dataType);
-//   return Port(m_binding, getExecPath(), portPath);
-// }
+Port Executable::addPort(char const *title, FabricCore::DFGPortType portType, char const *dataType)
+{
+  char const *portPath = m_exec.addPort(title, portType, dataType);
+  return Port(m_binding, m_exec, getExecPath(), portPath);
+}
 
-// void Executable::removePort(Port port)
-// {
-//   removePort(port.getName().c_str());
-// }
+void Executable::removePort(Port port)
+{
+  removePort(port.getName());
+}
 
-// void Executable::removePort(char const * portPath)
-// {
-//   m_binding.removePort( getExecPath(), portPath );
-// }
+void Executable::removePort(char const * portPath)
+{
+  m_exec.removePort( portPath );
+}
 
-// void Executable::removePort(uint32_t index)
-// {
-//   removePort(getPorts()[index]);
-// }
+void Executable::removePort(uint32_t index)
+{
+  removePort(getPorts()[index]);
+}
 
 void Executable::attachPreset(char const *parentPresetPath, char const *desiredName)
 {

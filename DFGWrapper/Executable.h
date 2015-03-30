@@ -8,7 +8,7 @@
 #include <vector>
 
 #include "Element.h"
-// #include "Port.h"
+#include "Port.h"
 
 namespace FabricServices
 {
@@ -38,16 +38,16 @@ namespace FabricServices
 
       Executable getSubExec(const char * subExecPath);
 
+      // todo
       // View createView()
 
-      // std::vector<Port> getPorts();
-      // Port getPort(char const * name);
-      // Port getPort(uint32_t index);
-      // Port addPort(char const *title, FabricCore::DFGPortType portType, char const *dataType = 0);
-      // void removePort(Port port);
-      // void removePort(char const * name);
-      // void removePort(uint32_t index);
-      // char const *renamePort(
+      std::vector<Port> getPorts();
+      Port getPort(char const * name);
+      Port getPort(uint32_t index);
+      Port addPort(char const *title, FabricCore::DFGPortType portType, char const *dataType = 0);
+      void removePort(Port port);
+      void removePort(char const * name);
+      void removePort(uint32_t index);
 
       FEC_DFGCacheRule getCacheRule() const;
       void setCacheRule(FEC_DFGCacheRule rule);

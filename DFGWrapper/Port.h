@@ -3,6 +3,9 @@
 #ifndef __DFGWrapper_Port__
 #define __DFGWrapper_Port__
 
+#include <FabricCore.h>
+#include <string>
+
 #include "EndPoint.h"
 
 namespace FabricServices
@@ -10,134 +13,38 @@ namespace FabricServices
 
   namespace DFGWrapper
   {
-    class Exec;
 
     class Port : public EndPoint
     {
-      
-      friend class Exec;
+      friend class Executable;
+      friend class View;
 
     public:
 
-      // Element - Type
-
       virtual bool isPort() const { return true; }
 
-      // Element - Validity
-
-      virtual bool isValid() const
-      {
-        return getWrappedCoreBinding()->isValidPort(
-          getExecPath(), getPortPath()
-          );
-      }
-      
-      // Element - Desc
-
-      virtual std::string getDesc() const
-      {
-        FabricCore::StringResult result =
-          getWrappedCoreBinding()->getPortDesc(
-            getExecPath(), getPortPath()
-            );
-        return std::string(
-          result->getStringData(), result->getStringLength()
-          );
-      }
-
-      // Element - Metadata
-
-      virtual char const *getMetadata(char const * key) const
-      {
-        return getWrappedCoreBinding()->getPortMetadata(
-          getExecPath(), getPortPath(), key
-          );
-      }
-      virtual void setMetadata(char const * key, char const * value, bool canUndo)
-      {
-        getWrappedCoreBinding()->setPortMetadata(
-          getExecPath(), getPortPath(), key, value, canUndo
-          );
-      }
-
-      virtual char const *getResolvedType() const
-      {
-        return getWrappedCoreBinding()->getPortResolvedType(
-          getExecPath(), getPortPath()
-          );
-      }
-
-      // EndPoint - Default Values
-
-      virtual FabricCore::RTVal getDefaultValue( char const * type ) const
-      {
-        return getWrappedCoreBinding()->getPortDefaultValue(
-          getExecPath(), getPortPath(), type
-          );
-      }
-
-      virtual void setDefaultValue( FabricCore::RTVal const &value )
-      {
-        getWrappedCoreBinding()->setPortDefaultValue(
-          getExecPath(), getPortPath(), value
-          );
-      }
-
-      // Port - Accessors
+      Port(const Port & other);
+      virtual ~Port();
 
       char const *getPortPath() const
         { return getEndPointPath(); }
 
-      char const *getName() const
-        { return getPortPath(); }
-      
-      char const *setName(char const *desiredName)
-      {
-        char const *actualName =
-          getWrappedCoreBinding()->renamePort(
-            getExecPath(), getPortPath(), desiredName
-            );
-        m_portPath = actualName;
-        return actualName;
-      }
+      virtual std::string getDesc();
+      virtual char const *getMetadata(char const * key) const;
+      virtual void setMetadata(char const * key, char const * value, bool canUndo = false);
 
-      FabricCore::DFGPortType getPortType() const
-      {
-        return getWrappedCoreBinding()->getPortType(
-          getExecPath(), getPortPath()
-          );
-      }
+      virtual char const *getName() const;
+      virtual char const *getDataType() const;
+      virtual char const *getResolvedType() const;
 
-      // Port - RTVals
+      virtual char const *rename(char const * name);
 
-      FabricCore::RTVal getRTVal()
-      {
-        if ( !getExecPath()[0] )
-          return getWrappedCoreBinding()->getArgValue( getPortPath() );
-        else
-          return FabricCore::RTVal();
-      }
-
-      void setRTVal(FabricCore::RTVal const &value)
-      {
-        if ( !getExecPath()[0] )
-          getWrappedCoreBinding()->setArgValue( getPortPath, value );
-      }
+      virtual FabricCore::RTVal getDefaultValue( char const * dataType = NULL ) const;
+      virtual void setDefaultValue( FabricCore::RTVal const &value );
 
     protected:
       
-      Port(
-        FabricCore::DFGBinding binding,
-        char const *execPath,
-        char const *portPath
-        )
-        : EndPoint(
-          binding,
-          execPath,
-          portPath
-          )
-      {
-      }
+      Port(FabricCore::DFGBinding binding, FabricCore::DFGExec exec, char const * execPath, char const * portPath);
 
     };
 

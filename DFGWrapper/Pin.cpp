@@ -1,83 +1,71 @@
 // Copyright 2010-2015 Fabric Software Inc. All rights reserved.
 
 #include "Pin.h"
+#include "Node.h"
 
 using namespace FabricServices::DFGWrapper;
 
-Pin::Pin(FabricCore::DFGBinding binding, std::string path)
-: Port(binding, path)
+Pin::Pin(FabricCore::DFGBinding binding, FabricCore::DFGExec exec, char const * execPath, char const * pinPath)
+: EndPoint(binding, exec, execPath, pinPath)
 {
 }
 
 Pin::Pin(const Pin & other)
-: Port(other)
+: EndPoint(other)
 {
-  m_pinType = other.m_pinType;
 }
 
 Pin::~Pin()
 {
 }
 
-FabricCore::DFGPortType Pin::getPinType()
-{
-  if(m_pinType.length() == 0)
-  {
-    FabricCore::Variant descVar = FabricCore::Variant::CreateFromJSON(getDesc().c_str());
-    const FabricCore::Variant * typeVar = descVar.getDictValue("endPointType");
-    m_pinType = typeVar->getStringData();
-  }
-  if(m_pinType == "In")
-    return FabricCore::DFGPortType_In;
-  if(m_pinType == "Out")
-    return FabricCore::DFGPortType_Out;
-  return FabricCore::DFGPortType_IO;
-}
-
 std::string Pin::getDesc()
 {
-  return getWrappedCoreBinding().getInstanceDesc(getPath().c_str()).getCString();
+  return m_exec.getPinDesc(getPinPath()).getCString();
 }
 
-std::string Pin::getMetadata(char const * key)
+char const *Pin::getMetadata(char const * key) const
 {
-  return m_binding.getInstanceMetadata(m_path.c_str(), key);
+  return FabricCore::DFGExec(m_exec).getPinMetadata(getPinPath(), key);
 }
 
-void Pin::setMetadata(char const *key, char const * metadata, bool canUndo)
+void Pin::setMetadata(char const * key, char const * value, bool canUndo)
 {
-  return m_binding.setInstanceMetadata(m_path.c_str(), key, metadata, canUndo);
+  m_exec.setPinMetadata(getPinPath(), key, value, canUndo);
 }
 
-Port Pin::getPort()
+char const *Pin::getDataType() const
 {
-  return Port(getWrappedCoreBinding(), getPath());
+  // todo...
+  return NULL;
+}
+
+char const *Pin::getResolvedType() const
+{
+  return FabricCore::DFGExec(m_exec).getPinResolvedType(getPinPath());
 }
 
 void Pin::addDebugPin()
 {
-  getWrappedCoreBinding().addDebugPin(getPath().c_str());
+  m_exec.addDebugPin(getPinPath());
 }
 
 FabricCore::RTVal Pin::getDebugPinValue()
 {
-  return getWrappedCoreBinding().getDebugPinValue(getPath().c_str());
+  return m_exec.getDebugPinValue(getPinPath());
 }
 
 void Pin::removeDebugPin()
 {
-  getWrappedCoreBinding().removeDebugPin(getPath().c_str());
+  m_exec.removeDebugPin(getPinPath());
 }
 
-FabricCore::RTVal Pin::getDefaultValue(char const * dataType)
+FabricCore::RTVal Pin::getDefaultValue( char const * dataType ) const
 {
-  FabricCore::RTVal value = getWrappedCoreBinding().getPinDefaultValue(m_path.c_str(), dataType);\
-  if(value.isValid())
-    return value;
-  return Port::getDefaultValue(dataType);
+  return FabricCore::DFGExec(m_exec).getPinDefaultValue(getPinPath(), dataType);
 }
 
-void Pin::setDefaultValue(FabricCore::RTVal value)
+void Pin::setDefaultValue( FabricCore::RTVal const &value )
 {
-  getWrappedCoreBinding().setPinDefaultValue(m_path.c_str(), value);
+  m_exec.setPinDefaultValue(getPinPath(), value);
 }

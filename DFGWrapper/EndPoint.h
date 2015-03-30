@@ -26,11 +26,22 @@ namespace FabricServices
 
       FabricCore::DFGPortType getEndPointType() const
       {
-        return getWrappedCoreBinding()->getEndPointType(
-          getExecPath(), getEndPointPath()
-          );
+        return FabricCore::DFGExec(getWrappedCoreExec()).getEndPointType(
+          getEndPointPath()
+        );
       }
 
+      virtual char const *getName() const
+      {
+        if(m_name.length() == 0)
+        {
+          m_name = getEndPointPath();
+          int index = m_name.find('.');
+          if(index != std::string::npos)
+            m_name = m_name.substr(index + 1, m_name.length());
+        }
+        return m_name.c_str();
+      }
       virtual char const *getDataType() const = 0;
       virtual char const *getResolvedType() const = 0;
 
@@ -41,61 +52,71 @@ namespace FabricServices
 
       // EndPoint - Connections
 
-      bool canConnect( SharedPtr<EndPoint const> const &dst ) const
+      bool canConnect( EndPoint const &dst ) const
       {
-        getWrappedCoreBinding()->canConnect(
-          getExecPath(), getEndPointPath(), dst->getEndPointPath()
-          );
+        FabricCore::DFGExec(getWrappedCoreExec()).canConnect(
+          getEndPointPath(), dst.getEndPointPath()
+        );
       }
 
-      void connect( SharedPtr<EndPoint> const &dst )
+      void connect( EndPoint &dst )
       {
-        getWrappedCoreBinding()->connect(
-          getExecPath(), getEndPointPath(), dst->getEndPointPath()
-          );
+        getWrappedCoreExec().connect(
+          getEndPointPath(), dst.getEndPointPath()
+        );
       }
 
-      void disconnect( SharedPtr<EndPoint> const &dst )
+      void disconnect( EndPoint &dst )
       {
-        getWrappedCoreBinding()->disconnect(
-          getExecPath(), getEndPointPath(), dst->getEndPointPath()
-          );
+        getWrappedCoreExec().disconnect(
+          getEndPointPath(), dst.getEndPointPath()
+        );
       }
 
       void disconnectAll()
       {
-        getWrappedCoreBinding()->disconnectAll(
-          getExecPath(), getEndPointPath()
-          );
+        getWrappedCoreExec().disconnectAll(
+          getEndPointPath()
+        );
       }
 
       bool isConnected() const
       {
-        return getWrappedCoreBinding()->isConnected(
-          getExecPath(), getEndPointPath()
-          );
+        // todo
+        // return FabricCore::DFGExec(getWrappedCoreExec()).isConnected(
+        //   getEndPointPath()
+        // );
+        return false;
       }
 
     protected:
       
       EndPoint(
         FabricCore::DFGBinding const &binding,
+        FabricCore::DFGExec const &exec,
         char const *execPath,
         char const *endPointPath
         )
         : Element(
           binding,
+          exec,
           execPath
           )
         , m_endPointPath( endPointPath )
       {
       }
 
-      static SharedPtr<EndPoint> Create(
-        FabricCore::DFGBinding const &binding,
-        char const *execPath,
-        char const *endPointPath
-        );
+      EndPoint(EndPoint const & other)
+        : Element(
+          other.m_binding,
+          other.m_exec,
+          other.getElementPath()
+          )
+        , m_endPointPath( other.m_endPointPath )
+      {
+      }
+
+      mutable std::string m_name;
 
     private:
 

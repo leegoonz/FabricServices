@@ -7,7 +7,7 @@
 #include <string>
 #include <vector>
 #include "Executable.h"
-// #include "Pin.h"
+#include "Pin.h"
 
 namespace FabricServices
 {
@@ -23,11 +23,12 @@ namespace FabricServices
 
     public:
 
+      virtual bool isNode() const { return true; }
+
       Node();
       Node(const Node & other);
       virtual ~Node();
 
-      FabricCore::DFGBinding getWrappedCoreBinding() const;
       char const *getNodePath() const
         { return getElementPath(); }
 
@@ -37,7 +38,7 @@ namespace FabricServices
       virtual std::string getDesc();
       std::string getTitle();
       void setTitle(char const *title);
-      std::vector<std::string> getDataTypes();
+      // std::vector<std::string> getDataTypes();
 
       FEC_DFGCacheRule getCacheRule() const;
       void setCacheRule(FEC_DFGCacheRule rule);
@@ -45,10 +46,9 @@ namespace FabricServices
       virtual char const *getMetadata(char const * key) const;
       virtual void setMetadata(char const * key, char const * metadata, bool canUndo);
 
-      // todo
-      // std::vector<Pin> getPins();
-      // Pin getPin(char const * name);
-      // Pin getPin(uint32_t index);
+      std::vector<Pin> getPins();
+      Pin getPin(char const * name);
+      Pin getPin(uint32_t index);
 
     protected:
       

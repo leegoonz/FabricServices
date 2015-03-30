@@ -19,6 +19,8 @@ namespace FabricServices
 
     public:
 
+      virtual bool isFunc() const { return true; }
+
       FuncExecutable(const Executable & other);
       FuncExecutable(const FuncExecutable & other);
       virtual ~FuncExecutable();
