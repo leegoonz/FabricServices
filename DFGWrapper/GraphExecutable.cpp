@@ -107,3 +107,17 @@ ConnectionList GraphExecutable::getConnections()
 
   return result; 
 }
+
+bool GraphExecutable::canConnectTo(
+  char const *srcPath,
+  char const *dstPath,
+  std::string &failureReason
+)
+{
+  FabricCore::DFGStringResult result = m_exec.canConnectTo(srcPath, dstPath);
+  char const *failureReasonData;
+  uint32_t failureReasonLength;
+  result.getStringDataAndLength( failureReasonData, failureReasonLength );
+  failureReason = std::string( failureReasonData, failureReasonLength );
+  return failureReason.empty();
+}

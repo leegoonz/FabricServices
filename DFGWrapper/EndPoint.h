@@ -3,6 +3,7 @@
 #ifndef __DFGWrapper_EndPoint__
 #define __DFGWrapper_EndPoint__
 
+#include <vector>
 #include "Element.h"
 
 namespace FabricServices
@@ -12,6 +13,7 @@ namespace FabricServices
   {
     class EndPoint;
     typedef FTL::SharedPtr<EndPoint> EndPointPtr;
+    typedef std::vector<EndPointPtr> EndPointList;
 
     class EndPoint : public Element
     {

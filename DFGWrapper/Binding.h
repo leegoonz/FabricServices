@@ -36,14 +36,6 @@ namespace FabricServices
 
       void setNotificationCallback(FabricCore::DFGNotificationCallback callback, void * userData);
 
-      // todo
-      // bool canConnect(
-      //   char const *graphPath,
-      //   char const *srcPath,
-      //   char const *dstPath,
-      //   std::string &failureReason
-      //   );
-
     private:
       FabricCore::DFGBinding m_binding;      
     };

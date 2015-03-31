@@ -46,6 +46,12 @@ namespace FabricServices
 
       ConnectionList getConnections();
 
+      bool canConnectTo(
+        char const *srcPath,
+        char const *dstPath,
+        std::string &failureReason
+      );
+
     protected:
       
       GraphExecutable(
