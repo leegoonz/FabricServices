@@ -5,6 +5,7 @@
 
 #include <FabricCore.h>
 #include <string>
+#include <vector>
 
 #include "EndPoint.h"
 
@@ -15,6 +16,7 @@ namespace FabricServices
   {
     class Port;
     typedef FTL::SharedPtr<Port> PortPtr;
+    typedef std::vector<PortPtr> PortList;
 
     class Port : public EndPoint
     {

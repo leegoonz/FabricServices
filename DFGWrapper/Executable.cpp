@@ -122,9 +122,9 @@ void Executable::setImportPathname( char const *importPathname )
   m_exec.setImportPathname(importPathname);
 }
 
-std::vector<PortPtr> Executable::getPorts()
+PortList Executable::getPorts()
 {
-  std::vector<PortPtr> result;
+  PortList result;
   for(unsigned int i=0;i<m_exec.getPortCount();i++)
   {
     result.push_back(

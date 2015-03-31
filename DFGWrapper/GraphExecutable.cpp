@@ -51,9 +51,9 @@ NodePtr GraphExecutable::addNodeFromJSON(char const * json)
   return Node::Create(getWrappedCoreBinding(), getWrappedCoreExec(), getGraphPath(), nodePath);
 }
 
-std::vector<NodePtr> GraphExecutable::getNodes()
+NodeList GraphExecutable::getNodes()
 {
-  std::vector<NodePtr> result;
+  NodeList result;
   for(unsigned int i=0;i<m_exec.getNodeCount();i++)
   {
     result.push_back(
@@ -85,30 +85,25 @@ void GraphExecutable::removeNode(Node node)
   );
 }
 
-// std::vector<Connection> GraphExecutable::getConnections()
-// {
-//   std::vector<Connection> result;
+ConnectionList GraphExecutable::getConnections()
+{
+  ConnectionList result;
 
-//   FabricCore::Variant descVar = FabricCore::Variant::CreateFromJSON(getDesc().c_str());
-//   const FabricCore::Variant * connectionsVar = descVar.getDictValue("connections");
-
-//   std::string prefix = getPath();
-//   if(prefix.length() > 0)
-//     prefix += ".";
-  
-//   for(FabricCore::Variant::DictIter connectionIter(*connectionsVar); !connectionIter.isDone(); connectionIter.next())
-//   {
-//     std::string srcStr = connectionIter.getKey()->getStringData();
-//     Port src(getWrappedCoreExec(), prefix + srcStr);
+  FabricCore::Variant descVar = FabricCore::Variant::CreateFromJSON(getDesc().c_str());
+  const FabricCore::Variant * connectionsVar = descVar.getDictValue("connections");
+  for(FabricCore::Variant::DictIter connectionIter(*connectionsVar); !connectionIter.isDone(); connectionIter.next())
+  {
+    char const* srcStr = connectionIter.getKey()->getStringData();
+    EndPointPtr src = EndPoint::Create(getWrappedCoreBinding(), getWrappedCoreExec(), getExecPath(), srcStr);
     
-//     const FabricCore::Variant * connectedVar = connectionIter.getValue();
-//     for(uint32_t i=0;i<connectedVar->getArraySize();i++)
-//     {
-//       std::string dstStr = connectedVar->getArrayElement(i)->getStringData();
-//       Port dst(getWrappedCoreExec(), prefix + dstStr);
-//       result.push_back(Connection(src, dst));
-//     }
-//   }
+    const FabricCore::Variant * connectedVar = connectionIter.getValue();
+    for(uint32_t i=0;i<connectedVar->getArraySize();i++)
+    {
+      char const* dstStr = connectedVar->getArrayElement(i)->getStringData();
+      EndPointPtr dst = EndPoint::Create(getWrappedCoreBinding(), getWrappedCoreExec(), getExecPath(), dstStr);
+      result.push_back(new Connection(src, dst));
+    }
+  }
 
-//   return result; 
-// }
+  return result; 
+}

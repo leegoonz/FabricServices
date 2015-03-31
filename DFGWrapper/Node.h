@@ -20,6 +20,7 @@ namespace FabricServices
 
     class Node;
     typedef FTL::SharedPtr<Node> NodePtr;
+    typedef std::vector<NodePtr> NodeList;
 
     class Node : public Element
     {
@@ -55,7 +56,7 @@ namespace FabricServices
       virtual char const *getMetadata(char const * key) const;
       virtual void setMetadata(char const * key, char const * metadata, bool canUndo);
 
-      std::vector<PinPtr> getPins();
+      PinList getPins();
       PinPtr getPin(char const * name);
       PinPtr getPin(uint32_t index);
 

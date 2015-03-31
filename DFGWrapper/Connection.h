@@ -5,6 +5,7 @@
 
 #include <FabricCore.h>
 #include <string>
+#include <vector>
 #include "EndPoint.h"
 #include <FTL/SharedPtr.h>
 
@@ -13,8 +14,11 @@ namespace FabricServices
 
   namespace DFGWrapper
   {
+    class Connection;
+    typedef FTL::SharedPtr<Connection> ConnectionPtr;
+    typedef std::vector<ConnectionPtr> ConnectionList;
 
-    class Connection
+    class Connection : public FTL::Shareable
     {
       friend class GraphExecutable;
 

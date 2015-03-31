@@ -5,6 +5,7 @@
 
 #include <FabricCore.h>
 #include <string>
+#include <vector>
 
 #include "EndPoint.h"
 
@@ -15,6 +16,7 @@ namespace FabricServices
   {
     class Pin;
     typedef FTL::SharedPtr<Pin> PinPtr;
+    typedef std::vector<PinPtr> PinList;
     
     class Pin : public EndPoint
     {

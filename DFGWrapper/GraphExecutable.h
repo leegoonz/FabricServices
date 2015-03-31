@@ -6,7 +6,7 @@
 #include <FabricCore.h>
 #include "Executable.h"
 #include "Node.h"
-// #include "Connection.h"
+#include "Connection.h"
 
 namespace FabricServices
 {
@@ -40,12 +40,11 @@ namespace FabricServices
       NodePtr addNodeWithNewFunc(char const * title = 0);
       NodePtr addNodeFromJSON(char const * json);
 
-      std::vector<NodePtr> getNodes();
+      NodeList getNodes();
       NodePtr getNode(char const * name);
       void removeNode(Node node);
 
-      // todo
-      // std::vector<Connection> getConnections();
+      ConnectionList getConnections();
 
     protected:
       

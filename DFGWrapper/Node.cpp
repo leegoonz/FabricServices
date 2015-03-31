@@ -45,9 +45,7 @@ char const* Node::getTitle()
 
 void Node::setTitle(char const *title)
 {
-  // todo we really should be using 
-  // setNodeTitle, but that doesn't exist just yet.
-  m_exec.setTitle(title);
+  m_exec.setNodeTitle(getNodePath(), title);
 }
 
 FEC_DFGCacheRule Node::getCacheRule() const
@@ -70,10 +68,10 @@ void Node::setMetadata(char const *key, char const * metadata, bool canUndo)
   return m_exec.setNodeMetadata(getNodePath(), key, metadata, canUndo);
 }
 
-std::vector<PinPtr> Node::getPins()
+PinList Node::getPins()
 {
   FabricCore::DFGExec exec = m_exec.getSubExec(getNodePath());
-  std::vector<PinPtr> result;
+  PinList result;
   for(unsigned int i=0;i<exec.getPortCount();i++)
   {
     std::string path = getNodePath();
