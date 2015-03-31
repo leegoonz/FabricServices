@@ -38,11 +38,11 @@ namespace FabricServices
 
       virtual char const *getName() const
       {
-        return getWrappedCoreExec().getPinName(getPinPath());
+        return FabricCore::DFGExec(getWrappedCoreExec()).getPinName(getPinPath());
       }
       virtual char const *getResolvedType() const
       {
-        return getWrappedCoreExec().getPinResolvedType(getPinPath());
+        return FabricCore::DFGExec(getWrappedCoreExec()).getPinResolvedType(getPinPath());
       }
 
       void addDebugPin();
