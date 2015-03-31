@@ -29,6 +29,7 @@ if env['FABRIC_BUILD_OS'] == 'Darwin':
 # disable for now, we'll build a static library for now
 # env.Append(CPPDEFINES = ['FABRICSERVICES_BUILDING'])
 env.Append(CPPPATH = [env.Dir('.').srcnode().abspath])
+env.Append(CPPPATH = [parentEnv.Dir('#')])
 
 majMinVer = '.'.join([env['FABRIC_VERSION_MAJ'], env['FABRIC_VERSION_MIN']])
 majMinRevVer = '.'.join([env['FABRIC_VERSION_MAJ'], env['FABRIC_VERSION_MIN'], env['FABRIC_VERSION_REV']])
