@@ -30,7 +30,7 @@ namespace FabricServices
       FabricCore::RTVal getArgValue(char const *name);
       void setArgValue(char const *name, FabricCore::RTVal value);
 
-      ExecutablePtr getExec();
+      ExecutablePtr getExecutable();
 
       void execute();
 

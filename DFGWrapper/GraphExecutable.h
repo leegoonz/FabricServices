@@ -42,7 +42,7 @@ namespace FabricServices
 
       NodeList getNodes();
       NodePtr getNode(char const * name);
-      void removeNode(Node node);
+      void removeNode(NodePtr node);
 
       ConnectionList getConnections();
 

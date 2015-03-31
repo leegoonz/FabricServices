@@ -78,10 +78,10 @@ NodePtr GraphExecutable::getNode(char const * nodePath)
   );
 }
 
-void GraphExecutable::removeNode(Node node)
+void GraphExecutable::removeNode(NodePtr node)
 {
   getWrappedCoreExec().removeNode(
-    node.getNodePath()
+    node->getNodePath()
   );
 }
 

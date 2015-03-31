@@ -26,7 +26,7 @@ namespace FabricServices
 
       View();
       View(GraphExecutablePtr graph);
-      virtual ~View();
+      virtual ~View() {}
 
       bool isValid() const;
 
