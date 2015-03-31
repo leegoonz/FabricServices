@@ -40,7 +40,8 @@ for msvc_version in msvc_versions:
         'CodeCompletion',
         # 'SplitSearch',
       ],
-      'msvc_version': msvc_version
+      'msvc_version': msvc_version,
+      'installHeaders': msvc_version == msvc_versions[0]
     },
     variant_dir = 'FabricServices-'+msvc_version
     )

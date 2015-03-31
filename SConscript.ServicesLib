@@ -3,7 +3,7 @@
 #
 
 import os
-Import('parentEnv', 'stageDir', 'dirs', 'capiSharedLibFlags', 'llvmFlags', 'msvc_version')
+Import('parentEnv', 'stageDir', 'dirs', 'capiSharedLibFlags', 'llvmFlags', 'msvc_version', 'installHeaders')
 
 # todo: use visual studio 2013
 # env = parentEnv.CloneSubStage('FabricServices')
@@ -75,10 +75,11 @@ servicesFiles += servicesLib
 
 servicesFiles += env.Install(libDir, servicesLib)
 
-for d in dirs:
-  targetDir = includeDir.Dir(d)
-  servicesFiles += env.Install(targetDir, Glob(os.path.join(d, '*.h')))
-  servicesFiles += env.Install(targetDir, Glob(os.path.join(d, '*.hpp')))
+if installHeaders:
+  for d in dirs:
+    targetDir = includeDir.Dir(d)
+    servicesFiles += env.Install(targetDir, Glob(os.path.join(d, '*.h')))
+    servicesFiles += env.Install(targetDir, Glob(os.path.join(d, '*.hpp')))
 
 # todo: enable this if going with a shared lib
 # if env['FABRIC_BUILD_OS'] == 'Windows':
