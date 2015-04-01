@@ -44,7 +44,10 @@ namespace FabricServices
       }
       virtual char const *getResolvedType() const
       {
-        return FabricCore::DFGExec(getWrappedCoreExec()).getPinResolvedType(getPinPath());
+        char const * result = FabricCore::DFGExec(getWrappedCoreExec()).getPinResolvedType(getPinPath());
+        if(result)
+          return result;
+        return "";
       }
 
       void addDebugPin();

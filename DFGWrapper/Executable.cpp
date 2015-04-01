@@ -46,7 +46,7 @@ std::string Executable::getDesc()
   return m_exec.getDesc().getCString();
 }
 
-std::string Executable::getTitle()
+char const * Executable::getTitle()
 {
   return m_exec.getTitle();
 }

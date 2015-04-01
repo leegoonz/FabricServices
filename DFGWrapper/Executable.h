@@ -39,7 +39,7 @@ namespace FabricServices
 
       std::string getDesc();
       
-      std::string getTitle();
+      char const * getTitle();
       void setTitle(const char * title);
 
       ExecutablePtr getSubExec(const char * subExecPath);

@@ -46,12 +46,18 @@ namespace FabricServices
 
       virtual char const *getResolvedType() const
       {
-        return FabricCore::DFGExec( m_exec ).getPortResolvedType( getPortPath() );
+        char const * result = FabricCore::DFGExec(m_exec).getPortResolvedType(getPortPath());
+        if(result)
+          return result;
+        return "";
       }
 
       char const *getTypeSpec() const
       {
-        return FabricCore::DFGExec( m_exec ).getPortTypeSpec( getPortPath() );
+        char const * result = FabricCore::DFGExec(m_exec).getPortTypeSpec(getPortPath());
+        if(result)
+          return result;
+        return "";
       }
 
       virtual char const *rename(char const * name);
