@@ -53,6 +53,7 @@ namespace FabricServices
       virtual void onExtDepRemoved(const char * extension, const char * version) = 0;
       virtual void onNodeCacheRuleChanged(const char * path, const char * rule) = 0;
       virtual void onExecCacheRuleChanged(const char * path, const char * rule) = 0;
+      virtual void onPortResolvedTypeChanged(PortPtr port, const char * resolvedType) = 0;
 
     private:
 

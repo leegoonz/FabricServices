@@ -170,6 +170,13 @@ void View::callback(void * userData, char const * jsonCString, uint32_t jsonLeng
     const FabricCore::Variant * cacheRuleVar = notificationVar.getDictValue("cacheRule");
     view->onExecCacheRuleChanged(execPathVar->getStringData(), cacheRuleVar->getStringData());
   }
+  else if(descStr == "portResolvedTypeChanged")
+  {
+    const FabricCore::Variant * portPathVar = notificationVar.getDictValue("portPath");
+    const FabricCore::Variant * resolvedTypeVar = notificationVar.getDictValue("resolvedType");
+    PortPtr port = Port::Create(binding, exec->getWrappedCoreExec(), exec->getExecPath(), portPathVar->getStringData());
+    view->onPortResolvedTypeChanged(port, resolvedTypeVar->getStringData());
+  }
   else
   {
     printf("View::callback: Unhandled desc '%s', '%s'\n", descStr.c_str(), jsonCString);
