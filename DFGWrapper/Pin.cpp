@@ -1,6 +1,7 @@
 // Copyright 2010-2015 Fabric Software Inc. All rights reserved.
 
 #include "Pin.h"
+#include "Port.h"
 #include "Node.h"
 
 using namespace FabricServices::DFGWrapper;
@@ -57,4 +58,22 @@ FabricCore::RTVal Pin::getDefaultValue( char const * dataType ) const
 void Pin::setDefaultValue( FabricCore::RTVal const &value )
 {
   m_exec.setPinDefaultValue(getPinPath(), value);
+}
+
+NodePtr Pin::getNode()
+{
+  std::string nodeName = getPinPath();
+  int pos = nodeName.find('.');
+  if(pos == std::string::npos)
+    return NodePtr();
+  nodeName = nodeName.substr(0, pos);
+  return new Node(m_binding, m_exec, getElementPath(), nodeName.c_str());
+}
+
+PortPtr Pin::getPort()
+{
+  NodePtr node = getNode();
+  if(!node)
+    return PortPtr();
+  return node->getExecutable()->getPort(getName());
 }

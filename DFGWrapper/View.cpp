@@ -46,11 +46,12 @@ void View::callback(void * userData, char const * jsonCString, uint32_t jsonLeng
   if(prefix.length() > 0)
     prefix += ".";
 
-  printf("View::callback %s\n", jsonCString);
-
   FabricCore::Variant notificationVar = FabricCore::Variant::CreateFromJSON(jsonCString, jsonLength);
   const FabricCore::Variant * descVar = notificationVar.getDictValue("desc");
   std::string descStr = descVar->getStringData();
+
+  if(descStr != "nodeMetadataChanged")
+    printf("View::callback %s\n", jsonCString);
 
   if(descStr == "nodeInserted")
   {

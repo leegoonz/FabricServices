@@ -18,15 +18,12 @@ namespace FabricServices
     class GraphExecutable;
     typedef FTL::SharedPtr<GraphExecutable> GraphExecutablePtr;
 
-    class Node;
-    typedef FTL::SharedPtr<Node> NodePtr;
-    typedef std::vector<NodePtr> NodeList;
-
     class Node : public Element
     {
       friend class Binding;
       friend class GraphExecutable;
       friend class View;
+      friend class Pin;
 
     public:
 

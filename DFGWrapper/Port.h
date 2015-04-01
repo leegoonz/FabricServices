@@ -7,17 +7,13 @@
 #include <string>
 #include <vector>
 
-#include "EndPoint.h"
+#include "Pin.h"
 
 namespace FabricServices
 {
 
   namespace DFGWrapper
   {
-    class Port;
-    typedef FTL::SharedPtr<Port> PortPtr;
-    typedef std::vector<PortPtr> PortList;
-
     class Port : public EndPoint
     {
       friend class Executable;

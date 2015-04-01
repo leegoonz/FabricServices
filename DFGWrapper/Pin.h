@@ -14,6 +14,14 @@ namespace FabricServices
 
   namespace DFGWrapper
   {
+    class Node;
+    typedef FTL::SharedPtr<Node> NodePtr;
+    typedef std::vector<NodePtr> NodeList;
+
+    class Port;
+    typedef FTL::SharedPtr<Port> PortPtr;
+    typedef std::vector<PortPtr> PortList;
+
     class Pin;
     typedef FTL::SharedPtr<Pin> PinPtr;
     typedef std::vector<PinPtr> PinList;
@@ -56,6 +64,9 @@ namespace FabricServices
 
       virtual FabricCore::RTVal getDefaultValue( char const * dataType = NULL ) const;
       virtual void setDefaultValue( FabricCore::RTVal const &value );
+
+      NodePtr getNode();
+      PortPtr getPort();
 
     protected:
       
