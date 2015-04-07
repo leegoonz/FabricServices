@@ -8,7 +8,7 @@ KLConstant::KLConstant(const KLFile* klFile, JSONData data)
 : KLCommented(klFile, data)
 {
   m_name = getDictValue("constDecl")->getDictValue("name")->getStringData();
-  m_type = getDictValue("constDecl")->getDictValue("type")->getStringData();
+  m_type = getDictValue("constDecl")->getDictValue("scalarType")->getStringData();
 }
 
 KLConstant::~KLConstant()

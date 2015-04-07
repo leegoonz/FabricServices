@@ -11,7 +11,7 @@ KLParameter::KLParameter(const KLFile* klFile, JSONData data)
 {
   m_usage = getStringDictValue("usage");
   m_name = getStringDictValue("name");
-  m_type = getStringDictValue("type");
+  m_type = getStringDictValue("typeUserName");
 }
 
 KLParameter::~KLParameter()

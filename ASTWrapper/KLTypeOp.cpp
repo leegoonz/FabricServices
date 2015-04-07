@@ -45,14 +45,14 @@ KLTypeOp::KLTypeOp(const KLFile* klFile, JSONData data)
       throw(FabricCore::Exception(message.c_str()));
     }
 
-    m_lhs = getDictValue("lhs")->getDictValue("type")->getStringData();
-    m_rhs = getDictValue("rhs")->getDictValue("type")->getStringData();
+    m_lhs = getDictValue("lhs")->getDictValue("typeUserName")->getStringData();
+    m_rhs = getDictValue("rhs")->getDictValue("typeUserName")->getStringData();
   }
   else if(type == "AssignOpImpl")
   {
     m_op = OpType_Assign;
     m_lhs = getStringDictValue("thisType");
-    m_rhs = getDictValue("rhs")->getDictValue("type")->getStringData();
+    m_rhs = getDictValue("rhs")->getDictValue("typeUserName")->getStringData();
   }
   else if(type == "BinOpImpl")
   {
@@ -80,8 +80,8 @@ KLTypeOp::KLTypeOp(const KLFile* klFile, JSONData data)
       throw(FabricCore::Exception(message.c_str()));
     }
 
-    m_lhs = getDictValue("lhs")->getDictValue("type")->getStringData();
-    m_rhs = getDictValue("rhs")->getDictValue("type")->getStringData();
+    m_lhs = getDictValue("lhs")->getDictValue("typeUserName")->getStringData();
+    m_rhs = getDictValue("rhs")->getDictValue("typeUserName")->getStringData();
   }
   else if(type == "ASTUniOpDecl")
   {

@@ -20,7 +20,7 @@ KLDecl::KLDecl(const KLFile* klFile, JSONData data)
   m_location = NULL;
   if(m_data->isDict())
   {
-    JSONData location = m_data->getDictValue("location");
+    JSONData location = m_data->getDictValue("sourceInfo");
     if(location)
       m_location = new KLLocation(location);
   }
