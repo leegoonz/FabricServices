@@ -50,10 +50,10 @@ void Port::setDefaultValue( FabricCore::RTVal const &value )
 
 FabricCore::RTVal Port::getArgValue()
 {
-  return m_binding.getArgValue(getName());
+  return m_binding.getArgValue(getPortPath());
 }
 
 void Port::setArgValue( FabricCore::RTVal const &value )
 {
-  m_binding.setArgValue(getName(), value);
+  m_binding.setArgValue(getPortPath(), value);
 }

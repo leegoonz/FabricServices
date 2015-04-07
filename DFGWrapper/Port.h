@@ -31,6 +31,18 @@ namespace FabricServices
       char const *getPortPath() const
         { return getEndPointPath(); }
 
+      FabricCore::DFGPortType getPortType() const
+      {
+        return FabricCore::DFGExec(getWrappedCoreExec()).getPortType(
+          getPortPath()
+        );
+      }
+
+      void setPortType(FabricCore::DFGPortType type)
+      {
+        FabricCore::DFGExec(getWrappedCoreExec()).setPortType(getPortPath(), type);
+      }
+
       virtual std::string getDesc();
       virtual char const *getMetadata(char const * key) const;
       virtual void setMetadata(char const * key, char const * value, bool canUndo = false);
