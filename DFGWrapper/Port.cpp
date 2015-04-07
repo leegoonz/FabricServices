@@ -47,3 +47,13 @@ void Port::setDefaultValue( FabricCore::RTVal const &value )
 {
   m_exec.setPortDefaultValue(getPortPath(), value);
 }
+
+FabricCore::RTVal Port::getArgValue()
+{
+  return m_binding.getArgValue(getName());
+}
+
+void Port::setArgValue( FabricCore::RTVal const &value )
+{
+  m_binding.setArgValue(getName(), value);
+}

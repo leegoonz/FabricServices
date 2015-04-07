@@ -61,6 +61,9 @@ namespace FabricServices
       virtual FabricCore::RTVal getDefaultValue( char const * dataType = NULL ) const;
       virtual void setDefaultValue( FabricCore::RTVal const &value );
 
+      virtual FabricCore::RTVal getArgValue();
+      virtual void setArgValue( FabricCore::RTVal const &value );
+
     protected:
       
       Port(FabricCore::DFGBinding binding, FabricCore::DFGExec exec, char const * execPath, char const * portPath);
