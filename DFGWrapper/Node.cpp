@@ -6,135 +6,92 @@
 
 using namespace FabricServices::DFGWrapper;
 
-Node::Node()
+NodePtr Node::Create(FabricCore::DFGBinding binding, FabricCore::DFGExec parentExec, char const * execPath, char const * nodePath)
 {
+  return new Node(binding, parentExec, execPath, nodePath);
 }
 
-Node::Node(FabricCore::DFGBinding binding, std::string path)
+Node::Node(FabricCore::DFGBinding binding, FabricCore::DFGExec parentExec, char const * execPath, char const * nodePath)
+: Element(binding, parentExec, nodePath)
 {
-  m_binding = binding;
-  m_path = path;
-}
-
-Node::Node(const Node & other)
-{
-  m_binding = other.m_binding;
-  m_path = other.m_path;
-  m_objectType = other.m_objectType;
+  m_execPath = execPath;
 }
 
 Node::~Node()
 {
 }
 
-bool Node::isValid()
+GraphExecutablePtr Node::getOwningGraphExecutable()
 {
-  if(!m_binding.isValid())
-    return false;
-  try
-  {
-    getDesc();
-    return true;
-  }
-  catch(FabricCore::Exception e)
-  {
-  }
-  return false;
+  return GraphExecutablePtr::StaticCast(
+    Executable::Create(m_binding, m_exec, m_execPath.c_str())
+    );
 }
 
-FabricCore::DFGBinding Node::getWrappedCoreBinding() const
+ExecutablePtr Node::getExecutable()
 {
-  return m_binding;
-}
-
-Executable Node::getExecutable()
-{
-  return Executable(m_binding, m_path);
+  return getOwningGraphExecutable()->getSubExec(getNodePath());
 }
 
 std::string Node::getDesc()
 {
-  return m_binding.getInstanceDesc(m_path.c_str()).getCString();
+  return m_exec.getNodeDesc(getNodePath()).getCString();
 }
 
-std::string Node::getPath()
+char const* Node::getTitle()
 {
-  return m_path;
-}
-
-std::string Node::getTitle()
-{
-  FabricCore::Variant descVar = FabricCore::Variant::CreateFromJSON(getDesc().c_str());
-  return descVar.getDictValue("title")->getStringData();    
+  return m_exec.getNodeTitle(getNodePath());
 }
 
 void Node::setTitle(char const *title)
 {
-  m_binding.setTitle(m_path.c_str(), title);
-}
-
-std::vector<std::string> Node::getDataTypes()
-{
- std::vector<std::string> result;
-
-  FabricCore::Variant descVar = FabricCore::Variant::CreateFromJSON(getDesc().c_str());
-  const FabricCore::Variant * typesVar = descVar.getDictValue("types");
-  for(uint32_t i=0;i<typesVar->getArraySize();i++)
-  {
-    const FabricCore::Variant * typeVar = typesVar->getArrayElement(i);
-    if(typeVar->isString())
-      result.push_back(typeVar->getStringData());
-    else
-      result.push_back("");
-  }
-  return result;
+  m_exec.setNodeTitle(getNodePath(), title);
 }
 
 FEC_DFGCacheRule Node::getCacheRule() const
 {
-  return m_binding.getNodeCacheRule(m_path.c_str());
+  return m_exec.getNodeCacheRule(getNodePath());
 }
 
 void Node::setCacheRule(FEC_DFGCacheRule rule)
 {
-  m_binding.setNodeCacheRule(m_path.c_str(), rule);
+  m_exec.setNodeCacheRule(getNodePath(), rule);
 }
 
-std::string Node::getMetadata(char const * key)
+char const *Node::getMetadata(char const * key) const
 {
-  return m_binding.getInstanceMetadata(m_path.c_str(), key);
+  return FabricCore::DFGExec(m_exec).getNodeMetadata(getNodePath(), key);
 }
 
 void Node::setMetadata(char const *key, char const * metadata, bool canUndo)
 {
-  return m_binding.setInstanceMetadata(m_path.c_str(), key, metadata, canUndo);
+  return m_exec.setNodeMetadata(getNodePath(), key, metadata, canUndo);
 }
 
-std::vector<Pin> Node::getPins()
+PinList Node::getPins()
 {
-  std::vector<Pin> result;
-
-  FabricCore::Variant descVar = FabricCore::Variant::CreateFromJSON(getDesc().c_str());
-  const FabricCore::Variant * pinsVar = descVar.getDictValue("pins");
-  for(uint32_t i=0;i<pinsVar->getArraySize();i++)
+  FabricCore::DFGExec exec = m_exec.getSubExec(getNodePath());
+  PinList result;
+  for(unsigned int i=0;i<exec.getPortCount();i++)
   {
-    const FabricCore::Variant * pinVar = pinsVar->getArrayElement(i);
-    const FabricCore::Variant * nameVar = pinVar->getDictValue("name");
-    std::string nameStr = nameVar->getStringData();
-    result.push_back(Pin(getWrappedCoreBinding(), getPath() + "." + nameStr));
+    std::string path = getNodePath();
+    path += ".";
+    path += exec.getPortName(i);
+    result.push_back(new Pin(m_binding, m_exec, m_execPath.c_str(), path.c_str()));
   }
   return result;
 }
 
-Pin Node::getPin(char const * name)
+PinPtr Node::getPin(char const * name)
 {
-  std::string prefix = getPath();
-  if(prefix.length() > 0)
-    prefix += ".";
-  return Pin(m_binding, prefix + name);
+  std::string path = getNodePath();
+  if(path.length() > 0)
+    path += ".";
+  path += name;
+  return new Pin(m_binding, m_exec, m_execPath.c_str(), path.c_str());
 }
 
-Pin Node::getPin(uint32_t index)
+PinPtr Node::getPin(uint32_t index)
 {
   return getPins()[index];
 }

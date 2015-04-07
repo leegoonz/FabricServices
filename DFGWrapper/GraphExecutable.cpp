@@ -1,115 +1,123 @@
 // Copyright 2010-2015 Fabric Software Inc. All rights reserved.
 
 #include "GraphExecutable.h"
-#include "Node.h"
+// #include "Node.h"
 
 using namespace FabricServices::DFGWrapper;
 
-GraphExecutable::GraphExecutable()
+GraphExecutable::GraphExecutable(
+  FabricCore::DFGBinding binding,
+  FabricCore::DFGExec exec,
+  const char * graphPath
+  )
+: Executable(binding, exec, graphPath)
 {
 }
 
-GraphExecutable::GraphExecutable(FabricCore::DFGBinding binding, std::string path)
-: Executable(binding, path)
+GraphExecutablePtr GraphExecutable::Create(
+  FabricCore::DFGBinding binding,
+  FabricCore::DFGExec exec,
+  const char * graphPath
+  )
 {
-}
-
-GraphExecutable::GraphExecutable(const Executable & other)
-: Executable(other)
-{
-}
-
-GraphExecutable::GraphExecutable(const GraphExecutable & other)
-: Executable(other)
-{
+  return new GraphExecutable(binding, exec, graphPath);
 }
 
 GraphExecutable::~GraphExecutable()
 {
 }
 
-Node GraphExecutable::addNodeFromPreset(char const * preset)
+NodePtr GraphExecutable::addNodeFromPreset(char const * preset)
 {
-  std::string name = getWrappedCoreBinding().addNodeFromPreset(getPath().c_str(), preset).getCString();
-  return Node(getWrappedCoreBinding(), name);
+  char const *nodePath = getWrappedCoreExec().addNodeFromPreset(preset);
+  return Node::Create(getWrappedCoreBinding(), getWrappedCoreExec(), getGraphPath(), nodePath);
 }
 
-Node GraphExecutable::addNodeWithNewGraph(char const * title)
+NodePtr GraphExecutable::addNodeWithNewGraph(char const * title)
 {
-  std::string name = getWrappedCoreBinding().addNodeWithNewGraph(getPath().c_str(), title).getCString();
-  return Node(getWrappedCoreBinding(), name);
+  char const *nodePath = getWrappedCoreExec().addNodeWithNewGraph(title);
+  return Node::Create(getWrappedCoreBinding(), getWrappedCoreExec(), getGraphPath(), nodePath);
 }
 
-Node GraphExecutable::addNodeWithNewFunc(char const * title)
+NodePtr GraphExecutable::addNodeWithNewFunc(char const * title)
 {
-  std::string name = getWrappedCoreBinding().addNodeWithNewFunc(getPath().c_str(), title).getCString();
-  return Node(getWrappedCoreBinding(), name);
+  char const *nodePath = getWrappedCoreExec().addNodeWithNewFunc(title);
+  return Node::Create(getWrappedCoreBinding(), getWrappedCoreExec(), getGraphPath(), nodePath);
 }
 
-Node GraphExecutable::addNodeFromJSON(char const * json)
+NodePtr GraphExecutable::addNodeFromJSON(char const * json)
 {
-  std::string name = getWrappedCoreBinding().addNodeFromJSON(getPath().c_str(), json).getCString();
-  return Node(getWrappedCoreBinding(), name);
+  char const *nodePath = getWrappedCoreExec().addNodeFromJSON(json);
+  return Node::Create(getWrappedCoreBinding(), getWrappedCoreExec(), getGraphPath(), nodePath);
 }
 
-std::vector<Node> GraphExecutable::getNodes()
+NodeList GraphExecutable::getNodes()
 {
-  std::vector<Node> result;
-
-  FabricCore::Variant descVar = FabricCore::Variant::CreateFromJSON(getDesc().c_str());
-  const FabricCore::Variant * nodesVar = descVar.getDictValue("nodes");
-
-  std::string prefix = getPath();
-  if(prefix.length() > 0)
-    prefix += ".";
-  
-  for(uint32_t i=0;i<nodesVar->getArraySize();i++)
+  NodeList result;
+  for(unsigned int i=0;i<m_exec.getNodeCount();i++)
   {
-    const FabricCore::Variant * nodeVar = nodesVar->getArrayElement(i);
-    const FabricCore::Variant * nameVar = nodeVar->getDictValue("name");
-    result.push_back(Node(getWrappedCoreBinding(), prefix + nameVar->getStringData()));
+    result.push_back(
+      Node::Create(
+        getWrappedCoreBinding(),
+        getWrappedCoreExec(),
+        getGraphPath(),
+        m_exec.getNodeName(i)
+      )
+    );
   }
-
   return result; 
 }
 
-Node GraphExecutable::getNode(char const * name)
+NodePtr GraphExecutable::getNode(char const * nodePath)
 {
-  std::string prefix = getPath();
-  if(prefix.length() > 0)
-    prefix += ".";
-  return Node(getWrappedCoreBinding(), prefix + name);
+  return Node::Create(
+    getWrappedCoreBinding(),
+    getWrappedCoreExec(),
+    getGraphPath(),
+    nodePath
+  );
 }
 
-void GraphExecutable::removeNode(Node node)
+void GraphExecutable::removeNode(NodePtr node)
 {
-  getWrappedCoreBinding().destroy(node.getPath().c_str());
+  getWrappedCoreExec().removeNode(
+    node->getNodePath()
+  );
 }
 
-std::vector<Connection> GraphExecutable::getConnections()
+ConnectionList GraphExecutable::getConnections()
 {
-  std::vector<Connection> result;
+  ConnectionList result;
 
   FabricCore::Variant descVar = FabricCore::Variant::CreateFromJSON(getDesc().c_str());
   const FabricCore::Variant * connectionsVar = descVar.getDictValue("connections");
-
-  std::string prefix = getPath();
-  if(prefix.length() > 0)
-    prefix += ".";
-  
   for(FabricCore::Variant::DictIter connectionIter(*connectionsVar); !connectionIter.isDone(); connectionIter.next())
   {
-    std::string srcStr = connectionIter.getKey()->getStringData();
-    Port src(getWrappedCoreBinding(), prefix + srcStr);
+    char const* srcStr = connectionIter.getKey()->getStringData();
+    EndPointPtr src = EndPoint::Create(getWrappedCoreBinding(), getWrappedCoreExec(), getExecPath(), srcStr);
     
     const FabricCore::Variant * connectedVar = connectionIter.getValue();
     for(uint32_t i=0;i<connectedVar->getArraySize();i++)
     {
-      std::string dstStr = connectedVar->getArrayElement(i)->getStringData();
-      Port dst(getWrappedCoreBinding(), prefix + dstStr);
-      result.push_back(Connection(src, dst));
+      char const* dstStr = connectedVar->getArrayElement(i)->getStringData();
+      EndPointPtr dst = EndPoint::Create(getWrappedCoreBinding(), getWrappedCoreExec(), getExecPath(), dstStr);
+      result.push_back(new Connection(src, dst));
     }
   }
 
   return result; 
+}
+
+bool GraphExecutable::canConnectTo(
+  char const *srcPath,
+  char const *dstPath,
+  std::string &failureReason
+)
+{
+  FabricCore::DFGStringResult result = m_exec.canConnectTo(srcPath, dstPath);
+  char const *failureReasonData;
+  uint32_t failureReasonLength;
+  result.getStringDataAndLength( failureReasonData, failureReasonLength );
+  failureReason = std::string( failureReasonData, failureReasonLength );
+  return failureReason.empty();
 }

@@ -43,9 +43,9 @@ void Binding::setArgValue(char const *name, FabricCore::RTVal value)
   m_binding.setArgValue(name, value);
 }
 
-GraphExecutable Binding::getGraph()
+ExecutablePtr Binding::getExecutable()
 {
-  return GraphExecutable(m_binding, "");
+  return Executable::Create(m_binding, m_binding.getExec(), "");
 }
 
 void Binding::execute()
@@ -56,14 +56,4 @@ void Binding::execute()
 void Binding::setNotificationCallback(FabricCore::DFGNotificationCallback callback, void * userData)
 {
   m_binding.setNotificationCallback(callback, userData);
-}
-
-bool Binding::canConnect(char const *pathA, char const *pathB, std::string &failureDesc)
-{
-  FabricCore::DFGStringResult result = m_binding.canConnect(pathA, pathB);
-  char const *failureDescData;
-  uint32_t failureDescLength;
-  result.getStringDataAndLength( failureDescData, failureDescLength );
-  failureDesc = std::string( failureDescData, failureDescLength );
-  return failureDesc.empty();
 }

@@ -4,34 +4,35 @@
 
 using namespace FabricServices::DFGWrapper;
 
-FuncExecutable::FuncExecutable(FabricCore::DFGBinding binding, std::string path)
-: Executable(binding, path)
+FuncExecutable::FuncExecutable(
+  FabricCore::DFGBinding binding,
+  FabricCore::DFGExec exec,
+  const char * funcPath
+  )
+: Executable(binding, exec, funcPath)
 {
 }
 
-FuncExecutable::FuncExecutable(const Executable & other)
-: Executable(other)
+FuncExecutablePtr FuncExecutable::Create(
+  FabricCore::DFGBinding binding,
+  FabricCore::DFGExec exec,
+  const char * funcPath
+  )
 {
-}
-
-FuncExecutable::FuncExecutable(const FuncExecutable & other)
-: Executable(other)
-{
+  return new FuncExecutable( binding, exec, funcPath );
 }
 
 FuncExecutable::~FuncExecutable()
 {
 }
 
-std::string FuncExecutable::getCode()
+char const* FuncExecutable::getCode()
 {
-  FabricCore::Variant descVar = FabricCore::Variant::CreateFromJSON(getDesc().c_str());
-  const FabricCore::Variant * codeVar = descVar.getDictValue("code");
-  return codeVar->getStringData();
+  return getWrappedCoreExec().getCode();
 }
 
 void FuncExecutable::setCode(char const *code)
 {
-  getWrappedCoreBinding().setCode(getPath().c_str(), code);
+  getWrappedCoreExec().setCode(code);
 }
 

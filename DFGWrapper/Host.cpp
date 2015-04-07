@@ -14,6 +14,11 @@ Host::Host(const Host & other)
   m_host = other.m_host;
 }
 
+Host::Host(const FabricCore::DFGHost & other)
+{
+  m_host = other;
+}
+
 Host::~Host()
 {
 }

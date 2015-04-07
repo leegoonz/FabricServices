@@ -15,48 +15,59 @@ namespace FabricServices
   namespace DFGWrapper
   {
 
-    class Node
+    class GraphExecutable;
+    typedef FTL::SharedPtr<GraphExecutable> GraphExecutablePtr;
+
+    class Node : public Element
     {
       friend class Binding;
       friend class GraphExecutable;
       friend class View;
+      friend class Pin;
 
     public:
 
-      Node();
-      Node(const Node & other);
+      virtual bool isNode() const { return true; }
+
+      static NodePtr Create(
+        FabricCore::DFGBinding binding,
+        FabricCore::DFGExec parentExec,
+        char const *execPath,
+        char const *nodePath
+        );
       virtual ~Node();
 
-      bool isValid();
-      FabricCore::DFGBinding getWrappedCoreBinding() const;
+      char const *getNodePath() const
+        { return getElementPath(); }
 
-      Executable getExecutable();
+      GraphExecutablePtr getOwningGraphExecutable();
+      ExecutablePtr getExecutable();
 
-      std::string getDesc();
-      std::string getPath();
-      std::string getTitle();
+      virtual std::string getDesc();
+      char const* getTitle();
       void setTitle(char const *title);
-      std::vector<std::string> getDataTypes();
 
       FEC_DFGCacheRule getCacheRule() const;
       void setCacheRule(FEC_DFGCacheRule rule);
 
-      std::string getMetadata(char const * key);
-      void setMetadata(char const * key, char const * metadata, bool canUndo);
+      virtual char const *getMetadata(char const * key) const;
+      virtual void setMetadata(char const * key, char const * metadata, bool canUndo);
 
-      std::vector<Pin> getPins();
-      Pin getPin(char const * name);
-      Pin getPin(uint32_t index);
+      PinList getPins();
+      PinPtr getPin(char const * name);
+      PinPtr getPin(uint32_t index);
 
     protected:
       
-      Node(FabricCore::DFGBinding binding, std::string path);
+      Node(
+        FabricCore::DFGBinding binding,
+        FabricCore::DFGExec parentExec,
+        char const *execPath,
+        char const *nodePath
+        );
 
     private:
-
-      FabricCore::DFGBinding m_binding;
-      std::string m_path;
-      std::string m_objectType;
+      std::string m_execPath;
     };
 
   };

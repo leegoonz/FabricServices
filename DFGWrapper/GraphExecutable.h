@@ -5,14 +5,16 @@
 
 #include <FabricCore.h>
 #include "Executable.h"
-#include "Connection.h"
 #include "Node.h"
+#include "Connection.h"
 
 namespace FabricServices
 {
 
   namespace DFGWrapper
   {
+    class GraphExecutable;
+    typedef FTL::SharedPtr<GraphExecutable> GraphExecutablePtr;
 
     class GraphExecutable : public Executable
     {
@@ -22,26 +24,41 @@ namespace FabricServices
 
     public:
 
-      GraphExecutable(const Executable & other);
-      GraphExecutable(const GraphExecutable & other);
+      virtual bool isGraph() const { return true; }
+
+      static GraphExecutablePtr Create(
+        FabricCore::DFGBinding binding,
+        FabricCore::DFGExec exec,
+        const char * graphPath
+      );
       virtual ~GraphExecutable();
 
-      Node addNodeFromPreset(char const * preset);
-      Node addNodeWithNewGraph(char const * title = 0);
-      Node addNodeWithNewFunc(char const * title = 0);
-      Node addNodeFromJSON(char const * json);
+      char const *getGraphPath() const { return getExecPath(); }
 
-      std::vector<Node> getNodes();
-      Node getNode(char const * name);
-      void removeNode(Node node);
+      NodePtr addNodeFromPreset(char const * preset);
+      NodePtr addNodeWithNewGraph(char const * title = 0);
+      NodePtr addNodeWithNewFunc(char const * title = 0);
+      NodePtr addNodeFromJSON(char const * json);
 
+      NodeList getNodes();
+      NodePtr getNode(char const * name);
+      void removeNode(NodePtr node);
 
-      std::vector<Connection> getConnections();
+      ConnectionList getConnections();
+
+      bool canConnectTo(
+        char const *srcPath,
+        char const *dstPath,
+        std::string &failureReason
+      );
 
     protected:
       
-      GraphExecutable();
-      GraphExecutable(FabricCore::DFGBinding binding, std::string path);
+      GraphExecutable(
+        FabricCore::DFGBinding binding,
+        FabricCore::DFGExec exec,
+        const char * graphPath
+      );
 
     };
 
