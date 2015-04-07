@@ -5,6 +5,10 @@
 
 using namespace FabricServices::DFGWrapper;
 
+View::View()
+{
+}
+
 View::View(GraphExecutablePtr graph)
 {
   setGraph(graph);
@@ -50,8 +54,8 @@ void View::callback(void * userData, char const * jsonCString, uint32_t jsonLeng
   const FabricCore::Variant * descVar = notificationVar.getDictValue("desc");
   std::string descStr = descVar->getStringData();
 
-  if(descStr != "nodeMetadataChanged")
-    printf("View::callback %s\n", jsonCString);
+  // if(descStr != "nodeMetadataChanged")
+  //   printf("View::callback %s\n", jsonCString);
 
   if(descStr == "nodeInserted")
   {
@@ -176,6 +180,13 @@ void View::callback(void * userData, char const * jsonCString, uint32_t jsonLeng
     const FabricCore::Variant * resolvedTypeVar = notificationVar.getDictValue("resolvedType");
     PortPtr port = Port::Create(binding, exec->getWrappedCoreExec(), exec->getExecPath(), portPathVar->getStringData());
     view->onPortResolvedTypeChanged(port, resolvedTypeVar->getStringData());
+  }
+  else if(descStr == "pinResolvedTypeChanged")
+  {
+    const FabricCore::Variant * pinPathVar = notificationVar.getDictValue("pinPath");
+    const FabricCore::Variant * resolvedTypeVar = notificationVar.getDictValue("resolvedType");
+    PinPtr pin = Pin::Create(binding, exec->getWrappedCoreExec(), exec->getExecPath(), pinPathVar->getStringData());
+    view->onPinResolvedTypeChanged(pin, resolvedTypeVar->getStringData());
   }
   else
   {
