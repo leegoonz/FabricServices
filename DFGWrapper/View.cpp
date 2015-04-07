@@ -5,6 +5,10 @@
 
 using namespace FabricServices::DFGWrapper;
 
+View::View()
+{
+}
+
 View::View(GraphExecutablePtr graph)
 {
   setGraph(graph);
@@ -50,8 +54,8 @@ void View::callback(void * userData, char const * jsonCString, uint32_t jsonLeng
   const FabricCore::Variant * descVar = notificationVar.getDictValue("desc");
   std::string descStr = descVar->getStringData();
 
-  if(descStr != "nodeMetadataChanged")
-    printf("View::callback %s\n", jsonCString);
+  // if(descStr != "nodeMetadataChanged")
+  //   printf("View::callback %s\n", jsonCString);
 
   if(descStr == "nodeInserted")
   {
