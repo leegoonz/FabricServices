@@ -2,7 +2,7 @@
 # Copyright 2010-2015 Fabric Software Inc. All rights reserved.
 #
 
-Import('parentEnv', 'capiIncludeDir')
+Import('parentEnv', 'capiIncludeDir', 'stageDir')
 
 env = parentEnv.CloneSubStage('DFGWrapper')
 
@@ -20,6 +20,9 @@ dfgWrapperFlags = {
   'LIBS': [dfgWrapperLib]
   }
 
+installedDfgWrapperHeaders = env.Install(stageDir.Dir('include').Dir('DFGWrapper'), env.Glob('*.h'))
+installedDfgWrapperLib = env.Install(stageDir.Dir('lib'), dfgWrapperLib)
+
 Export('dfgWrapperLib', 'dfgWrapperIncludeDir', 'dfgWrapperFlags')
-Alias('dfgWrapper', dfgWrapperLib)
+Alias('dfgWrapper', dfgWrapperLib + installedDfgWrapperHeaders + installedDfgWrapperLib)
 Return('dfgWrapperLib')
