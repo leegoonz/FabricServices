@@ -82,6 +82,16 @@ std::string Executable::exportJSON()
   return m_exec.exportJSON().getCString();
 }
 
+std::string Executable::exportNodesJSON(uint32_t nodeCount, char const * const *nodeNames)
+{
+  return m_exec.exportNodesJSON(nodeCount, nodeNames).getCString();
+}
+
+std::string Executable::importNodesJSON(char const *nodesJSON)
+{
+  return m_exec.importNodesJSON(nodesJSON).getCString();
+}
+
 FEC_DFGCacheRule Executable::getCacheRule() const
 {
   return m_exec.getCacheRule();
