@@ -25,6 +25,8 @@ if env['FABRIC_BUILD_OS'] == 'Darwin':
   env.Append(CXXFLAGS = ['-std=c++03'])
   env.Append(CXXFLAGS = ['-stdlib=libstdc++'])
   env.Append(LINKFLAGS = ['-stdlib=libstdc++'])
+elif env['FABRIC_BUILD_OS'] == 'Linux':
+  env.Append(CCFLAGS = ['-fPIC'])
 
 # disable for now, we'll build a static library for now
 # env.Append(CPPDEFINES = ['FABRICSERVICES_BUILDING'])
