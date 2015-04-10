@@ -54,7 +54,7 @@ void View::callback(void * userData, char const * jsonCString, uint32_t jsonLeng
   const FabricCore::Variant * descVar = notificationVar.getDictValue("desc");
   std::string descStr = descVar->getStringData();
 
-  if(descStr != "nodeMetadataChanged")
+  if(descStr != "nodeMetadataChanged" && descStr != "execMetadataChanged")
     printf("View::callback %s\n", jsonCString);
 
   if(descStr == "nodeInserted")
@@ -129,9 +129,8 @@ void View::callback(void * userData, char const * jsonCString, uint32_t jsonLeng
     const FabricCore::Variant * oldPathVar = notificationVar.getDictValue("oldPath");
     const FabricCore::Variant * newPathVar = notificationVar.getDictValue("newPath");
     std::string oldPath = oldPathVar->getStringData();
-    if(oldPath.rfind('.') != std::string::npos)
-      oldPath = oldPath.substr(oldPath.find('.')+1, oldPath.length());
-    PortPtr port = Port::Create(binding, exec->getWrappedCoreExec(), exec->getExecPath(), newPathVar->getStringData());
+    std::string newPath = newPathVar->getStringData();
+    PortPtr port = Port::Create(binding, exec->getWrappedCoreExec(), exec->getExecPath(), newPath.c_str());
     view->onPortRenamed(port, oldPath.c_str());
   }
   else if(descStr == "pinRenamed")
