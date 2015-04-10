@@ -57,8 +57,6 @@ namespace FabricServices
       std::vector<std::string> getErrors();
 
       std::string exportJSON();
-      std::string exportNodesJSON(uint32_t nodeCount, char const * const *nodeNames);
-      std::string importNodesJSON(char const *nodesJSON);
 
       virtual char const *getMetadata(char const * key) const;
       virtual void setMetadata(char const * key, char const * metadata, bool canUndo);

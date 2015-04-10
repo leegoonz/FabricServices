@@ -85,6 +85,21 @@ void GraphExecutable::removeNode(NodePtr node)
   );
 }
 
+std::string GraphExecutable::exportNodesJSON(uint32_t nodeCount, char const * const *nodeNames)
+{
+  return m_exec.exportNodesJSON(nodeCount, nodeNames).getCString();
+}
+
+std::string GraphExecutable::importNodesJSON(char const *nodesJSON)
+{
+  return m_exec.importNodesJSON(nodesJSON).getCString();
+}
+
+char const * GraphExecutable::implodeNodes(char const *desiredName, uint32_t nodeCount, char const * const *nodeNames)
+{
+  return m_exec.implodeNodes(desiredName, nodeCount, nodeNames);
+}
+
 ConnectionList GraphExecutable::getConnections()
 {
   ConnectionList result;

@@ -44,6 +44,10 @@ namespace FabricServices
       NodePtr getNode(char const * name);
       void removeNode(NodePtr node);
 
+      std::string exportNodesJSON(uint32_t nodeCount, char const * const *nodeNames);
+      std::string importNodesJSON(char const *nodesJSON);
+      char const * implodeNodes(char const *desiredName, uint32_t nodeCount, char const * const *nodeNames);
+
       ConnectionList getConnections();
 
       bool canConnectTo(
