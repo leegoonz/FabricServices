@@ -57,3 +57,8 @@ void Binding::setNotificationCallback(FabricCore::DFGNotificationCallback callba
 {
   m_binding.setNotificationCallback(callback, userData);
 }
+
+std::string Binding::exportJSON()
+{
+  return m_binding.exportJSON().getCString();
+}

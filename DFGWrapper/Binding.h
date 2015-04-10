@@ -36,6 +36,8 @@ namespace FabricServices
 
       void setNotificationCallback(FabricCore::DFGNotificationCallback callback, void * userData);
 
+      std::string exportJSON();
+
     private:
       FabricCore::DFGBinding m_binding;      
     };
