@@ -38,6 +38,11 @@ bool Host::maybeRedo()
   return m_host.maybeRedo();
 }
 
+void Host::flushUndoRedo()
+{
+  m_host.flushUndoRedo();
+}
+
 NameSpace Host::getRootNameSpace() const
 {
   return NameSpace(m_host, "");

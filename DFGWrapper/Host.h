@@ -29,6 +29,7 @@ namespace FabricServices
 
       bool maybeUndo();
       bool maybeRedo();
+      void flushUndoRedo();
 
       NameSpace getRootNameSpace() const;
 

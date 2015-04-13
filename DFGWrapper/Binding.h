@@ -25,6 +25,7 @@ namespace FabricServices
       virtual ~Binding();
 
       bool isValid() const;
+      void flush();
       FabricCore::DFGBinding getWrappedCoreBinding() const;
 
       FabricCore::RTVal getArgValue(char const *name);

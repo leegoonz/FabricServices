@@ -28,6 +28,11 @@ bool Binding::isValid() const
   return m_binding.isValid();
 }
 
+void Binding::flush()
+{
+  m_binding.flush();
+}
+
 FabricCore::DFGBinding Binding::getWrappedCoreBinding() const
 {
   return m_binding;
