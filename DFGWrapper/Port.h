@@ -60,12 +60,17 @@ namespace FabricServices
         return "";
       }
 
-      char const *getTypeSpec() const
+      virtual char const *getTypeSpec() const
       {
         char const * result = FabricCore::DFGExec(m_exec).getPortTypeSpec(getPortPath());
         if(result)
           return result;
         return "";
+      }
+
+      virtual void setTypeSpec(char const * spec)
+      {
+        m_exec.setPortTypeSpec(getPortPath(), spec);
       }
 
       virtual char const *rename(char const * name);
