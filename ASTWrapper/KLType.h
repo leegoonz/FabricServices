@@ -34,7 +34,7 @@ namespace FabricServices
       uint32_t getMethodCount() const;
       const KLMethod * getMethod(uint32_t index) const;
       const KLMethod * getMethod(const char * labelOrName) const;
-      std::vector<const KLMethod*> getMethods(bool includeInherited = false, bool includeInternal = true, const char * category = 0) const;
+      std::vector<const KLMethod*> getMethods(bool includeInherited = false, bool includeInternal = true, const char * category = 0, bool sorted = true) const;
 
       uint32_t getTypeOpCount() const;
       const KLTypeOp * getTypeOp(uint32_t index) const;

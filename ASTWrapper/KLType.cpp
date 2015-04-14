@@ -68,9 +68,10 @@ const KLMethod * KLType::getMethod(const char * labelOrName) const
   return NULL;
 }
 
-std::vector<const KLMethod*> KLType::getMethods(bool includeInherited, bool includeInternal, const char * category) const
+std::vector<const KLMethod*> KLType::getMethods(bool includeInherited, bool includeInternal, const char * category, bool sorted) const
 {
   std::map<std::string, const KLMethod*> lookup;
+  std::vector<const KLMethod*> flatList;
   for(uint32_t i=0;i<m_methods.size();i++)
   {
     if(!includeInternal && m_methods[i]->isInternal())
@@ -84,6 +85,7 @@ std::vector<const KLMethod*> KLType::getMethods(bool includeInherited, bool incl
 
     std::string key = m_methods[i]->getLabel();
     lookup.insert(std::pair<std::string, const KLMethod*>(key,m_methods[i]));
+    flatList.push_back(m_methods[i]);
   }
 
   if(includeInherited)
@@ -91,7 +93,7 @@ std::vector<const KLMethod*> KLType::getMethods(bool includeInherited, bool incl
     std::vector<const KLType*> parents = getParents();
     for(uint32_t i=0;i<parents.size();i++)
     {
-      std::vector<const KLMethod*> methods = parents[i]->getMethods(includeInherited, includeInternal, category);
+      std::vector<const KLMethod*> methods = parents[i]->getMethods(includeInherited, includeInternal, category, sorted);
       for(uint32_t j=0;j<methods.size();j++)
       {
         if(!methods[j]->isVirtual())
@@ -100,15 +102,17 @@ std::vector<const KLMethod*> KLType::getMethods(bool includeInherited, bool incl
         if(lookup.find(key) != lookup.end())
          continue;
         lookup.insert(std::pair<std::string, const KLMethod*>(key, methods[j]));
+        flatList.push_back(methods[j]);
       }
     }
   }
 
+  if(!sorted)
+    return flatList;
+
   std::vector<const KLMethod*> methods;
   for(std::map<std::string, const KLMethod*>::const_iterator it = lookup.begin(); it != lookup.end(); it++)
-  {
     methods.push_back(it->second);
-  }
   return methods;
 }
 
