@@ -325,6 +325,62 @@ std::string KLComment::removeRstRoles(const char * text)
   return result;
 }
 
+bool KLComment::getColorFromSingleQualifier(const char * qualifier, int & r, int & g, int & b) const
+{
+  if(qualifier == NULL)
+    return false;
+  std::string colorStr = getSingleQualifier(qualifier);
+  if(colorStr.length() == 0)
+    return false;
+
+  std::string filteredColorStr;
+  int commaCount = 0;
+  for(unsigned int i=0;i<colorStr.length();i++)
+  {
+    char c = colorStr[i];
+    if(c == ',')
+      commaCount++;
+    if(isalnum(c) || c == '(' || c == ')' || c == ',') // don't use '.'' since it is all integers
+      filteredColorStr += tolower(c);
+  }
+
+  if(filteredColorStr.length() < 12) // color(0,0,0)
+  {
+    printf("Invalid '%s' color token found: '%s'\n", qualifier, colorStr.c_str());
+    return false;
+  }
+  if(commaCount != 2)
+  {
+    printf("Invalid '%s' color token found: '%s'\n", qualifier, colorStr.c_str());
+    return false;
+  }
+  if(filteredColorStr.substr(0, 6) != "color(")
+  {
+    printf("Invalid '%s' color token found: '%s'\n", qualifier, colorStr.c_str());
+    return false;
+  }
+  if(filteredColorStr[filteredColorStr.length()-1] != ')')
+  {
+    printf("Invalid '%s' color token found: '%s'\n", qualifier, colorStr.c_str());
+    return false;
+  }
+
+  std::string parts = filteredColorStr.substr(6, filteredColorStr.length() - 7);
+
+  int firstComma = parts.find(',');
+  int secondComma = parts.find(',', firstComma + 1);
+
+  std::string rStr = parts.substr(0, firstComma);
+  std::string gStr = parts.substr(firstComma + 1, secondComma - firstComma - 1);
+  std::string bStr = parts.substr(secondComma + 1, parts.length() - secondComma);
+
+  r = atoi(rStr.c_str());
+  g = atoi(gStr.c_str());
+  b = atoi(bStr.c_str());
+
+  return true;
+}
+
 std::string KLComment::getPlainText() const
 {
   return getQualifier(NULL, "");
