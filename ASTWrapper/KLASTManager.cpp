@@ -470,7 +470,17 @@ const KLType* KLASTManager::getKLTypeByName(const char * name, const KLDecl* dec
 {
   if(decl)
     return getKLTypeByName(name, decl->getKLFile());
-  return getKLTypeByName(name);
+
+  // if we don't have it in the provided extension, check the global map
+  // go backwards since we want to check highest extension versions first
+  std::vector<const KLType*> types = getTypes();
+  for(long int i=types.size()-1;i>=0;i--)
+  {
+    if(types[i]->getName() == name)
+      return types[i];
+  }
+
+  return NULL;
 }
 
 const KLType* KLASTManager::getKLTypeByName(const char * name, const KLFile* file) const
