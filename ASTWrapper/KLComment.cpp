@@ -188,6 +188,27 @@ std::string KLComment::getSingleQualifier(const char * qualifier, const char * d
   return lines[0];
 }
 
+std::string KLComment::getSingleQualifierWithName(const char * qualifier, const char * name, const char * defaultResult) const
+{
+  std::string q = getQualifier(qualifier, defaultResult);
+  if(q.length() == 0)
+    return q;
+
+  std::vector<std::string> lines;
+  FTL::StrSplit<'\n'>(q, lines);
+
+  for(size_t i=0;i<lines.size();i++)
+  {
+    int pos = lines[i].find(' ');
+    if(pos == std::string::npos)
+      continue;
+    if(lines[i].substr(0, pos) != name)
+      continue;
+    return lines[i].substr(pos+1, lines[i].length());
+  }
+  return "";
+}
+
 std::string KLComment::getQualifierBracket(const char * qualifier, const char * defaultResult) const
 {
   if(!qualifier)

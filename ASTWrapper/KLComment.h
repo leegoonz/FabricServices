@@ -31,6 +31,7 @@ namespace FabricServices
       bool hasQualifier(const char * qualifier) const;
       std::string getQualifier(const char * qualifier = 0, const char * defaultResult = 0) const;
       std::string getSingleQualifier(const char * qualifier, const char * defaultResult = 0) const;
+      std::string getSingleQualifierWithName(const char * qualifier, const char * name, const char * defaultResult = 0) const;
       std::string getQualifierBracket(const char * qualifier, const char * defaultResult = 0) const;
       static std::string removeRstRoles(const char * text);
       bool getColorFromSingleQualifier(const char * qualifier, int & r, int & g, int & b) const;
