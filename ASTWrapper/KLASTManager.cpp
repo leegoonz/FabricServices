@@ -19,6 +19,7 @@ KLASTManager::KLASTManager(const FabricCore::Client * client)
   m_client = *client;
   m_maxDeclId = 0;
   m_isUpdatingASTClients = false;
+  m_autoLoadExtensions = false;
 }
 
 KLASTManager::~KLASTManager()
@@ -125,6 +126,16 @@ void KLASTManager::onASTChanged()
   {
     m_astClients[i]->onASTChanged();
   }
+}
+
+bool KLASTManager::getAutoLoadExtensions() const
+{
+  return m_autoLoadExtensions;
+}
+
+void KLASTManager::setAutoLoadExtensions(bool state)
+{
+  m_autoLoadExtensions = state;
 }
 
 const KLExtension* KLASTManager::loadExtension(const char * name, const char * jsonContent, uint32_t numKlFiles, const char ** klContent)
@@ -276,10 +287,10 @@ const KLExtension* KLASTManager::loadExtensionFromFolder(
           {
             KLExtension *klExtension =
               new KLExtension(this, entryPath.c_str());
-            onExtensionLoaded(result);
-            m_extensions.push_back(result);
+            onExtensionLoaded(klExtension);
+            m_extensions.push_back(klExtension);
             klExtension->parse();
-            onExtensionParsed(result);
+            onExtensionParsed(klExtension);
             result = klExtension;
           }
           catch(FabricCore::Exception e)

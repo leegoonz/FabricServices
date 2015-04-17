@@ -30,6 +30,8 @@ namespace FabricServices
       static void releaseGlobalManager();
       const FabricCore::Client* getClient() const;
 
+      bool getAutoLoadExtensions() const;
+      void setAutoLoadExtensions(bool state);
       const KLExtension* loadExtension(const char * name, const char * jsonContent, uint32_t numKlFiles, const char ** klContent);
       const KLExtension* loadExtension(const char * jsonFilePath);
       void loadAllExtensionsInFolder(const char * extensionFolder, bool parseExtensions = true);
@@ -86,6 +88,7 @@ namespace FabricServices
       std::vector<KLASTClient*> m_astClients;
       uint32_t m_maxDeclId;
       bool m_isUpdatingASTClients;
+      bool m_autoLoadExtensions;
 
       static KLASTManager * s_manager;
       static uint32_t s_managerRefs;

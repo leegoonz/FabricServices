@@ -62,6 +62,14 @@ void KLFile::parse()
           // ensure to parse extensions in the right order,
           // so that we can add methods to types for example.
           KLExtension * extension = (KLExtension *)getExtension()->getASTManager()->getExtension(e);
+
+          if(extension == NULL && getExtension()->getASTManager()->getAutoLoadExtensions())
+          {
+            const char * extName = e->getRequiredExtension().c_str();
+            KLASTManager * manager = ((KLASTManager*)getExtension()->getASTManager());
+            extension = (KLExtension *)manager->loadExtensionFromExtsPath(extName);
+          }
+
           if(extension)
             extension->parse();
         }
