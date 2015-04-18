@@ -54,9 +54,6 @@ void View::callback(void * userData, char const * jsonCString, uint32_t jsonLeng
   const FabricCore::Variant * descVar = notificationVar.getDictValue("desc");
   std::string descStr = descVar->getStringData();
 
-  if(descStr != "nodeMetadataChanged" && descStr != "execMetadataChanged")
-    printf("View::callback %s\n", jsonCString);
-
   if(descStr == "nodeInserted")
   {
     const FabricCore::Variant * nodePathVar = notificationVar.getDictValue("nodePath");
