@@ -177,8 +177,10 @@ void View::callback(void * userData, char const * jsonCString, uint32_t jsonLeng
     PortPtr port = Port::Create(binding, exec->getWrappedCoreExec(), exec->getExecPath(), portPathVar->getStringData());
     if(resolvedTypeVar->isString())
       view->onPortResolvedTypeChanged(port, resolvedTypeVar->getStringData());
-    else
-      view->onPortResolvedTypeChanged(port, "");
+
+    // FE-4153: ignore null data types for now
+    // else
+    //   view->onPortResolvedTypeChanged(port, "");
   }
   else if(descStr == "pinResolvedTypeChanged")
   {
