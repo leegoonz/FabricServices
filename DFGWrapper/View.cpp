@@ -180,6 +180,16 @@ void View::callback(void * userData, char const * jsonCString, uint32_t jsonLeng
     else
       view->onPortResolvedTypeChanged(port, "");
   }
+  else if(descStr == "portTypeSpecChanged")
+  {
+    const FabricCore::Variant * portPathVar = notificationVar.getDictValue("portPath");
+    const FabricCore::Variant * typeSpecVar = notificationVar.getDictValue("typeSpec");
+    PortPtr port = Port::Create(binding, exec->getWrappedCoreExec(), exec->getExecPath(), portPathVar->getStringData());
+    if(typeSpecVar->isString())
+      view->onPortTypeSpecChanged(port, typeSpecVar->getStringData());
+    else
+      view->onPortTypeSpecChanged(port, "");
+  }
   else if(descStr == "pinResolvedTypeChanged")
   {
     const FabricCore::Variant * pinPathVar = notificationVar.getDictValue("pinPath");

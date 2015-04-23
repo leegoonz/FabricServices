@@ -54,6 +54,7 @@ namespace FabricServices
       virtual void onNodeCacheRuleChanged(const char * path, const char * rule) = 0;
       virtual void onExecCacheRuleChanged(const char * path, const char * rule) = 0;
       virtual void onPortResolvedTypeChanged(PortPtr port, const char * resolvedType) = 0;
+      virtual void onPortTypeSpecChanged(PortPtr port, const char * typeSpec) = 0;
       virtual void onPinResolvedTypeChanged(PinPtr pin, const char * resolvedType) = 0;
 
     private:
