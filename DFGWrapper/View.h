@@ -56,6 +56,8 @@ namespace FabricServices
       virtual void onPortResolvedTypeChanged(PortPtr port, const char * resolvedType) = 0;
       virtual void onPortTypeSpecChanged(PortPtr port, const char * typeSpec) = 0;
       virtual void onPinResolvedTypeChanged(PinPtr pin, const char * resolvedType) = 0;
+      virtual void onPortMetadataChanged(FabricServices::DFGWrapper::PortPtr port, const char * key, const char * metadata) = 0;
+      virtual void onPinMetadataChanged(FabricServices::DFGWrapper::PinPtr pin, const char * key, const char * metadata) = 0;
 
     private:
 

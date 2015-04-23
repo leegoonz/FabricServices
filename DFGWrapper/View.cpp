@@ -200,6 +200,28 @@ void View::callback(void * userData, char const * jsonCString, uint32_t jsonLeng
     else
       view->onPinResolvedTypeChanged(pin, "");
   }
+  else if(descStr == "portMetadataChanged")
+  {
+    const FabricCore::Variant * portPathVar = notificationVar.getDictValue("portPath");
+    const FabricCore::Variant * keyVar = notificationVar.getDictValue("key");
+    const FabricCore::Variant * valueVar = notificationVar.getDictValue("value");
+    PortPtr port = Port::Create(binding, exec->getWrappedCoreExec(), exec->getExecPath(), portPathVar->getStringData());
+    if(valueVar->isString())
+      view->onPortMetadataChanged(port, keyVar->getStringData(), valueVar->getStringData());
+    else
+      view->onPortMetadataChanged(port, keyVar->getStringData(), "");
+  }
+  else if(descStr == "pinMetadataChanged")
+  {
+    const FabricCore::Variant * pinPathVar = notificationVar.getDictValue("pinPath");
+    const FabricCore::Variant * keyVar = notificationVar.getDictValue("key");
+    const FabricCore::Variant * valueVar = notificationVar.getDictValue("value");
+    PinPtr pin = Pin::Create(binding, exec->getWrappedCoreExec(), exec->getExecPath(), pinPathVar->getStringData());
+    if(valueVar->isString())
+      view->onPinMetadataChanged(pin, keyVar->getStringData(), valueVar->getStringData());
+    else
+      view->onPinMetadataChanged(pin, keyVar->getStringData(), "");
+  }
   else
   {
     printf("View::callback: Unhandled desc '%s', '%s'\n", descStr.c_str(), jsonCString);
