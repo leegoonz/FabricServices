@@ -54,7 +54,7 @@ namespace FabricServices
       FEC_DFGCacheRule getCacheRule() const;
       void setCacheRule(FEC_DFGCacheRule rule);
 
-      std::vector<std::string> getErrors();
+      virtual std::vector<std::string> getErrors();
 
       std::string exportJSON();
 
