@@ -1,6 +1,7 @@
 // Copyright 2010-2015 Fabric Software Inc. All rights reserved.
 
 #include "GraphExecutable.h"
+#include <FTL/StrSplit.h>
 // #include "Node.h"
 
 using namespace FabricServices::DFGWrapper;
@@ -98,6 +99,26 @@ std::string GraphExecutable::importNodesJSON(char const *nodesJSON)
 char const * GraphExecutable::implodeNodes(char const *desiredName, uint32_t nodeCount, char const * const *nodeNames)
 {
   return m_exec.implodeNodes(desiredName, nodeCount, nodeNames);
+}
+
+std::vector<std::string> GraphExecutable::explodeNode(char const * nodeName)
+{
+  std::vector<std::string> result;
+  std::string resultStr = m_exec.explodeNode(nodeName).getCString();
+  if(resultStr.length() == 0)
+    return result;
+
+  FabricCore::Variant resultVar = FabricCore::Variant::CreateFromJSON(resultStr.c_str());
+  if(resultVar.isArray())
+  {
+    for(uint32_t i=0;i<resultVar.getArraySize();i++)
+    {
+      char const* nodeName = resultVar.getArrayElement(i)->getStringData();
+      result.push_back(nodeName);
+    }
+  }
+
+  return result;
 }
 
 ConnectionList GraphExecutable::getConnections()
