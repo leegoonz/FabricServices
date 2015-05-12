@@ -3,7 +3,7 @@
 #
 
 import os
-Import('parentEnv', 'stageDir', 'dirs', 'capiSharedLibFlags', 'llvmFlags', 'msvc_version', 'installHeaders')
+Import('parentEnv', 'stageDir', 'dirs', 'capiSharedLibFlags', 'llvmFlags', 'msvc_version', 'opt_version', 'installHeaders')
 
 # todo: use visual studio 2013
 # env = parentEnv.CloneSubStage('FabricServices')
@@ -72,7 +72,9 @@ servicesFiles = []
 
 libName = 'FabricServices'
 if env['FABRIC_BUILD_OS'] == 'Windows': 
-  libName += '-MSVC-' + msvc_version
+  libName += '-MSVC-' + msvc_version + '-' + opt_version + '.lib'
+  env.Append(CCFLAGS = ['/'+opt_version.upper()])
+
 servicesLib = env.StaticLibrary(libName, sources)
 servicesFiles += servicesLib
 

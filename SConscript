@@ -24,27 +24,32 @@ SConscript(
 
 allServicesLibFiles = []
 msvc_versions = ['12.0']
+opt_versions = ['mt']
 if 'servicesLib' in COMMAND_LINE_TARGETS and env['FABRIC_BUILD_OS'] == 'Windows':
   msvc_versions = ['10.0', '12.0']
+  opt_versions = ['mt', 'md']
 
+installHeaders = True
 for msvc_version in msvc_versions:
-
-  allServicesLibFiles += SConscript(
-    'SConscript.ServicesLib',
-    exports = {
-      'parentEnv': env, 
-      'dirs': [
-        'Commands',
-        'ASTWrapper',
-        'DFGWrapper',
-        'CodeCompletion',
-        # 'SplitSearch',
-      ],
-      'msvc_version': msvc_version,
-      'installHeaders': msvc_version == msvc_versions[0]
-    },
-    variant_dir = 'FabricServices-'+msvc_version
-    )
+  for opt_version in opt_versions:
+    allServicesLibFiles += SConscript(
+      'SConscript.ServicesLib',
+      exports = {
+        'parentEnv': env, 
+        'dirs': [
+          'Commands',
+          'ASTWrapper',
+          'DFGWrapper',
+          'CodeCompletion',
+          # 'SplitSearch',
+        ],
+        'msvc_version': msvc_version,
+        'opt_version': opt_version,
+        'installHeaders': installHeaders
+      },
+      variant_dir = 'FabricServices-'+msvc_version+'-'+opt_version
+      )
+    installHeaders = False
 
 Export('allServicesLibFiles')
 
