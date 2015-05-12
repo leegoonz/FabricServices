@@ -486,7 +486,7 @@ const KLDecl * KLCodeAssistant::getDeclAtCursor(uint32_t line, uint32_t column) 
           if(delegates.size() == 0)
             return functions[i];
 
-          KLTypeDesc returnType(functions[i]->getReturnType());
+          DFGWrapper::KLTypeDesc returnType(functions[i]->getReturnType());
           type = getASTManager()->getKLTypeByName(resolveAliases(returnType.getBaseType().c_str()), m_file);
           if(type)
             break;
@@ -525,7 +525,7 @@ const KLDecl * KLCodeAssistant::getDeclAtCursor(uint32_t line, uint32_t column) 
         if(i == delegates.size()-1)
           return method;
 
-        KLTypeDesc returnType(method->getReturnType());
+        DFGWrapper::KLTypeDesc returnType(method->getReturnType());
         type = getASTManager()->getKLTypeByName(resolveAliases(returnType.getBaseType().c_str()), m_file);
         if(type == NULL)
           return NULL;
@@ -541,7 +541,7 @@ const KLDecl * KLCodeAssistant::getDeclAtCursor(uint32_t line, uint32_t column) 
           const KLMember * member = castType->getMember(delegates[i].c_str(), true);
           if(member)
           {
-            KLTypeDesc memberType(member->getType());
+            DFGWrapper::KLTypeDesc memberType(member->getType());
             type = getASTManager()->getKLTypeByName(memberType.getBaseType().c_str(), m_file);
             if(type == NULL)
               return NULL;
@@ -572,7 +572,7 @@ const KLType * KLCodeAssistant::getTypeAtCursor(uint32_t line, uint32_t column, 
     }
     else if(decl->isOfDeclType(KLDeclType_Function))
     {
-      KLTypeDesc typeDesc(((const KLFunction*)decl)->getReturnType());
+      DFGWrapper::KLTypeDesc typeDesc(((const KLFunction*)decl)->getReturnType());
       if(ignoreInvalidMethod)
       {
         if(decl->isOfDeclType(KLDeclType_Method))
@@ -586,7 +586,7 @@ const KLType * KLCodeAssistant::getTypeAtCursor(uint32_t line, uint32_t column, 
               break;
             else if(isalnum(l[c]) || l[c] == '_')
             {
-              typeDesc = KLTypeDesc(((const KLMethod*)decl)->getThisType());
+              typeDesc = DFGWrapper::KLTypeDesc(((const KLMethod*)decl)->getThisType());
               break;
             }
             c--;

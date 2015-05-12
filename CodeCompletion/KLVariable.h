@@ -3,14 +3,14 @@
 #ifndef __CodeCompletion_KLVariable__
 #define __CodeCompletion_KLVariable__
 
-#include "KLTypeDesc.h"
+#include <DFGWrapper/KLTypeDesc.h>
 
 namespace FabricServices
 {
 
   namespace CodeCompletion
   {
-    class KLVariable : public KLTypeDesc
+    class KLVariable : public DFGWrapper::KLTypeDesc
     {
       friend class KLCodeAssistant;
       

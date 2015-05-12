@@ -2,7 +2,7 @@
 
 #include "KLTypeDesc.h"
 
-using namespace FabricServices::CodeCompletion;
+using namespace FabricServices::DFGWrapper;
 
 KLTypeDesc::KLTypeDesc(const std::string & type)
 {
@@ -57,7 +57,17 @@ const std::string & KLTypeDesc::getArrayModifier() const
 
 bool KLTypeDesc::isArray() const
 {
-  return m_arrayModifier == "[]" || m_arrayModifier == "<>";
+  return isVariableArray() || isExternalArray();
+}
+
+bool KLTypeDesc::isVariableArray() const
+{
+  return m_arrayModifier == "[]";
+}
+
+bool KLTypeDesc::isExternalArray() const
+{
+  return m_arrayModifier == "<>";
 }
 
 bool KLTypeDesc::isDict() const

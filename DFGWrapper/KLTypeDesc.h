@@ -1,14 +1,14 @@
 // Copyright 2010-2015 Fabric Software Inc. All rights reserved.
 
-#ifndef __CodeCompletion_KLTypeDesc__
-#define __CodeCompletion_KLTypeDesc__
+#ifndef __DFGWrapper_KLTypeDesc__
+#define __DFGWrapper_KLTypeDesc__
 
 #include <string>
 
 namespace FabricServices
 {
 
-  namespace CodeCompletion
+  namespace DFGWrapper
   {
     class KLTypeDesc
     {
@@ -24,6 +24,8 @@ namespace FabricServices
       std::string getBaseType() const;
       const std::string & getArrayModifier() const;
       bool isArray() const;
+      bool isVariableArray() const;
+      bool isExternalArray() const;
       bool isDict() const;
       bool isRef() const;
 
@@ -38,4 +40,4 @@ namespace FabricServices
 };
 
 
-#endif // __CodeCompletion_KLTypeDesc__
+#endif // __DFGWrapper_KLTypeDesc__
