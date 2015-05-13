@@ -5,18 +5,21 @@
 using namespace FabricServices::DFGWrapper;
 
 Host::Host(FabricCore::Client client)
+: m_host(client.getDFGHost())
+, m_rootNameSpace(m_host, "")
 {
-  m_host = client.getDFGHost();
 }
 
 Host::Host(const Host & other)
+: m_host(other.m_host)
+, m_rootNameSpace(m_host, "")
 {
-  m_host = other.m_host;
 }
 
 Host::Host(const FabricCore::DFGHost & other)
+: m_host(other)
+, m_rootNameSpace(m_host, "")
 {
-  m_host = other;
 }
 
 Host::~Host()
@@ -43,9 +46,9 @@ void Host::flushUndoRedo()
   m_host.flushUndoRedo();
 }
 
-NameSpace Host::getRootNameSpace() const
+NameSpace & Host::getRootNameSpace()
 {
-  return NameSpace(m_host, "");
+  return m_rootNameSpace;
 }
 
 void Host::importJSON(char const *parentNameSpace, char const *json, char const *importPathname)

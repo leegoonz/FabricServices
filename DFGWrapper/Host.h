@@ -31,7 +31,7 @@ namespace FabricServices
       bool maybeRedo();
       void flushUndoRedo();
 
-      NameSpace getRootNameSpace() const;
+      NameSpace & getRootNameSpace();
 
       void importJSON(char const * parentNameSpace, char const * json, char const * importPathname = 0);
       std::string exportJSON(char const * execPath);
@@ -43,6 +43,7 @@ namespace FabricServices
     private:
 
       FabricCore::DFGHost m_host;      
+      NameSpace m_rootNameSpace;
     };
 
   };
