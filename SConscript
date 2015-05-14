@@ -25,8 +25,13 @@ SConscript(
 allServicesLibFiles = []
 msvc_versions = ['12.0']
 opt_versions = ['mt']
-if 'servicesLib' in COMMAND_LINE_TARGETS and env['FABRIC_BUILD_OS'] == 'Windows':
-  msvc_versions = ['10.0', '12.0']
+if env['FABRIC_BUILD_OS'] == 'Windows':
+
+  # this cannot be done on the build machine
+  # since it doesn't have VS 2010
+  if 'servicesLib' in COMMAND_LINE_TARGETS:
+    msvc_versions = ['10.0', '12.0']
+
   opt_versions = ['mt', 'md']
 
 installHeaders = True
