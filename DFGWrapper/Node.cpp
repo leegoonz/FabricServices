@@ -30,51 +30,51 @@ GraphExecutablePtr Node::getOwningGraphExecutable()
 
 ExecutablePtr Node::getExecutable()
 {
-  return getOwningGraphExecutable()->getSubExec(getNodePath());
+  return getOwningGraphExecutable()->getSubExec(getName());
 }
 
 std::string Node::getDesc()
 {
-  return m_exec.getNodeDesc(getNodePath()).getCString();
+  return m_exec.getNodeDesc(getName()).getCString();
 }
 
 char const* Node::getTitle()
 {
-  return m_exec.getNodeTitle(getNodePath());
+  return m_exec.getNodeTitle(getName());
 }
 
 void Node::setTitle(char const *title)
 {
-  m_exec.setNodeTitle(getNodePath(), title);
+  m_exec.setNodeTitle(getName(), title);
 }
 
 FEC_DFGCacheRule Node::getCacheRule() const
 {
-  return m_exec.getNodeCacheRule(getNodePath());
+  return m_exec.getNodeCacheRule(getName());
 }
 
 void Node::setCacheRule(FEC_DFGCacheRule rule)
 {
-  m_exec.setNodeCacheRule(getNodePath(), rule);
+  m_exec.setNodeCacheRule(getName(), rule);
 }
 
 char const *Node::getMetadata(char const * key) const
 {
-  return FabricCore::DFGExec(m_exec).getNodeMetadata(getNodePath(), key);
+  return FabricCore::DFGExec(m_exec).getNodeMetadata(getName(), key);
 }
 
 void Node::setMetadata(char const *key, char const * metadata, bool canUndo)
 {
-  return m_exec.setNodeMetadata(getNodePath(), key, metadata, canUndo);
+  return m_exec.setNodeMetadata(getName(), key, metadata, canUndo);
 }
 
 PinList Node::getPins()
 {
-  FabricCore::DFGExec exec = m_exec.getSubExec(getNodePath());
+  FabricCore::DFGExec exec = m_exec.getSubExec(getName());
   PinList result;
   for(unsigned int i=0;i<exec.getPortCount();i++)
   {
-    std::string path = getNodePath();
+    std::string path = getName();
     path += ".";
     path += exec.getPortName(i);
     result.push_back(new Pin(m_binding, m_exec, m_execPath.c_str(), path.c_str()));
@@ -84,7 +84,7 @@ PinList Node::getPins()
 
 PinPtr Node::getPin(char const * name)
 {
-  std::string path = getNodePath();
+  std::string path = getName();
   if(path.length() > 0)
     path += ".";
   path += name;

@@ -82,7 +82,7 @@ NodePtr GraphExecutable::getNode(char const * nodePath)
 void GraphExecutable::removeNode(NodePtr node)
 {
   getWrappedCoreExec().removeNode(
-    node->getNodePath()
+    node->getName()
   );
 }
 

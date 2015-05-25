@@ -37,7 +37,7 @@ namespace FabricServices
         );
       virtual ~Node();
 
-      char const *getNodePath() const
+      char const *getName() const
         { return getElementPath(); }
 
       GraphExecutablePtr getOwningGraphExecutable();
