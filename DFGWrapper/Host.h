@@ -19,6 +19,7 @@ namespace FabricServices
 
     public:
 
+      Host();
       Host(FabricCore::Client client);
       Host(const Host & other);
       Host(const FabricCore::DFGHost & other);

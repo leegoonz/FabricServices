@@ -16,7 +16,8 @@ uint32_t KLASTManager::s_managerRefs = 0;
 
 KLASTManager::KLASTManager(const FabricCore::Client * client)
 {
-  m_client = *client;
+  if(client)
+    m_client = *client;
   m_maxDeclId = 0;
   m_isUpdatingASTClients = false;
   m_autoLoadExtensions = false;

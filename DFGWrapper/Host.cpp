@@ -4,6 +4,11 @@
 
 using namespace FabricServices::DFGWrapper;
 
+Host::Host()
+: m_rootNameSpace(m_host, "")
+{
+}
+
 Host::Host(FabricCore::Client client)
 : m_host(client.getDFGHost())
 , m_rootNameSpace(m_host, "")
