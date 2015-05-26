@@ -44,7 +44,7 @@ namespace FabricServices
 
       ExecutablePtr getSubExec(const char * subExecPath);
 
-      PortList getPorts();
+      ExecPortList getPorts();
       PortPtr getPort(char const * name);
       PortPtr getPort(uint32_t index);
       PortPtr addPort(char const *title, FabricCore::DFGPortType portType, char const *dataType = 0);

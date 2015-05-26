@@ -175,9 +175,9 @@ void Executable::setImportPathname( char const *importPathname )
   m_exec.setImportPathname(importPathname);
 }
 
-PortList Executable::getPorts()
+ExecPortList Executable::getPorts()
 {
-  PortList result;
+  ExecPortList result;
   for(unsigned int i=0;i<m_exec.getPortCount();i++)
   {
     result.push_back(

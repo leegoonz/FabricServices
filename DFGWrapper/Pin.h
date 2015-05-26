@@ -20,7 +20,7 @@ namespace FabricServices
 
     class Port;
     typedef FTL::SharedPtr<Port> PortPtr;
-    typedef std::vector<PortPtr> PortList;
+    typedef std::vector<PortPtr> ExecPortList;
 
     class Pin;
     typedef FTL::SharedPtr<Pin> PinPtr;
