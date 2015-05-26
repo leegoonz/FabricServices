@@ -63,6 +63,9 @@ namespace FabricServices
 
       void addExtensionDependency(char const * ext);
       void removeExtensionDependency(char const * ext);
+      uint32_t getNumExtensionDependencies();
+      std::string getExtensionDependencyName(uint32_t index);
+      std::string getExtensionDependencyVersion(uint32_t index);
 
       std::string getImportPathname();
       void setImportPathname( char const *importPathname );

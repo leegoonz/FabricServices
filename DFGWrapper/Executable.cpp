@@ -112,6 +112,59 @@ void Executable::removeExtensionDependency(char const * ext)
   m_exec.removeExtDep(ext);
 }
 
+uint32_t Executable::getNumExtensionDependencies()
+{
+  FabricCore::Variant descVar = FabricCore::Variant::CreateFromJSON(getDesc().c_str());
+  const FabricCore::Variant * extDepsVar = descVar.getDictValue("extDeps");
+  if(!extDepsVar)
+    return 0;
+  if(!extDepsVar->isDict())
+    return 0;
+
+  uint32_t result = 0;
+  for(FabricCore::Variant::DictIter keyIter(*extDepsVar); !keyIter.isDone(); keyIter.next())
+    result++;
+  return result;
+}
+
+std::string Executable::getExtensionDependencyName(uint32_t index)
+{
+  FabricCore::Variant descVar = FabricCore::Variant::CreateFromJSON(getDesc().c_str());
+  const FabricCore::Variant * extDepsVar = descVar.getDictValue("extDeps");
+  if(!extDepsVar)
+    return "";
+  if(!extDepsVar->isDict())
+    return "";
+
+  uint32_t offset = 0;
+  for(FabricCore::Variant::DictIter keyIter(*extDepsVar); !keyIter.isDone(); keyIter.next())
+  {
+    if(offset == index)
+      return keyIter.getKey()->getStringData();
+    offset++;
+  }
+  return "";
+}
+
+std::string Executable::getExtensionDependencyVersion(uint32_t index)
+{
+  FabricCore::Variant descVar = FabricCore::Variant::CreateFromJSON(getDesc().c_str());
+  const FabricCore::Variant * extDepsVar = descVar.getDictValue("extDeps");
+  if(!extDepsVar)
+    return "";
+  if(!extDepsVar->isDict())
+    return "";
+
+  uint32_t offset = 0;
+  for(FabricCore::Variant::DictIter keyIter(*extDepsVar); !keyIter.isDone(); keyIter.next())
+  {
+    if(offset == index)
+      return keyIter.getValue()->getStringData();
+    offset++;
+  }
+  return "";
+}
+
 std::string Executable::getImportPathname()
 {
   return m_exec.getImportPathname();
