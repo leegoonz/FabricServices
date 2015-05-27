@@ -2,7 +2,7 @@
 
 #include "EndPoint.h"
 #include "Pin.h"
-#include "Port.h"
+#include "ExecPort.h"
 
 using namespace FabricServices::DFGWrapper;
 
@@ -21,7 +21,7 @@ EndPointPtr EndPoint::Create(
       endPointPath
       );
   else
-    return new Port(
+    return new ExecPort(
       binding,
       exec,
       execPath,

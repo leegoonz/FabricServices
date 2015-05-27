@@ -8,7 +8,7 @@
 #include <vector>
 
 #include "Element.h"
-#include "Port.h"
+#include "ExecPort.h"
 
 namespace FabricServices
 {
@@ -45,9 +45,9 @@ namespace FabricServices
       ExecutablePtr getSubExec(const char * subExecPath);
 
       ExecPortList getPorts();
-      PortPtr getPort(char const * name);
-      PortPtr getPort(uint32_t index);
-      PortPtr addPort(char const *title, FabricCore::DFGPortType portType, char const *dataType = 0);
+      ExecPortPtr getPort(char const * name);
+      ExecPortPtr getPort(uint32_t index);
+      ExecPortPtr addPort(char const *title, FabricCore::DFGPortType portType, char const *dataType = 0);
       void removePort(char const * name);
       void removePort(uint32_t index);
 

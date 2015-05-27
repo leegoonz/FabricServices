@@ -18,9 +18,9 @@ namespace FabricServices
     typedef FTL::SharedPtr<Node> NodePtr;
     typedef std::vector<NodePtr> NodeList;
 
-    class Port;
-    typedef FTL::SharedPtr<Port> PortPtr;
-    typedef std::vector<PortPtr> ExecPortList;
+    class ExecPort;
+    typedef FTL::SharedPtr<ExecPort> ExecPortPtr;
+    typedef std::vector<ExecPortPtr> ExecPortList;
 
     class Pin;
     typedef FTL::SharedPtr<Pin> PinPtr;
@@ -66,7 +66,7 @@ namespace FabricServices
       virtual void setDefaultValue( FabricCore::RTVal const &value );
 
       NodePtr getNode();
-      PortPtr getPort();
+      ExecPortPtr getPort();
 
     protected:
       

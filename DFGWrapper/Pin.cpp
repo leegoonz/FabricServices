@@ -1,7 +1,7 @@
 // Copyright 2010-2015 Fabric Software Inc. All rights reserved.
 
 #include "Pin.h"
-#include "Port.h"
+#include "ExecPort.h"
 #include "Node.h"
 
 using namespace FabricServices::DFGWrapper;
@@ -70,10 +70,10 @@ NodePtr Pin::getNode()
   return new Node(m_binding, m_exec, getElementPath(), nodeName.c_str());
 }
 
-PortPtr Pin::getPort()
+ExecPortPtr Pin::getPort()
 {
   NodePtr node = getNode();
   if(!node)
-    return PortPtr();
+    return ExecPortPtr();
   return node->getExecutable()->getPort(getName());
 }

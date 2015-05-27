@@ -181,15 +181,15 @@ ExecPortList Executable::getPorts()
   for(unsigned int i=0;i<m_exec.getExecPortCount();i++)
   {
     result.push_back(
-      new Port( m_binding, m_exec, getExecPath(), m_exec.getExecPortName(i) )
+      new ExecPort( m_binding, m_exec, getExecPath(), m_exec.getExecPortName(i) )
     );
   }
   return result;
 }
 
-PortPtr Executable::getPort(char const * portPath)
+ExecPortPtr Executable::getPort(char const * portPath)
 {
-  return new Port(
+  return new ExecPort(
     m_binding,
     m_exec,
     getExecPath(),
@@ -197,15 +197,15 @@ PortPtr Executable::getPort(char const * portPath)
   );
 }
 
-PortPtr Executable::getPort(uint32_t index)
+ExecPortPtr Executable::getPort(uint32_t index)
 {
   return getPorts()[index];
 }
 
-PortPtr Executable::addPort(char const *title, FabricCore::DFGPortType portType, char const *dataType)
+ExecPortPtr Executable::addPort(char const *title, FabricCore::DFGPortType portType, char const *dataType)
 {
   char const *portPath = m_exec.addExecPort(title, portType, dataType);
-  return new Port(m_binding, m_exec, getExecPath(), portPath);
+  return new ExecPort(m_binding, m_exec, getExecPath(), portPath);
 }
 
 void Executable::removePort(char const * portPath)

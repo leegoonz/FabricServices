@@ -40,26 +40,26 @@ namespace FabricServices
       virtual void onNodeRemoved(NodePtr node) = 0;
       virtual void onPinInserted(PinPtr pin) = 0;
       virtual void onPinRemoved(PinPtr pin) = 0;
-      virtual void onPortInserted(PortPtr port) = 0;
-      virtual void onPortRemoved(PortPtr port) = 0;
+      virtual void onExecPortInserted(ExecPortPtr port) = 0;
+      virtual void onExecPortRemoved(ExecPortPtr port) = 0;
       virtual void onEndPointsConnected(EndPointPtr src, EndPointPtr dst) = 0;
       virtual void onEndPointsDisconnected(EndPointPtr src, EndPointPtr dst) = 0;
       virtual void onNodeMetadataChanged(NodePtr node, const char * key, const char * metadata) = 0;
       virtual void onNodeTitleChanged(NodePtr node, const char * title) = 0;
-      virtual void onPortRenamed(PortPtr port, const char * oldName) = 0;
+      virtual void onExecPortRenamed(ExecPortPtr port, const char * oldName) = 0;
       virtual void onPinRenamed(PinPtr pin, const char * oldName) = 0;
       virtual void onExecMetadataChanged(ExecutablePtr exec, const char * key, const char * metadata) = 0;
       virtual void onExtDepAdded(const char * extension, const char * version) = 0;
       virtual void onExtDepRemoved(const char * extension, const char * version) = 0;
       virtual void onNodeCacheRuleChanged(const char * path, const char * rule) = 0;
       virtual void onExecCacheRuleChanged(const char * path, const char * rule) = 0;
-      virtual void onPortResolvedTypeChanged(PortPtr port, const char * resolvedType) = 0;
-      virtual void onPortTypeSpecChanged(PortPtr port, const char * typeSpec) = 0;
+      virtual void onExecPortResolvedTypeChanged(ExecPortPtr port, const char * resolvedType) = 0;
+      virtual void onExecPortTypeSpecChanged(ExecPortPtr port, const char * typeSpec) = 0;
       virtual void onPinResolvedTypeChanged(PinPtr pin, const char * resolvedType) = 0;
-      virtual void onPortMetadataChanged(FabricServices::DFGWrapper::PortPtr port, const char * key, const char * metadata) = 0;
+      virtual void onExecPortMetadataChanged(FabricServices::DFGWrapper::ExecPortPtr port, const char * key, const char * metadata) = 0;
       virtual void onPinMetadataChanged(FabricServices::DFGWrapper::PinPtr pin, const char * key, const char * metadata) = 0;
       virtual void onPinTypeChanged(PinPtr pin, FabricCore::DFGPortType pinType) = 0;
-      virtual void onPortTypeChanged(PortPtr port, FabricCore::DFGPortType portType) = 0;
+      virtual void onExecPortTypeChanged(ExecPortPtr port, FabricCore::DFGPortType portType) = 0;
 
     private:
 
