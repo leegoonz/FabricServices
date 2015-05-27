@@ -130,13 +130,13 @@ ConnectionList GraphExecutable::getConnections()
   for(FabricCore::Variant::DictIter connectionIter(*connectionsVar); !connectionIter.isDone(); connectionIter.next())
   {
     char const* srcStr = connectionIter.getKey()->getStringData();
-    EndPointPtr src = EndPoint::Create(getWrappedCoreBinding(), getWrappedCoreExec(), getExecPath(), srcStr);
+    PortPtr src = Port::Create(getWrappedCoreBinding(), getWrappedCoreExec(), getExecPath(), srcStr);
     
     const FabricCore::Variant * connectedVar = connectionIter.getValue();
     for(uint32_t i=0;i<connectedVar->getArraySize();i++)
     {
       char const* dstStr = connectedVar->getArrayElement(i)->getStringData();
-      EndPointPtr dst = EndPoint::Create(getWrappedCoreBinding(), getWrappedCoreExec(), getExecPath(), dstStr);
+      PortPtr dst = Port::Create(getWrappedCoreBinding(), getWrappedCoreExec(), getExecPath(), dstStr);
       result.push_back(new Connection(src, dst));
     }
   }

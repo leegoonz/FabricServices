@@ -7,7 +7,7 @@
 #include <string>
 #include <vector>
 #include "Executable.h"
-#include "Pin.h"
+#include "NodePort.h"
 
 namespace FabricServices
 {
@@ -23,7 +23,7 @@ namespace FabricServices
       friend class Binding;
       friend class GraphExecutable;
       friend class View;
-      friend class Pin;
+      friend class NodePort;
 
     public:
 
@@ -53,9 +53,9 @@ namespace FabricServices
       virtual char const *getMetadata(char const * key) const;
       virtual void setMetadata(char const * key, char const * metadata, bool canUndo);
 
-      PinList getPins();
-      PinPtr getPin(char const * name);
-      PinPtr getPin(uint32_t index);
+      NodePortList getPorts();
+      NodePortPtr getPort(char const * name);
+      NodePortPtr getPort(uint32_t index);
 
     protected:
       

@@ -24,9 +24,9 @@ namespace FabricServices
 
       // Element - Type
 
-      virtual bool isEndPoint() const { return false; }
       virtual bool isPort() const { return false; }
-      virtual bool isPin() const { return false; }
+      virtual bool isExecPort() const { return false; }
+      virtual bool isNodePort() const { return false; }
       virtual bool isNode() const { return false; }
       virtual bool isExec() const { return false; }
       virtual bool isFunc() const { return false; }

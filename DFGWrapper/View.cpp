@@ -56,59 +56,59 @@ void View::callback(void * userData, char const * jsonCString, uint32_t jsonLeng
 
   if(descStr == "nodeInserted")
   {
-    const FabricCore::Variant * nodePathVar = notificationVar.getDictValue("nodePath");
+    const FabricCore::Variant * nodePathVar = notificationVar.getDictValue("path");
     NodePtr node = Node::Create(binding, exec->getWrappedCoreExec(), exec->getExecPath(), nodePathVar->getStringData());
     view->onNodeInserted(node);
   }
   else if(descStr == "nodeRemoved")
   {
-    const FabricCore::Variant * nodePathVar = notificationVar.getDictValue("nodePath");
+    const FabricCore::Variant * nodePathVar = notificationVar.getDictValue("path");
     NodePtr node = Node::Create(binding, exec->getWrappedCoreExec(), exec->getExecPath(), nodePathVar->getStringData());
     view->onNodeRemoved(node);
   }
-  else if(descStr == "pinInserted")
+  else if(descStr == "nodePortInserted")
   {
-    const FabricCore::Variant * pinPathVar = notificationVar.getDictValue("pinPath");
-    PinPtr pin = Pin::Create(binding, exec->getWrappedCoreExec(), exec->getExecPath(), pinPathVar->getStringData());
-    view->onPinInserted(pin);
+    const FabricCore::Variant * nodePortPathVar = notificationVar.getDictValue("path");
+    NodePortPtr nodePort = NodePort::Create(binding, exec->getWrappedCoreExec(), exec->getExecPath(), nodePortPathVar->getStringData());
+    view->onNodePortInserted(nodePort);
   }
-  else if(descStr == "pinRemoved")
+  else if(descStr == "nodePortRemoved")
   {
-    const FabricCore::Variant * pinPathVar = notificationVar.getDictValue("pinPath");
-    PinPtr pin = Pin::Create(binding, exec->getWrappedCoreExec(), exec->getExecPath(), pinPathVar->getStringData());
-    view->onPinRemoved(pin);
+    const FabricCore::Variant * nodePortPathVar = notificationVar.getDictValue("path");
+    NodePortPtr nodePort = NodePort::Create(binding, exec->getWrappedCoreExec(), exec->getExecPath(), nodePortPathVar->getStringData());
+    view->onNodePortRemoved(nodePort);
   }
   else if(descStr == "execPortInserted")
   {
-    const FabricCore::Variant * portPathVar = notificationVar.getDictValue("execPortPath");
+    const FabricCore::Variant * portPathVar = notificationVar.getDictValue("path");
     ExecPortPtr port = ExecPort::Create(binding, exec->getWrappedCoreExec(), exec->getExecPath(), portPathVar->getStringData());
     view->onExecPortInserted(port);
   }
   else if(descStr == "execPortRemoved")
   {
-    const FabricCore::Variant * portPathVar = notificationVar.getDictValue("execPortPath");
+    const FabricCore::Variant * portPathVar = notificationVar.getDictValue("path");
     ExecPortPtr port = ExecPort::Create(binding, exec->getWrappedCoreExec(), exec->getExecPath(), portPathVar->getStringData());
     view->onExecPortRemoved(port);
   }
   else if(descStr == "endPointsConnected")
   {
-    const FabricCore::Variant * srcEndPointPathVar = notificationVar.getDictValue("srcEndPointPath");
-    const FabricCore::Variant * dstEndPointPathVar = notificationVar.getDictValue("dstEndPointPath");
-    EndPointPtr src = EndPoint::Create(binding, exec->getWrappedCoreExec(), exec->getExecPath(), srcEndPointPathVar->getStringData());
-    EndPointPtr dst = EndPoint::Create(binding, exec->getWrappedCoreExec(), exec->getExecPath(), dstEndPointPathVar->getStringData());
-    view->onEndPointsConnected(src, dst);
+    const FabricCore::Variant * srcPortPathVar = notificationVar.getDictValue("srcPath");
+    const FabricCore::Variant * dstPortPathVar = notificationVar.getDictValue("dstPath");
+    PortPtr src = Port::Create(binding, exec->getWrappedCoreExec(), exec->getExecPath(), srcPortPathVar->getStringData());
+    PortPtr dst = Port::Create(binding, exec->getWrappedCoreExec(), exec->getExecPath(), dstPortPathVar->getStringData());
+    view->onPortsConnected(src, dst);
   }
   else if(descStr == "endPointsDisconnected")
   {
-    const FabricCore::Variant * srcEndPointPathVar = notificationVar.getDictValue("srcEndPointPath");
-    const FabricCore::Variant * dstEndPointPathVar = notificationVar.getDictValue("dstEndPointPath");
-    EndPointPtr src = EndPoint::Create(binding, exec->getWrappedCoreExec(), exec->getExecPath(), srcEndPointPathVar->getStringData());
-    EndPointPtr dst = EndPoint::Create(binding, exec->getWrappedCoreExec(), exec->getExecPath(), dstEndPointPathVar->getStringData());
-    view->onEndPointsDisconnected(src, dst);
+    const FabricCore::Variant * srcPortPathVar = notificationVar.getDictValue("srcPath");
+    const FabricCore::Variant * dstPortPathVar = notificationVar.getDictValue("dstPath");
+    PortPtr src = Port::Create(binding, exec->getWrappedCoreExec(), exec->getExecPath(), srcPortPathVar->getStringData());
+    PortPtr dst = Port::Create(binding, exec->getWrappedCoreExec(), exec->getExecPath(), dstPortPathVar->getStringData());
+    view->onPortsDisconnected(src, dst);
   }
   else if(descStr == "nodeMetadataChanged")
   {
-    const FabricCore::Variant * nodePathVar = notificationVar.getDictValue("nodePath");
+    const FabricCore::Variant * nodePathVar = notificationVar.getDictValue("path");
     const FabricCore::Variant * keyVar = notificationVar.getDictValue("key");
     const FabricCore::Variant * valueVar = notificationVar.getDictValue("value");
     NodePtr node = Node::Create(binding, exec->getWrappedCoreExec(), exec->getExecPath(), nodePathVar->getStringData());
@@ -116,7 +116,7 @@ void View::callback(void * userData, char const * jsonCString, uint32_t jsonLeng
   }
   else if(descStr == "nodeTitleChanged")
   {
-    const FabricCore::Variant * nodePathVar = notificationVar.getDictValue("nodePath");
+    const FabricCore::Variant * nodePathVar = notificationVar.getDictValue("path");
     const FabricCore::Variant * titleVar = notificationVar.getDictValue("title");
     NodePtr node = Node::Create(binding, exec->getWrappedCoreExec(), exec->getExecPath(), nodePathVar->getStringData());
     view->onNodeTitleChanged(node, titleVar->getStringData());
@@ -130,15 +130,15 @@ void View::callback(void * userData, char const * jsonCString, uint32_t jsonLeng
     ExecPortPtr port = ExecPort::Create(binding, exec->getWrappedCoreExec(), exec->getExecPath(), newPath.c_str());
     view->onExecPortRenamed(port, oldPath.c_str());
   }
-  else if(descStr == "pinRenamed")
+  else if(descStr == "nodePortRenamed")
   {
     const FabricCore::Variant * oldPathVar = notificationVar.getDictValue("oldPath");
     const FabricCore::Variant * newPathVar = notificationVar.getDictValue("newPath");
     std::string oldPath = oldPathVar->getStringData();
     if(oldPath.rfind('.') != std::string::npos)
       oldPath = oldPath.substr(oldPath.find('.')+1, oldPath.length());
-    PinPtr pin = Pin::Create(binding, exec->getWrappedCoreExec(), exec->getExecPath(), newPathVar->getStringData());
-    view->onPinRenamed(pin, oldPath.c_str());
+    NodePortPtr nodePort = NodePort::Create(binding, exec->getWrappedCoreExec(), exec->getExecPath(), newPathVar->getStringData());
+    view->onNodePortRenamed(nodePort, oldPath.c_str());
   }
   else if(descStr == "execMetadataChanged")
   {
@@ -160,19 +160,19 @@ void View::callback(void * userData, char const * jsonCString, uint32_t jsonLeng
   }
   else if(descStr == "nodeCacheRuleChanged")
   {
-    const FabricCore::Variant * nodePathVar = notificationVar.getDictValue("nodePath");
+    const FabricCore::Variant * nodePathVar = notificationVar.getDictValue("path");
     const FabricCore::Variant * cacheRuleVar = notificationVar.getDictValue("cacheRule");
     view->onNodeCacheRuleChanged(nodePathVar->getStringData(), cacheRuleVar->getStringData());
   }
   else if(descStr == "execCacheRuleChanged")
   {
-    const FabricCore::Variant * execPathVar = notificationVar.getDictValue("execPath");
+    const FabricCore::Variant * execPathVar = notificationVar.getDictValue("path");
     const FabricCore::Variant * cacheRuleVar = notificationVar.getDictValue("cacheRule");
     view->onExecCacheRuleChanged(execPathVar->getStringData(), cacheRuleVar->getStringData());
   }
   else if(descStr == "portResolvedTypeChanged")
   {
-    const FabricCore::Variant * portPathVar = notificationVar.getDictValue("execPortPath");
+    const FabricCore::Variant * portPathVar = notificationVar.getDictValue("path");
     const FabricCore::Variant * resolvedTypeVar = notificationVar.getDictValue("resolvedType");
     ExecPortPtr port = ExecPort::Create(binding, exec->getWrappedCoreExec(), exec->getExecPath(), portPathVar->getStringData());
     if(resolvedTypeVar->isString())
@@ -182,7 +182,7 @@ void View::callback(void * userData, char const * jsonCString, uint32_t jsonLeng
   }
   else if(descStr == "portTypeSpecChanged")
   {
-    const FabricCore::Variant * portPathVar = notificationVar.getDictValue("execPortPath");
+    const FabricCore::Variant * portPathVar = notificationVar.getDictValue("path");
     const FabricCore::Variant * typeSpecVar = notificationVar.getDictValue("typeSpec");
     ExecPortPtr port = ExecPort::Create(binding, exec->getWrappedCoreExec(), exec->getExecPath(), portPathVar->getStringData());
     if(typeSpecVar->isString())
@@ -190,19 +190,19 @@ void View::callback(void * userData, char const * jsonCString, uint32_t jsonLeng
     else
       view->onExecPortTypeSpecChanged(port, "");
   }
-  else if(descStr == "pinResolvedTypeChanged")
+  else if(descStr == "nodePortResolvedTypeChanged")
   {
-    const FabricCore::Variant * pinPathVar = notificationVar.getDictValue("pinPath");
+    const FabricCore::Variant * nodePortPathVar = notificationVar.getDictValue("path");
     const FabricCore::Variant * resolvedTypeVar = notificationVar.getDictValue("resolvedType");
-    PinPtr pin = Pin::Create(binding, exec->getWrappedCoreExec(), exec->getExecPath(), pinPathVar->getStringData());
+    NodePortPtr nodePort = NodePort::Create(binding, exec->getWrappedCoreExec(), exec->getExecPath(), nodePortPathVar->getStringData());
     if(resolvedTypeVar->isString())
-      view->onPinResolvedTypeChanged(pin, resolvedTypeVar->getStringData());
+      view->onNodePortResolvedTypeChanged(nodePort, resolvedTypeVar->getStringData());
     else
-      view->onPinResolvedTypeChanged(pin, "");
+      view->onNodePortResolvedTypeChanged(nodePort, "");
   }
   else if(descStr == "portMetadataChanged")
   {
-    const FabricCore::Variant * portPathVar = notificationVar.getDictValue("execPortPath");
+    const FabricCore::Variant * portPathVar = notificationVar.getDictValue("path");
     const FabricCore::Variant * keyVar = notificationVar.getDictValue("key");
     const FabricCore::Variant * valueVar = notificationVar.getDictValue("value");
     ExecPortPtr port = ExecPort::Create(binding, exec->getWrappedCoreExec(), exec->getExecPath(), portPathVar->getStringData());
@@ -211,46 +211,46 @@ void View::callback(void * userData, char const * jsonCString, uint32_t jsonLeng
     else
       view->onExecPortMetadataChanged(port, keyVar->getStringData(), "");
   }
-  else if(descStr == "pinMetadataChanged")
+  else if(descStr == "nodePortMetadataChanged")
   {
-    const FabricCore::Variant * pinPathVar = notificationVar.getDictValue("pinPath");
+    const FabricCore::Variant * nodePortPathVar = notificationVar.getDictValue("path");
     const FabricCore::Variant * keyVar = notificationVar.getDictValue("key");
     const FabricCore::Variant * valueVar = notificationVar.getDictValue("value");
-    PinPtr pin = Pin::Create(binding, exec->getWrappedCoreExec(), exec->getExecPath(), pinPathVar->getStringData());
+    NodePortPtr nodePort = NodePort::Create(binding, exec->getWrappedCoreExec(), exec->getExecPath(), nodePortPathVar->getStringData());
     if(valueVar->isString())
-      view->onPinMetadataChanged(pin, keyVar->getStringData(), valueVar->getStringData());
+      view->onNodePortMetadataChanged(nodePort, keyVar->getStringData(), valueVar->getStringData());
     else
-      view->onPinMetadataChanged(pin, keyVar->getStringData(), "");
+      view->onNodePortMetadataChanged(nodePort, keyVar->getStringData(), "");
   }
-  else if(descStr == "pinTypeChanged")
+  else if(descStr == "nodePortTypeChanged")
   {
-    const FabricCore::Variant * pinPathVar = notificationVar.getDictValue("pinPath");
-    const FabricCore::Variant * newEndPointTypeVar = notificationVar.getDictValue("newEndPointType");
-    if(newEndPointTypeVar->isString())
+    const FabricCore::Variant * nodePortPathVar = notificationVar.getDictValue("path");
+    const FabricCore::Variant * newPortTypeVar = notificationVar.getDictValue("newPortType");
+    if(newPortTypeVar->isString())
     {
-      std::string newEndPointType = newEndPointTypeVar->getStringData();
-      PinPtr pin = Pin::Create(binding, exec->getWrappedCoreExec(), exec->getExecPath(), pinPathVar->getStringData());
-      if(newEndPointType == "In")
-        view->onPinTypeChanged(pin, FabricCore::DFGPortType_In);
-      else if(newEndPointType == "Out")
-        view->onPinTypeChanged(pin, FabricCore::DFGPortType_Out);
-      else if(newEndPointType == "IO")
-        view->onPinTypeChanged(pin, FabricCore::DFGPortType_IO);
+      std::string newPortType = newPortTypeVar->getStringData();
+      NodePortPtr nodePort = NodePort::Create(binding, exec->getWrappedCoreExec(), exec->getExecPath(), nodePortPathVar->getStringData());
+      if(newPortType == "In")
+        view->onNodePortTypeChanged(nodePort, FabricCore::DFGPortType_In);
+      else if(newPortType == "Out")
+        view->onNodePortTypeChanged(nodePort, FabricCore::DFGPortType_Out);
+      else if(newPortType == "IO")
+        view->onNodePortTypeChanged(nodePort, FabricCore::DFGPortType_IO);
     }
   }
   else if(descStr == "execPortOutsidePortTypeChanged")
   {
-    const FabricCore::Variant * portPathVar = notificationVar.getDictValue("execPortPath");
-    const FabricCore::Variant * newEndPointTypeVar = notificationVar.getDictValue("newEndPointType");
-    if(newEndPointTypeVar->isString())
+    const FabricCore::Variant * portPathVar = notificationVar.getDictValue("path");
+    const FabricCore::Variant * newPortTypeVar = notificationVar.getDictValue("newPortType");
+    if(newPortTypeVar->isString())
     {
-      std::string newEndPointType = newEndPointTypeVar->getStringData();
+      std::string newPortType = newPortTypeVar->getStringData();
       ExecPortPtr port = ExecPort::Create(binding, exec->getWrappedCoreExec(), exec->getExecPath(), portPathVar->getStringData());
-      if(newEndPointType == "In")
+      if(newPortType == "In")
         view->onExecPortTypeChanged(port, FabricCore::DFGPortType_In);
-      else if(newEndPointType == "Out")
+      else if(newPortType == "Out")
         view->onExecPortTypeChanged(port, FabricCore::DFGPortType_Out);
-      else if(newEndPointType == "IO")
+      else if(newPortType == "IO")
         view->onExecPortTypeChanged(port, FabricCore::DFGPortType_IO);
     }
   }

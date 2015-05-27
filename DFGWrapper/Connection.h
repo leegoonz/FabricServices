@@ -6,7 +6,7 @@
 #include <FabricCore.h>
 #include <string>
 #include <vector>
-#include "EndPoint.h"
+#include "Port.h"
 #include <FTL/SharedPtr.h>
 
 namespace FabricServices
@@ -29,17 +29,17 @@ namespace FabricServices
 
       bool isValid();
 
-      EndPointPtr getSrc() const;
-      EndPointPtr getDst() const;
+      PortPtr getSrc() const;
+      PortPtr getDst() const;
 
     protected:
       
-      Connection(EndPointPtr src, EndPointPtr dst);
+      Connection(PortPtr src, PortPtr dst);
 
     private:
 
-      EndPointPtr m_src;
-      EndPointPtr m_dst;
+      PortPtr m_src;
+      PortPtr m_dst;
     };
 
   };

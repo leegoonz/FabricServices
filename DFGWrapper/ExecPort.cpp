@@ -5,7 +5,7 @@
 using namespace FabricServices::DFGWrapper;
 
 ExecPort::ExecPort(FabricCore::DFGBinding binding, FabricCore::DFGExec exec, char const * execPath, char const * portPath)
-: EndPoint(binding, exec, execPath, portPath)
+: Port(binding, exec, execPath, portPath)
 {
 }
 

@@ -1,13 +1,13 @@
 // Copyright 2010-2015 Fabric Software Inc. All rights reserved.
 
-#ifndef __DFGWrapper_Pin__
-#define __DFGWrapper_Pin__
+#ifndef __DFGWrapper_NodePort__
+#define __DFGWrapper_NodePort__
 
 #include <FabricCore.h>
 #include <string>
 #include <vector>
 
-#include "EndPoint.h"
+#include "Port.h"
 
 namespace FabricServices
 {
@@ -22,25 +22,25 @@ namespace FabricServices
     typedef FTL::SharedPtr<ExecPort> ExecPortPtr;
     typedef std::vector<ExecPortPtr> ExecPortList;
 
-    class Pin;
-    typedef FTL::SharedPtr<Pin> PinPtr;
-    typedef std::vector<PinPtr> PinList;
+    class NodePort;
+    typedef FTL::SharedPtr<NodePort> NodePortPtr;
+    typedef std::vector<NodePortPtr> NodePortList;
     
-    class Pin : public EndPoint
+    class NodePort : public Port
     {
       friend class Node;
       friend class View;
-      friend class EndPoint;
+      friend class Port;
 
     public:
 
-      virtual bool isPin() const { return true; }
+      virtual bool isNodePort() const { return true; }
 
-      static PinPtr Create(FabricCore::DFGBinding binding, FabricCore::DFGExec exec, char const * execPath, char const * pinPath);
-      virtual ~Pin();
+      static NodePortPtr Create(FabricCore::DFGBinding binding, FabricCore::DFGExec exec, char const * execPath, char const * nodePortPath);
+      virtual ~NodePort();
 
-      char const *getPinPath() const
-        { return getEndPointPath(); }
+      char const *getNodePortPath() const
+        { return getPortPath(); }
 
       virtual std::string getDesc();
       virtual char const *getMetadata(char const * key) const;
@@ -48,19 +48,19 @@ namespace FabricServices
 
       virtual char const *getName() const
       {
-        return FabricCore::DFGExec(getWrappedCoreExec()).getPinName(getPinPath());
+        return FabricCore::DFGExec(getWrappedCoreExec()).getNodePortName(getNodePortPath());
       }
       virtual char const *getResolvedType() const
       {
-        char const * result = FabricCore::DFGExec(getWrappedCoreExec()).getPinResolvedType(getPinPath());
+        char const * result = FabricCore::DFGExec(getWrappedCoreExec()).getNodePortResolvedType(getNodePortPath());
         if(result)
           return result;
         return "";
       }
 
-      void addDebugPin();
-      FabricCore::RTVal getDebugPinValue();
-      void removeDebugPin();
+      void addDebugNodePort();
+      FabricCore::RTVal getDebugNodePortValue();
+      void removeDebugNodePort();
 
       virtual FabricCore::RTVal getDefaultValue( char const * dataType = NULL ) const;
       virtual void setDefaultValue( FabricCore::RTVal const &value );
@@ -70,7 +70,7 @@ namespace FabricServices
 
     protected:
       
-      Pin(FabricCore::DFGBinding binding, FabricCore::DFGExec exec, char const * execPath, char const * pinPath);
+      NodePort(FabricCore::DFGBinding binding, FabricCore::DFGExec exec, char const * execPath, char const * nodePortPath);
 
     };
 
@@ -79,4 +79,4 @@ namespace FabricServices
 };
 
 
-#endif // __DFGWrapper_Pin__
+#endif // __DFGWrapper_NodePort__

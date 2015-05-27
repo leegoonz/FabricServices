@@ -1,12 +1,12 @@
 // Copyright 2010-2015 Fabric Software Inc. All rights reserved.
 
-#include "EndPoint.h"
-#include "Pin.h"
+#include "Port.h"
+#include "NodePort.h"
 #include "ExecPort.h"
 
 using namespace FabricServices::DFGWrapper;
 
-EndPointPtr EndPoint::Create(
+PortPtr Port::Create(
   FabricCore::DFGBinding const &binding,
   FabricCore::DFGExec const &exec,
   char const *execPath,
@@ -14,7 +14,7 @@ EndPointPtr EndPoint::Create(
   )
 {
   if ( strchr( endPointPath, '.' ) != 0 )
-    return new Pin(
+    return new NodePort(
       binding,
       exec,
       execPath,

@@ -1,24 +1,24 @@
 // Copyright 2010-2015 Fabric Software Inc. All rights reserved.
 
-#ifndef __DFGWrapper_Port__
-#define __DFGWrapper_Port__
+#ifndef __DFGWrapper_ExecPort__
+#define __DFGWrapper_ExecPort__
 
 #include <FabricCore.h>
 #include <string>
 #include <vector>
 
-#include "Pin.h"
+#include "NodePort.h"
 
 namespace FabricServices
 {
 
   namespace DFGWrapper
   {
-    class ExecPort : public EndPoint
+    class ExecPort : public Port
     {
       friend class Executable;
       friend class View;
-      friend class EndPoint;
+      friend class Port;
 
     public:
 
@@ -29,7 +29,7 @@ namespace FabricServices
       virtual ~ExecPort();
 
       char const *getExecPortPath() const
-        { return getEndPointPath(); }
+        { return getPortPath(); }
 
       FabricCore::DFGPortType getOutsidePortType() const
       {
@@ -92,4 +92,4 @@ namespace FabricServices
 };
 
 
-#endif // __DFGWrapper_Port__
+#endif // __DFGWrapper_ExecPort__

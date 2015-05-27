@@ -14,7 +14,7 @@
 #include "FuncExecutable.h"
 #include "GraphExecutable.h"
 #include "ExecPort.h"
-#include "Pin.h"
+#include "NodePort.h"
 #include "Connection.h"
 #include "View.h"
 

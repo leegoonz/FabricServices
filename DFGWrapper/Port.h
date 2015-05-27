@@ -1,7 +1,7 @@
 // Copyright 2010-2015 Fabric Software Inc. All rights reserved.
 
-#ifndef __DFGWrapper_EndPoint__
-#define __DFGWrapper_EndPoint__
+#ifndef __DFGWrapper_Port__
+#define __DFGWrapper_Port__
 
 #include <vector>
 #include "Element.h"
@@ -11,15 +11,15 @@ namespace FabricServices
 
   namespace DFGWrapper
   {
-    class EndPoint;
-    typedef FTL::SharedPtr<EndPoint> EndPointPtr;
-    typedef std::vector<EndPointPtr> EndPointList;
+    class Port;
+    typedef FTL::SharedPtr<Port> PortPtr;
+    typedef std::vector<PortPtr> PortList;
 
-    class EndPoint : public Element
+    class Port : public Element
     {
     public:
 
-      static EndPointPtr Create(
+      static PortPtr Create(
         FabricCore::DFGBinding const &binding,
         FabricCore::DFGExec const &exec,
         char const *execPath,
@@ -28,66 +28,66 @@ namespace FabricServices
 
       // Element - Type
 
-      virtual bool isEndPoint() const { return true; }
+      virtual bool isPort() const { return true; }
 
-      // EndPoint - Accessors
+      // Port - Accessors
 
-      char const *getEndPointPath() const
+      char const *getPortPath() const
         { return m_endPointPath.c_str(); }
 
-      FabricCore::DFGPortType getEndPointType() const
+      FabricCore::DFGPortType getInsidePortType() const
       {
-        return FabricCore::DFGExec(getWrappedCoreExec()).getEndPointType(
-          getEndPointPath()
+        return FabricCore::DFGExec(getWrappedCoreExec()).getInsidePortType(
+          getPortPath()
         );
       }
 
       virtual char const *getName() const = 0;
       virtual char const *getResolvedType() const = 0;
 
-      // EndPoint - Default Values
+      // Port - Default Values
 
       virtual FabricCore::RTVal getDefaultValue( char const * dataType = NULL ) const = 0;
       virtual void setDefaultValue( FabricCore::RTVal const &value ) = 0;
 
-      // EndPoint - Connections
+      // Port - Connections
 
-      bool canConnectTo( EndPointPtr dst ) const
+      bool canConnectTo( PortPtr dst ) const
       {
         return getWrappedCoreExec().canConnectTo(
-          getEndPointPath(), dst->getEndPointPath()
+          getPortPath(), dst->getPortPath()
           );
       }
 
-      void connectTo( EndPointPtr dst )
+      void connectTo( PortPtr dst )
       {
         getWrappedCoreExec().connectTo(
-          getEndPointPath(), dst->getEndPointPath()
+          getPortPath(), dst->getPortPath()
         );
       }
 
-      void disconnectFrom( EndPointPtr dst )
+      void disconnectFrom( PortPtr dst )
       {
         getWrappedCoreExec().disconnectFrom(
-          getEndPointPath(), dst->getEndPointPath()
+          getPortPath(), dst->getPortPath()
         );
       }
 
       void disconnectFromAll()
       {
         getWrappedCoreExec().disconnectFromAll(
-          getEndPointPath()
+          getPortPath()
         );
       }
 
       bool isConnectedToAny() const
       {
-        return getWrappedCoreExec().isConnectedToAny(getEndPointPath());
+        return getWrappedCoreExec().isConnectedToAny(getPortPath());
       }
 
     protected:
       
-      EndPoint(
+      Port(
         FabricCore::DFGBinding const &binding,
         FabricCore::DFGExec const &exec,
         char const *execPath,
@@ -102,7 +102,7 @@ namespace FabricServices
       {
       }
 
-      EndPoint(EndPoint const & other)
+      Port(Port const & other)
         : Element(
           other.m_binding,
           other.m_exec,
@@ -124,4 +124,4 @@ namespace FabricServices
 };
 
 
-#endif // __DFGWrapper_EndPoint__
+#endif // __DFGWrapper_Port__

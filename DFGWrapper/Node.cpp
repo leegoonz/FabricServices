@@ -68,30 +68,30 @@ void Node::setMetadata(char const *key, char const * metadata, bool canUndo)
   return m_exec.setNodeMetadata(getName(), key, metadata, canUndo);
 }
 
-PinList Node::getPins()
+NodePortList Node::getPorts()
 {
   FabricCore::DFGExec exec = m_exec.getSubExec(getName());
-  PinList result;
+  NodePortList result;
   for(unsigned int i=0;i<exec.getExecPortCount();i++)
   {
     std::string path = getName();
     path += ".";
     path += exec.getExecPortName(i);
-    result.push_back(new Pin(m_binding, m_exec, m_execPath.c_str(), path.c_str()));
+    result.push_back(new NodePort(m_binding, m_exec, m_execPath.c_str(), path.c_str()));
   }
   return result;
 }
 
-PinPtr Node::getPin(char const * name)
+NodePortPtr Node::getPort(char const * name)
 {
   std::string path = getName();
   if(path.length() > 0)
     path += ".";
   path += name;
-  return new Pin(m_binding, m_exec, m_execPath.c_str(), path.c_str());
+  return new NodePort(m_binding, m_exec, m_execPath.c_str(), path.c_str());
 }
 
-PinPtr Node::getPin(uint32_t index)
+NodePortPtr Node::getPort(uint32_t index)
 {
-  return getPins()[index];
+  return getPorts()[index];
 }
