@@ -178,10 +178,10 @@ void Executable::setImportPathname( char const *importPathname )
 ExecPortList Executable::getPorts()
 {
   ExecPortList result;
-  for(unsigned int i=0;i<m_exec.getPortCount();i++)
+  for(unsigned int i=0;i<m_exec.getExecPortCount();i++)
   {
     result.push_back(
-      new Port( m_binding, m_exec, getExecPath(), m_exec.getPortName(i) )
+      new Port( m_binding, m_exec, getExecPath(), m_exec.getExecPortName(i) )
     );
   }
   return result;
@@ -204,13 +204,13 @@ PortPtr Executable::getPort(uint32_t index)
 
 PortPtr Executable::addPort(char const *title, FabricCore::DFGPortType portType, char const *dataType)
 {
-  char const *portPath = m_exec.addPort(title, portType, dataType);
+  char const *portPath = m_exec.addExecPort(title, portType, dataType);
   return new Port(m_binding, m_exec, getExecPath(), portPath);
 }
 
 void Executable::removePort(char const * portPath)
 {
-  m_exec.removePort( portPath );
+  m_exec.removeExecPort( portPath );
 }
 
 void Executable::removePort(uint32_t index)

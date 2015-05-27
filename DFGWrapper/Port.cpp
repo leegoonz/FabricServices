@@ -20,32 +20,32 @@ Port::~Port()
 
 std::string Port::getDesc()
 {
-  return m_exec.getPortDesc(getPortPath()).getCString();
+  return m_exec.getExecPortDesc(getPortPath()).getCString();
 }
 
 char const *Port::getMetadata(char const * key) const
 {
-  return FabricCore::DFGExec(m_exec).getPortMetadata(getPortPath(), key);
+  return FabricCore::DFGExec(m_exec).getExecPortMetadata(getPortPath(), key);
 }
 
 void Port::setMetadata(char const * key, char const * value, bool canUndo)
 {
-  m_exec.setPortMetadata(getPortPath(), key, value, canUndo);
+  m_exec.setExecPortMetadata(getPortPath(), key, value, canUndo);
 }
 
 char const *Port::rename(char const * name)
 {
-  return m_exec.renamePort(getName(), name);
+  return m_exec.renameExecPort(getName(), name);
 }
 
 FabricCore::RTVal Port::getDefaultValue( char const * dataType ) const
 {
-  return FabricCore::DFGExec(m_exec).getPortDefaultValue(getPortPath(), dataType);
+  return FabricCore::DFGExec(m_exec).getExecPortDefaultValue(getPortPath(), dataType);
 }
 
 void Port::setDefaultValue( FabricCore::RTVal const &value )
 {
-  m_exec.setPortDefaultValue(getPortPath(), value);
+  m_exec.setExecPortDefaultValue(getPortPath(), value);
 }
 
 FabricCore::RTVal Port::getArgValue()

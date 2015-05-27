@@ -72,11 +72,11 @@ PinList Node::getPins()
 {
   FabricCore::DFGExec exec = m_exec.getSubExec(getName());
   PinList result;
-  for(unsigned int i=0;i<exec.getPortCount();i++)
+  for(unsigned int i=0;i<exec.getExecPortCount();i++)
   {
     std::string path = getName();
     path += ".";
-    path += exec.getPortName(i);
+    path += exec.getExecPortName(i);
     result.push_back(new Pin(m_binding, m_exec, m_execPath.c_str(), path.c_str()));
   }
   return result;

@@ -238,7 +238,7 @@ void View::callback(void * userData, char const * jsonCString, uint32_t jsonLeng
         view->onPinTypeChanged(pin, FabricCore::DFGPortType_IO);
     }
   }
-  else if(descStr == "portTypeChanged")
+  else if(descStr == "execPortOutsidePortTypeChanged")
   {
     const FabricCore::Variant * portPathVar = notificationVar.getDictValue("portPath");
     const FabricCore::Variant * newEndPointTypeVar = notificationVar.getDictValue("newEndPointType");

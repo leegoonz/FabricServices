@@ -31,16 +31,16 @@ namespace FabricServices
       char const *getPortPath() const
         { return getEndPointPath(); }
 
-      FabricCore::DFGPortType getPortType() const
+      FabricCore::DFGPortType getOutsidePortType() const
       {
-        return FabricCore::DFGExec(getWrappedCoreExec()).getPortType(
+        return FabricCore::DFGExec(getWrappedCoreExec()).getExecPortOutsidePortType(
           getPortPath()
         );
       }
 
-      void setPortType(FabricCore::DFGPortType type)
+      void setOutsidePortType(FabricCore::DFGPortType type)
       {
-        FabricCore::DFGExec(getWrappedCoreExec()).setPortType(getPortPath(), type);
+        FabricCore::DFGExec(getWrappedCoreExec()).setExecPortOutsidePortType(getPortPath(), type);
       }
 
       virtual std::string getDesc();
@@ -49,12 +49,12 @@ namespace FabricServices
 
       virtual char const *getName() const
       {
-        return FabricCore::DFGExec( m_exec ).getPortName( getPortPath() );
+        return FabricCore::DFGExec( m_exec ).getExecPortName( getPortPath() );
       }
 
       virtual char const *getResolvedType() const
       {
-        char const * result = FabricCore::DFGExec(m_exec).getPortResolvedType(getPortPath());
+        char const * result = FabricCore::DFGExec(m_exec).getExecPortResolvedType(getPortPath());
         if(result)
           return result;
         return "";
@@ -62,7 +62,7 @@ namespace FabricServices
 
       virtual char const *getTypeSpec() const
       {
-        char const * result = FabricCore::DFGExec(m_exec).getPortTypeSpec(getPortPath());
+        char const * result = FabricCore::DFGExec(m_exec).getExecPortTypeSpec(getPortPath());
         if(result)
           return result;
         return "";
@@ -70,7 +70,7 @@ namespace FabricServices
 
       virtual void setTypeSpec(char const * spec)
       {
-        m_exec.setPortTypeSpec(getPortPath(), spec);
+        m_exec.setExecPortTypeSpec(getPortPath(), spec);
       }
 
       virtual char const *rename(char const * name);
