@@ -90,7 +90,7 @@ void View::callback(void * userData, char const * jsonCString, uint32_t jsonLeng
     ExecPortPtr port = ExecPort::Create(binding, exec->getWrappedCoreExec(), exec->getExecPath(), portPathVar->getStringData());
     view->onExecPortRemoved(port);
   }
-  else if(descStr == "endPointsConnected")
+  else if(descStr == "portsConnected")
   {
     const FabricCore::Variant * srcPortPathVar = notificationVar.getDictValue("srcPath");
     const FabricCore::Variant * dstPortPathVar = notificationVar.getDictValue("dstPath");
@@ -98,7 +98,7 @@ void View::callback(void * userData, char const * jsonCString, uint32_t jsonLeng
     PortPtr dst = Port::Create(binding, exec->getWrappedCoreExec(), exec->getExecPath(), dstPortPathVar->getStringData());
     view->onPortsConnected(src, dst);
   }
-  else if(descStr == "endPointsDisconnected")
+  else if(descStr == "portsDisconnected")
   {
     const FabricCore::Variant * srcPortPathVar = notificationVar.getDictValue("srcPath");
     const FabricCore::Variant * dstPortPathVar = notificationVar.getDictValue("dstPath");
