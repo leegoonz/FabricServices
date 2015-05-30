@@ -20,54 +20,66 @@ namespace FabricServices
 
     class Node : public Element
     {
-      friend class Binding;
-      friend class GraphExecutable;
-      friend class View;
-      friend class NodePort;
 
     public:
 
-      virtual bool isNode() const { return true; }
+      virtual bool isNode() { return true; }
 
       static NodePtr Create(
-        FabricCore::DFGBinding binding,
-        FabricCore::DFGExec parentExec,
+        FabricCore::DFGBinding const &dfgBinding,
         char const *execPath,
-        char const *nodePath
+        FabricCore::DFGExec const &dfgExec,
+        char const *nodeName
         );
-      virtual ~Node();
 
-      char const *getName() const
+      virtual ~Node()
+      {
+      }
+
+      char const *getNodePath()
         { return getElementPath(); }
 
+      char const *getNodeName()
+        { return getNodePath(); }
+
       GraphExecutablePtr getOwningGraphExecutable();
-      ExecutablePtr getExecutable();
 
-      virtual std::string getDesc();
-      char const* getTitle();
-      void setTitle(char const *title);
+      virtual std::string getDesc()
+      {
+        return getDFGExec().getNodeDesc( getNodePath() ).getCString();
+      }
 
-      FEC_DFGCacheRule getCacheRule() const;
-      void setCacheRule(FEC_DFGCacheRule rule);
+      virtual char const *getMetadata(char const * key)
+      {
+        return getDFGExec().getNodeMetadata( getNodePath(), key );
+      }
 
-      virtual char const *getMetadata(char const * key) const;
-      virtual void setMetadata(char const * key, char const * metadata, bool canUndo);
+      virtual void setMetadata(char const * key, char const * metadata, bool canUndo)
+      {
+        return getDFGExec().setNodeMetadata(getNodePath(), key, metadata, canUndo);
+      }
 
-      NodePortList getPorts();
-      NodePortPtr getPort(char const * name);
-      NodePortPtr getPort(uint32_t index);
+      NodePortList getNodePorts();
+      NodePortPtr getNodePort(char const * portName);
+      NodePortPtr getNodePort(uint32_t index);
 
     protected:
       
       Node(
-        FabricCore::DFGBinding binding,
-        FabricCore::DFGExec parentExec,
+        FabricCore::DFGBinding const &dfgBinding,
         char const *execPath,
-        char const *nodePath
-        );
+        FabricCore::DFGExec const &dfgExec,
+        char const *nodeName
+        )
+        : Element(
+          dfgBinding,
+          execPath,
+          dfgExec,
+          nodeName
+          )
+      {
+      }
 
-    private:
-      std::string m_execPath;
     };
 
   };

@@ -23,29 +23,41 @@ namespace FabricServices
 
     public:
 
-      virtual bool isFunc() const { return true; }
+      virtual bool isFunc() { return true; }
 
       static FuncExecutablePtr Create(
-        FabricCore::DFGBinding binding,
-        FabricCore::DFGExec exec,
-        const char * funcPath
-      );
+        FabricCore::DFGBinding const &dfgBinding,
+        char const *execPath,
+        FabricCore::DFGExec const &dfgExec
+        )
+      {
+        return new FuncExecutable( dfgBinding, execPath, dfgExec );
+      }
 
-      virtual ~FuncExecutable();
+      virtual ~FuncExecutable()
+      {
+      }
 
-      char const *getFuncPath() const
-        { return getExecPath(); }
+      char const* getCode()
+      {
+        return getDFGExec().getCode();
+      }
 
-      char const* getCode();
-      void setCode(char const *code);
+      void setCode(char const *code)
+      {
+        getDFGExec().setCode(code);
+      }
 
     protected:
       
       FuncExecutable(
-        FabricCore::DFGBinding binding,
-        FabricCore::DFGExec exec,
-        const char * funcPath
-      );
+        FabricCore::DFGBinding const &dfgBinding,
+        char const *execPath,
+        FabricCore::DFGExec const &dfgExec
+        )
+        : Executable( dfgBinding, execPath, dfgExec )
+      {
+      }
 
     };
 

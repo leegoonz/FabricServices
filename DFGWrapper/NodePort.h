@@ -3,10 +3,6 @@
 #ifndef __DFGWrapper_NodePort__
 #define __DFGWrapper_NodePort__
 
-#include <FabricCore.h>
-#include <string>
-#include <vector>
-
 #include "Port.h"
 
 namespace FabricServices
@@ -14,13 +10,10 @@ namespace FabricServices
 
   namespace DFGWrapper
   {
+
     class Node;
     typedef FTL::SharedPtr<Node> NodePtr;
     typedef std::vector<NodePtr> NodeList;
-
-    class ExecPort;
-    typedef FTL::SharedPtr<ExecPort> ExecPortPtr;
-    typedef std::vector<ExecPortPtr> ExecPortList;
 
     class NodePort;
     typedef FTL::SharedPtr<NodePort> NodePortPtr;
@@ -28,49 +21,116 @@ namespace FabricServices
     
     class NodePort : public Port
     {
-      friend class Node;
-      friend class View;
-      friend class Port;
 
     public:
 
-      virtual bool isNodePort() const { return true; }
+      virtual bool isNodePort() { return true; }
 
-      static NodePortPtr Create(FabricCore::DFGBinding binding, FabricCore::DFGExec exec, char const * execPath, char const * nodePortPath);
-      virtual ~NodePort();
+      static NodePortPtr Create(
+        FabricCore::DFGBinding const &dfgBinding,
+        char const *execPath,
+        FabricCore::DFGExec const &dfgExec,
+        char const *nodeName,
+        char const *portName
+        );
 
-      char const *getNodePortPath() const
-        { return getPortPath(); }
-
-      virtual std::string getDesc();
-      virtual char const *getMetadata(char const * key) const;
-      virtual void setMetadata(char const * key, char const * value, bool canUndo = false);
-
-      virtual char const *getName() const
+      static NodePortPtr Create(
+        FabricCore::DFGBinding const &dfgBinding,
+        char const *execPath,
+        FabricCore::DFGExec const &dfgExec,
+        char const *portPath
+        )
       {
-        return FabricCore::DFGExec(getWrappedCoreExec()).getNodePortName(getNodePortPath());
+        return new NodePort(
+          dfgBinding,
+          execPath,
+          dfgExec,
+          portPath
+          );
       }
-      virtual char const *getResolvedType() const
+
+      virtual ~NodePort()
       {
-        char const * result = FabricCore::DFGExec(getWrappedCoreExec()).getNodePortResolvedType(getNodePortPath());
-        if(result)
-          return result;
-        return "";
       }
 
-      void addDebugNodePort();
-      FabricCore::RTVal getDebugNodePortValue();
-      void removeDebugNodePort();
+      virtual char const *getPortName()
+        { return m_portName.c_str(); }
 
-      virtual FabricCore::RTVal getDefaultValue( char const * dataType = NULL ) const;
-      virtual void setDefaultValue( FabricCore::RTVal const &value );
+      char const *getNodeName()
+        { return m_nodeName.c_str(); }
+
+      virtual std::string getDesc()
+      {
+        return getDFGExec().getNodePortDesc(getPortPath()).getCString();
+      }
+
+      virtual char const *getMetadata(char const * key)
+      {
+        return getDFGExec().getNodePortMetadata(getPortPath(), key);
+      }
+
+      virtual void setMetadata(
+        char const * key,
+        char const * value,
+        bool canUndo = false
+        )
+      {
+        getDFGExec().setNodePortMetadata(getPortPath(), key, value, canUndo);
+      }
+
+      virtual char const *getResolvedType()
+      {
+        char const * result =
+          getDFGExec().getNodePortResolvedType(getPortPath());
+        return result? result: "";
+      }
 
       NodePtr getNode();
-      ExecPortPtr getPort();
 
     protected:
       
-      NodePort(FabricCore::DFGBinding binding, FabricCore::DFGExec exec, char const * execPath, char const * nodePortPath);
+      NodePort(
+        FabricCore::DFGBinding const &dfgBinding,
+        char const *execPath,
+        FabricCore::DFGExec const &dfgExec,
+        char const *nodeName,
+        char const *portName
+        )
+        : Port(
+          dfgBinding,
+          execPath,
+          dfgExec,
+          nodeName,
+          portName
+          )
+        , m_nodeName(nodeName)
+        , m_portName(portName)
+      {
+      }
+
+      NodePort(
+        FabricCore::DFGBinding const &dfgBinding,
+        char const *execPath,
+        FabricCore::DFGExec const &dfgExec,
+        char const *portPath
+        )
+        : Port(
+          dfgBinding,
+          execPath,
+          dfgExec,
+          portPath
+          )
+      {
+        char const *dot = strchr( portPath, '.' );
+        unsigned nodeSize = dot - portPath;
+        m_nodeName = std::string( portPath, nodeSize );
+        m_portName = dot + 1;
+      }
+
+    private:
+
+      std::string m_nodeName;
+      std::string m_portName;
 
     };
 

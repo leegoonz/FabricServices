@@ -1,64 +1,38 @@
 // Copyright 2010-2015 Fabric Software Inc. All rights reserved.
 
-#include "Executable.h"
 #include "FuncExecutable.h"
 #include "GraphExecutable.h"
 
 using namespace FabricServices::DFGWrapper;
 
 ExecutablePtr Executable::Create(
-  FabricCore::DFGBinding binding,
-  FabricCore::DFGExec exec,
-  const char * execPath
+  FabricCore::DFGBinding const &dfgBinding,
+  char const *execPath,
+  FabricCore::DFGExec const &dfgExec
   )
 {
-  switch ( exec.getType() )
+  switch ( dfgExec.getType() )
   {
     case FabricCore::DFGExecType_Func:
-      return FuncExecutable::Create( binding, exec, execPath );
+      return FuncExecutable::Create( dfgBinding, execPath, dfgExec );
     case FabricCore::DFGExecType_Graph:
-      return GraphExecutable::Create( binding, exec, execPath );
+      return GraphExecutable::Create( dfgBinding, execPath, dfgExec );
     default:
       return ExecutablePtr();
   }
 }
 
-Executable::Executable(
-  FabricCore::DFGBinding binding,
-  FabricCore::DFGExec exec,
-  const char * execPath
-  )
-: Element(binding, exec, execPath)
+ExecutablePtr Executable::getSubExec(const char * relExecPath)
 {
-}
-
-Executable::~Executable()
-{
-}
-
-FabricCore::DFGExecType Executable::getExecType() const
-{
-  return m_exec.getType();
-}
-
-std::string Executable::getDesc()
-{
-  return m_exec.getDesc().getCString();
-}
-
-char const * Executable::getTitle()
-{
-  return m_exec.getTitle();
-}
-
-void Executable::setTitle(const char * title)
-{
-  m_exec.setTitle(title);
-}
-
-ExecutablePtr Executable::getSubExec(const char * subExecPath)
-{
-  return Executable::Create(m_binding, m_exec.getSubExec(subExecPath), subExecPath);
+  std::string absExecPath = getExecPath();
+  if ( !absExecPath.empty() )
+    absExecPath += '.';
+  absExecPath += relExecPath;
+  return Executable::Create(
+    getDFGBinding(),
+    absExecPath.c_str(),
+    getDFGExec().getSubExec(relExecPath)
+    );
 }
 
 std::vector<std::string> Executable::getErrors()
@@ -75,41 +49,6 @@ std::vector<std::string> Executable::getErrors()
     result.push_back(errorStr);
   }
   return result;
-}
-
-std::string Executable::exportJSON()
-{
-  return m_exec.exportJSON().getCString();
-}
-
-FEC_DFGCacheRule Executable::getCacheRule() const
-{
-  return m_exec.getCacheRule();
-}
-
-void Executable::setCacheRule(FEC_DFGCacheRule rule)
-{
-  m_exec.setCacheRule(rule);
-}
-
-char const *Executable::getMetadata(char const * key) const
-{
-  return FabricCore::DFGExec(m_exec).getMetadata(key);
-}
-
-void Executable::setMetadata(char const *key, char const * metadata, bool canUndo)
-{
-  return m_exec.setMetadata(key, metadata, canUndo);
-}
-
-void Executable::addExtensionDependency(char const * ext)
-{
-  m_exec.addExtDep(ext);
-}
-
-void Executable::removeExtensionDependency(char const * ext)
-{
-  m_exec.removeExtDep(ext);
 }
 
 uint32_t Executable::getNumExtensionDependencies()
@@ -165,60 +104,71 @@ std::string Executable::getExtensionDependencyVersion(uint32_t index)
   return "";
 }
 
-std::string Executable::getImportPathname()
+char const *Executable::getImportPathname()
 {
-  return m_exec.getImportPathname();
+  return getDFGExec().getImportPathname();
 }
 
 void Executable::setImportPathname( char const *importPathname )
 {
-  m_exec.setImportPathname(importPathname);
+  getDFGExec().setImportPathname(importPathname);
 }
 
-ExecPortList Executable::getPorts()
+ExecPortList Executable::getExecPorts()
 {
   ExecPortList result;
-  for(unsigned int i=0;i<m_exec.getExecPortCount();i++)
-  {
-    result.push_back(
-      new ExecPort( m_binding, m_exec, getExecPath(), m_exec.getExecPortName(i) )
-    );
-  }
+  unsigned execPortCount = getDFGExec().getExecPortCount();
+  result.reserve( execPortCount );
+  for(unsigned int i=0;i<execPortCount;i++)
+    result.push_back( getExecPort(i) );
   return result;
 }
 
-ExecPortPtr Executable::getPort(char const * portPath)
+ExecPortPtr Executable::getExecPort(char const * path)
 {
-  return new ExecPort(
-    m_binding,
-    m_exec,
+  return ExecPort::Create(
+    getDFGBinding(),
     getExecPath(),
-    portPath
-  );
+    getDFGExec(),
+    path
+    );
 }
 
-ExecPortPtr Executable::getPort(uint32_t index)
+ExecPortPtr Executable::getExecPort(uint32_t index)
 {
-  return getPorts()[index];
+  return ExecPort::Create(
+    getDFGBinding(),
+    getExecPath(),
+    getDFGExec(),
+    getDFGExec().getExecPortName( index )
+    );
 }
 
-ExecPortPtr Executable::addPort(char const *title, FabricCore::DFGPortType portType, char const *dataType)
+ExecPortPtr Executable::addExecPort(
+  char const *title,
+  FabricCore::DFGPortType portType,
+  char const *dataType
+  )
 {
-  char const *portPath = m_exec.addExecPort(title, portType, dataType);
-  return new ExecPort(m_binding, m_exec, getExecPath(), portPath);
+  return ExecPort::Create(
+    getDFGBinding(),
+    getExecPath(),
+    getDFGExec(),
+    getDFGExec().addExecPort(title, portType, dataType)
+    );
 }
 
-void Executable::removePort(char const * portPath)
+void Executable::removeExecPort(char const * portPath)
 {
-  m_exec.removeExecPort( portPath );
+  getDFGExec().removeExecPort( portPath );
 }
 
-void Executable::removePort(uint32_t index)
+void Executable::removeExecPort(uint32_t index)
 {
-  removePort(getPorts()[index]->getName());
+  getDFGExec().removeExecPort( index );
 }
 
 void Executable::attachPreset(char const *parentPresetPath, char const *desiredName)
 {
-  m_exec.attachPreset(parentPresetPath, desiredName);
+  getDFGExec().attachPreset(parentPresetPath, desiredName);
 }

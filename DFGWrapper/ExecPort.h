@@ -14,76 +14,124 @@ namespace FabricServices
 
   namespace DFGWrapper
   {
+
+    class ExecPort;
+    typedef FTL::SharedPtr<ExecPort> ExecPortPtr;
+    typedef std::vector<ExecPortPtr> ExecPortList;
+
     class ExecPort : public Port
     {
-      friend class Executable;
-      friend class View;
-      friend class Port;
 
     public:
 
-      virtual bool isExecPort() const { return true; }
+      virtual bool isExecPort() { return true; }
 
-      static ExecPortPtr Create(FabricCore::DFGBinding binding, FabricCore::DFGExec exec, char const * execPath, char const * portPath);
-
-      virtual ~ExecPort();
-
-      char const *getExecPortPath() const
-        { return getPortPath(); }
-
-      FabricCore::DFGPortType getOutsidePortType() const
+      static ExecPortPtr Create(
+        FabricCore::DFGBinding dfgBinding,
+        char const *execPath,
+        FabricCore::DFGExec dfgExec, 
+        char const *portName
+        )
       {
-        return FabricCore::DFGExec(getWrappedCoreExec()).getExecPortOutsidePortType(
-          getExecPortPath()
-        );
+        return new ExecPort(dfgBinding, execPath, dfgExec, portName);
       }
 
-      void setOutsidePortType(FabricCore::DFGPortType type)
+      virtual ~ExecPort()
       {
-        FabricCore::DFGExec(getWrappedCoreExec()).setExecPortOutsidePortType(getExecPortPath(), type);
       }
 
-      virtual std::string getDesc();
-      virtual char const *getMetadata(char const * key) const;
-      virtual void setMetadata(char const * key, char const * value, bool canUndo = false);
-
-      virtual char const *getName() const
+      FabricCore::DFGPortType getExecPortType()
       {
-        return FabricCore::DFGExec( m_exec ).getExecPortName( getExecPortPath() );
+        return getDFGExec().getExecPortType( getPortPath() );
       }
 
-      virtual char const *getResolvedType() const
+      void setExecPortType(FabricCore::DFGPortType type)
       {
-        char const * result = FabricCore::DFGExec(m_exec).getExecPortResolvedType(getExecPortPath());
-        if(result)
-          return result;
-        return "";
+        getDFGExec().setExecPortType(getPortPath(), type);
       }
 
-      virtual char const *getTypeSpec() const
+      virtual std::string getDesc()
       {
-        char const * result = FabricCore::DFGExec(m_exec).getExecPortTypeSpec(getExecPortPath());
-        if(result)
-          return result;
-        return "";
+        return getDFGExec().getExecPortDesc(getPortPath()).getCString();
+      }
+
+      virtual char const *getMetadata(char const * key)
+      {
+        return getDFGExec().getExecPortMetadata(getPortPath(), key);
+      }
+
+      virtual void setMetadata(
+        char const * key,
+        char const * value,
+        bool canUndo = false
+        )
+      {
+        getDFGExec().setExecPortMetadata(getPortPath(), key, value, canUndo);
+      }
+
+      virtual char const *getPortName()
+      {
+        return getPortPath();
+      }
+
+      virtual char const *getResolvedType()
+      {
+        char const * result =
+          getDFGExec().getExecPortResolvedType(getPortPath());
+        return result? result: "";
+      }
+
+      virtual char const *getTypeSpec()
+      {
+        char const * result =
+          getDFGExec().getExecPortTypeSpec(getPortPath());
+        return result? result: "";
       }
 
       virtual void setTypeSpec(char const * spec)
       {
-        m_exec.setExecPortTypeSpec(getExecPortPath(), spec);
+        getDFGExec().setExecPortTypeSpec(getPortPath(), spec);
       }
 
-      virtual char const *rename(char const * name);
+      char const *rename(char const * desiredName)
+      {
+        char const *actualNameCStr =
+          getDFGExec().renameExecPort(getPortPath(), desiredName);
+        updateElementPath( actualNameCStr );
+        return actualNameCStr;
+      }
 
-      virtual FabricCore::RTVal getDefaultValue( char const * dataType = NULL ) const;
-      virtual void setDefaultValue( FabricCore::RTVal const &value );
+      virtual FabricCore::RTVal getDefaultValue( char const * dataType = NULL )
+      {
+        return getDFGExec().getExecPortDefaultValue(getPortPath(), dataType);
+      }
 
-      virtual FabricCore::RTVal getArgValue();
-      virtual void setArgValue( FabricCore::RTVal const &value );
+      virtual void setDefaultValue( FabricCore::RTVal const &value )
+      {
+        getDFGExec().setExecPortDefaultValue(getPortPath(), value);
+      }
+
+      virtual FabricCore::RTVal getArgValue()
+      {
+        return getDFGBinding().getArgValue(getPortPath());
+      }
+
+      virtual void setArgValue( FabricCore::RTVal const &value )
+      {
+        getDFGBinding().setArgValue(getPortPath(), value);
+      }
 
     protected:
       
-      ExecPort(FabricCore::DFGBinding binding, FabricCore::DFGExec exec, char const * execPath, char const * portPath);
+      ExecPort(
+        FabricCore::DFGBinding dfgBinding,
+        char const *execPath,
+        FabricCore::DFGExec dfgExec,
+        char const *portName
+        )
+        : Port(dfgBinding, execPath, dfgExec, portName)
+      {
+      }
 
     };
 

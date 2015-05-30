@@ -50,7 +50,11 @@ void Binding::setArgValue(char const *name, FabricCore::RTVal value)
 
 ExecutablePtr Binding::getExecutable()
 {
-  return Executable::Create(m_binding, m_binding.getExec(), "");
+  return Executable::Create(
+    m_binding,
+    "",
+    m_binding.getExec()
+    );
 }
 
 void Binding::execute()
