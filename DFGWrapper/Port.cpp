@@ -1,30 +1,41 @@
 // Copyright 2010-2015 Fabric Software Inc. All rights reserved.
 
-#include "Port.h"
-#include "NodePort.h"
+#include "InstPort.h"
 #include "ExecPort.h"
 
 using namespace FabricServices::DFGWrapper;
 
 PortPtr Port::Create(
-  FabricCore::DFGBinding const &binding,
-  FabricCore::DFGExec const &exec,
+  FabricCore::DFGBinding const &dfgBinding,
   char const *execPath,
-  char const *endPointPath
+  FabricCore::DFGExec const &dfgExec,
+  char const *portPath
   )
 {
-  if ( strchr( endPointPath, '.' ) != 0 )
-    return new NodePort(
-      binding,
-      exec,
+  char const *dot = strchr( portPath, '.' );
+  if ( !!dot )
+  {
+    unsigned nodeSize = dot - portPath;
+    char *nodeName = static_cast<char *>( alloca( nodeSize + 1 ) );
+    memcpy( nodeName, portPath, nodeSize );
+    nodeName[nodeSize] = 0;
+
+    char const *portName = dot + 1;
+    return InstPort::Create(
+      dfgBinding,
       execPath,
-      endPointPath
+      dfgExec,
+      nodeName,
+      portName
       );
+  }
   else
-    return new ExecPort(
-      binding,
-      exec,
+  {
+    return ExecPort::Create(
+      dfgBinding,
       execPath,
-      endPointPath
+      dfgExec,
+      portPath
       );
+  }
 }

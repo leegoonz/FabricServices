@@ -20,38 +20,41 @@ namespace FabricServices
 
     class Element : public FTL::Shareable
     {
+
     public:
 
       // Element - Type
 
-      virtual bool isPort() const { return false; }
-      virtual bool isExecPort() const { return false; }
-      virtual bool isNodePort() const { return false; }
-      virtual bool isNode() const { return false; }
-      virtual bool isExec() const { return false; }
-      virtual bool isFunc() const { return false; }
-      virtual bool isGraph() const { return false; }
+      virtual bool isPort() { return false; }
+      virtual bool isExecPort() { return false; }
+      virtual bool isNodePort() { return false; }
+      virtual bool isInstPort() { return false; }
+      virtual bool isNode() { return false; }
+      virtual bool isInst() { return false; }
+      virtual bool isExec() { return false; }
+      virtual bool isFunc() { return false; }
+      virtual bool isGraph() { return false; }
 
       // Element - Accessors
 
-      FabricCore::DFGBinding const &getWrappedCoreBinding() const
-        { return m_binding; }
-      FabricCore::DFGExec const &getWrappedCoreExec() const
-        { return m_exec; }
-      FabricCore::DFGBinding &getWrappedCoreBinding()
-        { return m_binding; }
-      FabricCore::DFGExec &getWrappedCoreExec()
-        { return m_exec; }
-      FabricCore::DFGHost getHost() const
-        { return m_exec.getHost(); }
+      FabricCore::DFGHost getDFGHost()
+        { return m_dfgExec.getHost(); }
+
+      FabricCore::DFGBinding &getDFGBinding()
+        { return m_dfgBinding; }
+
+      FabricCore::DFGExec &getDFGExec()
+        { return m_dfgExec; }
+
+      char const *getExecPath()
+        { return m_execPath.c_str(); }
+      char const *getElementPath()
+        { return m_elementPath.c_str(); }
 
       // Element - Validity
 
-      virtual bool isValid() const
-        { return m_binding.isValid() && m_exec.isValid(); }
-
-      virtual char const *getElementPath() const
-        { return m_elementPath.c_str(); }
+      virtual bool isValid()
+        { return m_dfgBinding.isValid() && m_dfgExec.isValid(); }
 
       // Element - Desc
 
@@ -59,22 +62,26 @@ namespace FabricServices
 
       // Element - Metadata
 
-      bool hasMetadata(char const * key) const
+      bool hasMetadata(char const * key)
       {
         char const *value = getMetadata( key );
         return value && *value;
       }
 
-      virtual char const *getMetadata(char const * key) const = 0;
+      virtual char const *getMetadata(char const * key) = 0;
 
-      virtual void setMetadata(char const * key, char const * value, bool canUndo = false) = 0;
+      virtual void setMetadata(
+        char const * key,
+        char const * value,
+        bool canUndo = false
+        ) = 0;
 
       // Element - Options (JSON-encoded metadata)
 
-      bool hasOption(char const * key) const
+      bool hasOption(char const * key)
         { return hasMetadata( key ); }
 
-      FabricCore::Variant getOption(char const * key) const
+      FabricCore::Variant getOption(char const * key)
       {
         char const *value = getMetadata( key );
         if ( value[0] )
@@ -96,27 +103,54 @@ namespace FabricServices
       }
       
       Element(
-        FabricCore::DFGBinding const &binding,
-        FabricCore::DFGExec const &exec,
-        const char * elementPath
+        FabricCore::DFGBinding const &dfgBinding,
+        char const *execPath,
+        FabricCore::DFGExec const &dfgExec,
+        char const *elementPath
         )
-        : m_binding( binding )
-        , m_exec( exec )
+        : m_dfgBinding( dfgBinding )
+        , m_execPath( execPath )
+        , m_dfgExec( dfgExec )
         , m_elementPath( elementPath )
       {
       }
 
       Element(
-        Element const &other
+        FabricCore::DFGBinding const &dfgBinding,
+        char const *execPath,
+        FabricCore::DFGExec const &dfgExec,
+        char const *nodeName,
+        char const *portName
         )
-        : m_binding( other.m_binding )
-        , m_exec( other.m_exec )
-        , m_elementPath( other.m_elementPath )
+        : m_dfgBinding( dfgBinding )
+        , m_execPath( execPath )
+        , m_dfgExec( dfgExec )
       {
+        m_elementPath = nodeName;
+        m_elementPath += '.';
+        m_elementPath += portName;
       }
 
-      FabricCore::DFGBinding m_binding;
-      FabricCore::DFGExec m_exec;
+      void updateElementPath( char const *newElementPath )
+      {
+        m_elementPath = newElementPath;
+      }
+
+      void updateElementPath(
+        char const *newNodeName,
+        char const *newPortName 
+        )
+      {
+        m_elementPath = newNodeName;
+        m_elementPath += '.';
+        m_elementPath += newPortName;
+      }
+
+    private:
+
+      FabricCore::DFGBinding m_dfgBinding;
+      std::string m_execPath;
+      FabricCore::DFGExec m_dfgExec;
       std::string m_elementPath;
       
     };

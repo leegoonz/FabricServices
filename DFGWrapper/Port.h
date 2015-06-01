@@ -11,6 +11,7 @@ namespace FabricServices
 
   namespace DFGWrapper
   {
+
     class Port;
     typedef FTL::SharedPtr<Port> PortPtr;
     typedef std::vector<PortPtr> PortList;
@@ -21,107 +22,100 @@ namespace FabricServices
 
       static PortPtr Create(
         FabricCore::DFGBinding const &binding,
-        FabricCore::DFGExec const &exec,
         char const *execPath,
-        char const *endPointPath
+        FabricCore::DFGExec const &exec,
+        char const *portPath
         );
 
       // Element - Type
 
-      virtual bool isPort() const { return true; }
+      virtual bool isPort() { return true; }
 
       // Port - Accessors
 
-      char const *getPortPath() const
-        { return m_endPointPath.c_str(); }
+      char const *getPortPath()
+        { return getElementPath(); }
 
-      FabricCore::DFGPortType getInsidePortType() const
+      virtual char const *getPortName() = 0;
+
+      FabricCore::DFGPortType getNodePortType()
       {
-        return FabricCore::DFGExec(getWrappedCoreExec()).getInsidePortType(
-          getPortPath()
-        );
+        return getDFGExec().getNodePortType( getElementPath() );
       }
 
-      virtual char const *getName() const = 0;
-      virtual char const *getResolvedType() const = 0;
-
-      // Port - Default Values
-
-      virtual FabricCore::RTVal getDefaultValue( char const * dataType = NULL ) const = 0;
-      virtual void setDefaultValue( FabricCore::RTVal const &value ) = 0;
+      virtual char const *getResolvedType() = 0;
 
       // Port - Connections
 
-      bool canConnectTo( PortPtr dst ) const
+      bool canConnectTo( PortPtr dst )
       {
-        return getWrappedCoreExec().canConnectTo(
-          getPortPath(), dst->getPortPath()
+        return getDFGExec().canConnectTo(
+          getElementPath(), dst->getElementPath()
           );
       }
 
       void connectTo( PortPtr dst )
       {
-        getWrappedCoreExec().connectTo(
-          getPortPath(), dst->getPortPath()
+        getDFGExec().connectTo(
+          getElementPath(), dst->getElementPath()
         );
       }
 
       void disconnectFrom( PortPtr dst )
       {
-        getWrappedCoreExec().disconnectFrom(
-          getPortPath(), dst->getPortPath()
+        getDFGExec().disconnectFrom(
+          getElementPath(), dst->getElementPath()
         );
       }
 
       void disconnectFromAll()
       {
-        getWrappedCoreExec().disconnectFromAll(
-          getPortPath()
-        );
+        getDFGExec().disconnectFromAll( getElementPath() );
       }
 
-      bool isConnectedToAny() const
+      bool isConnectedToAny()
       {
-        return getWrappedCoreExec().isConnectedToAny(getPortPath());
+        return getDFGExec().isConnectedToAny( getElementPath() );
       }
 
     protected:
       
       Port(
-        FabricCore::DFGBinding const &binding,
-        FabricCore::DFGExec const &exec,
+        FabricCore::DFGBinding const &dfgBinding,
         char const *execPath,
-        char const *endPointPath
+        FabricCore::DFGExec const &dfgExec,
+        char const *portPath
         )
         : Element(
-          binding,
-          exec,
-          execPath
+          dfgBinding,
+          execPath,
+          dfgExec,
+          portPath
           )
-        , m_endPointPath( endPointPath )
       {
       }
-
-      Port(Port const & other)
+      
+      Port(
+        FabricCore::DFGBinding const &dfgBinding,
+        char const *execPath,
+        FabricCore::DFGExec const &dfgExec,
+        char const *nodeName,
+        char const *portName
+        )
         : Element(
-          other.m_binding,
-          other.m_exec,
-          other.getElementPath()
+          dfgBinding,
+          execPath,
+          dfgExec,
+          nodeName,
+          portName
           )
-        , m_endPointPath( other.m_endPointPath )
       {
       }
-
-    private:
-
-      mutable std::string m_name;
-      std::string m_endPointPath;
 
     };
 
   };
 
 };
-
 
 #endif // __DFGWrapper_Port__

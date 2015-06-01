@@ -27,54 +27,122 @@ namespace FabricServices
 
     public:
 
-      virtual bool isExec() const { return true; }
+      virtual bool isExec() { return true; }
 
-      static ExecutablePtr Create( FabricCore::DFGBinding binding, FabricCore::DFGExec exec, const char * execPath );
-      virtual ~Executable();
+      static ExecutablePtr Create(
+        FabricCore::DFGBinding const &dfgBinding,
+        char const *execPath,
+        FabricCore::DFGExec const &dfgExec
+        );
 
-      FabricCore::DFGExecType getExecType() const;
+      virtual ~Executable()
+      {
+      }
 
-      char const *getExecPath() const 
+      char const *getExecPath()
         { return getElementPath(); }
 
-      std::string getDesc();
+      FabricCore::DFGExecType getExecType()
+      {
+        return getDFGExec().getType();
+      }
+
+      virtual std::string getDesc()
+      {
+        return getDFGExec().getDesc().getCString();
+      }
       
-      char const * getTitle();
-      void setTitle(const char * title);
+      char const * getTitle()
+      {
+        return getDFGExec().getTitle();
+      }
+
+      void setTitle(const char * title)
+      {
+        getDFGExec().setTitle( title );
+      }
 
       ExecutablePtr getSubExec(const char * subExecPath);
 
-      ExecPortList getPorts();
-      ExecPortPtr getPort(char const * name);
-      ExecPortPtr getPort(uint32_t index);
-      ExecPortPtr addPort(char const *title, FabricCore::DFGPortType portType, char const *dataType = 0);
-      void removePort(char const * name);
-      void removePort(uint32_t index);
+      ExecPortPtr addExecPort(
+        char const *title,
+        FabricCore::DFGPortType portType,
+        char const *dataType = 0
+        );
 
-      FEC_DFGCacheRule getCacheRule() const;
-      void setCacheRule(FEC_DFGCacheRule rule);
+      ExecPortList getExecPorts();
+      ExecPortPtr getExecPort(char const * name);
+      ExecPortPtr getExecPort(uint32_t index);
+
+      void removeExecPort(char const * name);
+      void removeExecPort(uint32_t index);
+
+      FEC_DFGCacheRule getCacheRule()
+      {
+        return getDFGExec().getCacheRule();
+      }
+
+      void setCacheRule(FEC_DFGCacheRule rule)
+      {
+        getDFGExec().setCacheRule(rule);
+      }
 
       virtual std::vector<std::string> getErrors();
 
-      std::string exportJSON();
+      std::string exportJSON()
+      {
+        return getDFGExec().exportJSON().getCString();
+      }
 
-      virtual char const *getMetadata(char const * key) const;
-      virtual void setMetadata(char const * key, char const * metadata, bool canUndo);
+      virtual char const *getMetadata(char const * key)
+      {
+        return getDFGExec().getMetadata(key);
+      }
 
-      void addExtensionDependency(char const * ext);
-      void removeExtensionDependency(char const * ext);
+      virtual void setMetadata(
+        char const * key,
+        char const * metadata,
+        bool canUndo
+        )
+      {
+        return getDFGExec().setMetadata(key, metadata, canUndo);
+      }
+
+      void addExtensionDependency(char const * ext)
+      {
+        getDFGExec().addExtDep(ext);
+      }
+
+      void removeExtensionDependency(char const * ext)
+      {
+        getDFGExec().removeExtDep(ext);
+      }
+
       uint32_t getNumExtensionDependencies();
       std::string getExtensionDependencyName(uint32_t index);
       std::string getExtensionDependencyVersion(uint32_t index);
 
-      std::string getImportPathname();
+      char const *getImportPathname();
       void setImportPathname( char const *importPathname );
 
       void attachPreset(char const *parentPresetPath, char const *desiredName);
 
     protected:
       
-      Executable( FabricCore::DFGBinding binding, FabricCore::DFGExec exec, const char * execPath );
+      Executable(
+        FabricCore::DFGBinding const &dfgBinding,
+        char const *execPath,
+        FabricCore::DFGExec const &dfgExec
+        )
+        : Element(
+          dfgBinding,
+          execPath,
+          dfgExec,
+          ""
+          )
+      {
+      }
+
     };
 
   };

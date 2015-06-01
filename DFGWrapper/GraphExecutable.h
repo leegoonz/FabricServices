@@ -16,6 +16,10 @@ namespace FabricServices
     class GraphExecutable;
     typedef FTL::SharedPtr<GraphExecutable> GraphExecutablePtr;
 
+    class Inst;
+    typedef FTL::SharedPtr<Inst> InstPtr;
+    typedef std::vector<InstPtr> InstList;
+
     class GraphExecutable : public Executable
     {
       friend class Binding;
@@ -24,24 +28,29 @@ namespace FabricServices
 
     public:
 
-      virtual bool isGraph() const { return true; }
+      virtual bool isGraph() { return true; }
 
       static GraphExecutablePtr Create(
-        FabricCore::DFGBinding binding,
-        FabricCore::DFGExec exec,
-        const char * graphPath
-      );
-      virtual ~GraphExecutable();
+        FabricCore::DFGBinding const &dfgBinding,
+        char const *execPath,
+        FabricCore::DFGExec const &dfgExec
+        )
+      {
+        return new GraphExecutable( dfgBinding, execPath, dfgExec );
+      }
 
-      char const *getGraphPath() const { return getExecPath(); }
+      virtual ~GraphExecutable()
+      {
+      }
 
-      NodePtr addNodeFromPreset(char const * preset);
-      NodePtr addNodeWithNewGraph(char const * title = 0);
-      NodePtr addNodeWithNewFunc(char const * title = 0);
-      NodePtr addNodeFromJSON(char const * json);
+      InstPtr addInstFromPreset(char const * preset);
+      InstPtr addInstWithNewGraph(char const * title = 0);
+      InstPtr addInstWithNewFunc(char const * title = 0);
+      InstPtr addInstFromJSON(char const * json);
 
       NodeList getNodes();
       NodePtr getNode(char const * name);
+      NodePtr getNode(uint32_t index);
       void removeNode(NodePtr node);
 
       std::string exportNodesJSON(uint32_t nodeCount, char const * const *nodeNames);
@@ -60,10 +69,13 @@ namespace FabricServices
     protected:
       
       GraphExecutable(
-        FabricCore::DFGBinding binding,
-        FabricCore::DFGExec exec,
-        const char * graphPath
-      );
+        FabricCore::DFGBinding const &dfgBinding,
+        char const *execPath,
+        FabricCore::DFGExec const &dfgExec
+        )
+        : Executable( dfgBinding, execPath, dfgExec )
+      {
+      }
 
     };
 

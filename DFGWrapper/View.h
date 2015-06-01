@@ -24,14 +24,20 @@ namespace FabricServices
 
     public:
 
-      View();
-      View(GraphExecutablePtr graph);
+      View() {}
+
+      View(ExecutablePtr const &exec)
+        { setExec( exec ); }
+
       virtual ~View() {}
 
-      bool isValid() const;
+      bool isValid() const
+        { return !!m_exec && !!m_dfgView; }
 
-      void setGraph(GraphExecutablePtr graph);
-      GraphExecutablePtr getGraph();
+      ExecutablePtr const &getExec()
+        { return m_exec; }
+
+      void setExec(ExecutablePtr const &exec);
 
     protected:
       
@@ -61,12 +67,20 @@ namespace FabricServices
       virtual void onNodePortTypeChanged(NodePortPtr nodePort, FabricCore::DFGPortType nodePortType) = 0;
       virtual void onExecPortTypeChanged(ExecPortPtr port, FabricCore::DFGPortType portType) = 0;
 
+    protected:
+
+      void callback(char const * jsonCString, uint32_t jsonLength);
+
+      static void Callback(void * userData, char const * jsonCString, uint32_t jsonLength)
+      {
+        static_cast<View *>( userData )->callback( jsonCString, jsonLength );
+      }
+
     private:
 
-      static void callback(void * userData, char const * jsonCString, uint32_t jsonLength);
+      ExecutablePtr m_exec;
+      FabricCore::DFGView m_dfgView;
 
-      FabricCore::DFGView m_view;
-      GraphExecutablePtr m_graph;
     };
 
   };

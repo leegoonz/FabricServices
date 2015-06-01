@@ -10,11 +10,13 @@
 #include "Graph.h"
 #include "Binding.h"
 #include "Node.h"
+#include "Inst.h"
 #include "Executable.h"
 #include "FuncExecutable.h"
 #include "GraphExecutable.h"
 #include "ExecPort.h"
 #include "NodePort.h"
+#include "InstPort.h"
 #include "Connection.h"
 #include "View.h"
 
