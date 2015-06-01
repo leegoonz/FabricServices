@@ -24,6 +24,21 @@ NodePortPtr NodePort::Create(
     );
 }
 
+NodePortPtr NodePort::Create(
+  FabricCore::DFGBinding const &dfgBinding,
+  char const *execPath,
+  FabricCore::DFGExec const &dfgExec,
+  char const *portPath
+  )
+{
+  return InstPort::Create (
+    dfgBinding,
+    execPath,
+    dfgExec,
+    portPath
+    );
+}
+
 NodePtr NodePort::getNode()
 {
   return Inst::Create(

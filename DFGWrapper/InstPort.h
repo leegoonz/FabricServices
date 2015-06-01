@@ -46,6 +46,21 @@ namespace FabricServices
           );
       }
 
+      static InstPortPtr Create(
+        FabricCore::DFGBinding const &dfgBinding,
+        char const *execPath,
+        FabricCore::DFGExec const &dfgExec,
+        char const *portPath
+        )
+      {
+        return new InstPort(
+          dfgBinding,
+          execPath,
+          dfgExec,
+          portPath
+          );
+      }
+
       virtual ~InstPort()
       {
       }
@@ -85,8 +100,21 @@ namespace FabricServices
           nodeName,
           portName
           )
-      {
-      }
+        {}
+
+      InstPort(
+        FabricCore::DFGBinding const &dfgBinding,
+        char const *execPath,
+        FabricCore::DFGExec const &dfgExec,
+        char const *portPath
+        )
+        : NodePort(
+          dfgBinding,
+          execPath,
+          dfgExec,
+          portPath
+          )
+        {}
 
     };
 

@@ -39,15 +39,7 @@ namespace FabricServices
         char const *execPath,
         FabricCore::DFGExec const &dfgExec,
         char const *portPath
-        )
-      {
-        return new NodePort(
-          dfgBinding,
-          execPath,
-          dfgExec,
-          portPath
-          );
-      }
+        );
 
       virtual ~NodePort()
       {
