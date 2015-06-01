@@ -72,8 +72,13 @@ servicesFiles = []
 
 libName = 'FabricServices'
 if env['FABRIC_BUILD_OS'] == 'Windows': 
+  if env['FABRIC_BUILD_TYPE'] == 'Debug':
+    env.Append(CPPDEFINES = ['_DEBUG'])
+    env.Append(CPPDEFINES = ['_ITERATOR_DEBUG_LEVEL=2'])
+    opt_version += 'd'
+
   libName += '-MSVC-' + msvc_version + '-' + opt_version + '.lib'
-  env.Append(CCFLAGS = ['/'+opt_version.upper()])
+  env.Append(CCFLAGS = ['/'+opt_version[0:2].upper()+opt_version[2:]])
 
 servicesLib = env.StaticLibrary(libName, sources)
 servicesFiles += servicesLib
