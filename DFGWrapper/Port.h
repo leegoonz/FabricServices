@@ -80,7 +80,7 @@ namespace FabricServices
 
       // Port - defaultValues
 
-      virtual FabricCore::RTVal getDefaultValue( char const * dataType = NULL )
+      virtual FabricCore::RTVal getDefaultValue( char const * dataType )
       {
         return getDFGExec().getPortDefaultValue(getPortPath(), dataType);
       }
