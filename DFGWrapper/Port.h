@@ -78,6 +78,18 @@ namespace FabricServices
         return getDFGExec().isConnectedToAny( getElementPath() );
       }
 
+      // Port - defaultValues
+
+      virtual FabricCore::RTVal getDefaultValue( char const * dataType = NULL )
+      {
+        return getDFGExec().getPortDefaultValue(getPortPath(), dataType);
+      }
+
+      virtual void setDefaultValue( FabricCore::RTVal const &value )
+      {
+        getDFGExec().setPortDefaultValue(getPortPath(), value);
+      }
+
     protected:
       
       Port(
