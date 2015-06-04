@@ -2,7 +2,7 @@
 
 #include "KLTypeDesc.h"
 
-using namespace FabricServices::DFGWrapper;
+using namespace FabricServices::CodeCompletion;
 
 KLTypeDesc::KLTypeDesc(const std::string & type)
 {

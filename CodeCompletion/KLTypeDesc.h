@@ -1,14 +1,14 @@
 // Copyright 2010-2015 Fabric Software Inc. All rights reserved.
 
-#ifndef __DFGWrapper_KLTypeDesc__
-#define __DFGWrapper_KLTypeDesc__
+#ifndef __CodeCompletion_KLTypeDesc__
+#define __CodeCompletion_KLTypeDesc__
 
 #include <string>
 
 namespace FabricServices
 {
 
-  namespace DFGWrapper
+  namespace CodeCompletion
   {
     class KLTypeDesc
     {
@@ -40,4 +40,4 @@ namespace FabricServices
 };
 
 
-#endif // __DFGWrapper_KLTypeDesc__
+#endif // __CodeCompletion_KLTypeDesc__

@@ -5,13 +5,13 @@
 using namespace FabricServices::CodeCompletion;
 
 KLVariable::KLVariable(const std::string & name, const std::string & type)
-:DFGWrapper::KLTypeDesc(type)
+:KLTypeDesc(type)
 {
   m_name = name;
 }
 
 KLVariable::KLVariable(const std::string & name, const std::string & type, const std::string & arrayModifier)
-:DFGWrapper::KLTypeDesc(type, arrayModifier)
+:KLTypeDesc(type, arrayModifier)
 {
   m_name = name;
 }
