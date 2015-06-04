@@ -107,14 +107,13 @@ std::vector<Graph> & NameSpace::getGraphs(bool recursive)
   return m_graphsRecursive;
 }
 
-NameSpace NameSpace::addNameSpace(char const *displayName)
+NameSpace NameSpace::addNameSpace(char const *desiredName)
 {
-  std::string prefix = getPath();
-  if(prefix.length() > 0)
-    prefix += ".";
-
-  getWrappedCoreHost().addNamespace(getPath().c_str(), displayName);
-  return NameSpace(getWrappedCoreHost(), prefix + displayName);
+  std::string path = getPath();
+  if(path.length() > 0)
+    path += ".";
+  path += getWrappedCoreHost().addPresetDir(getPath().c_str(), desiredName);
+  return NameSpace(getWrappedCoreHost(), path);
 }
 
 void NameSpace::refresh()
