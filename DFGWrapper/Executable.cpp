@@ -170,5 +170,5 @@ void Executable::removeExecPort(uint32_t index)
 
 void Executable::attachPreset(char const *parentPresetPath, char const *desiredName)
 {
-  getDFGExec().attachPreset(parentPresetPath, desiredName);
+  getDFGExec().attachPresetFile(parentPresetPath, desiredName);
 }

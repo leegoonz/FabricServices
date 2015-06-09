@@ -101,18 +101,6 @@ namespace FabricServices
         return actualNameCStr;
       }
 
-      virtual FabricCore::RTVal getDefaultValue( char const * dataType = NULL )
-      {
-        // return getDFGExec().getExecPortDefaultValue(getPortPath(), dataType);
-        return FabricCore::RTVal();
-      }
-
-      virtual void setDefaultValue( FabricCore::RTVal const &value )
-      {
-        // todo
-        // getDFGExec().setExecPortDefaultValue(getPortPath(), value);
-      }
-
       virtual FabricCore::RTVal getArgValue()
       {
         return getDFGBinding().getArgValue(getPortPath());

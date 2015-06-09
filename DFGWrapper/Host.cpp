@@ -58,12 +58,12 @@ NameSpace & Host::getRootNameSpace()
 
 void Host::importJSON(char const *parentNameSpace, char const *json, char const *importPathname)
 {
-  m_host.importJSON(parentNameSpace, json, importPathname);
+  m_host.importPresetFileJSON(parentNameSpace, json, importPathname);
 }
 
 std::string Host::exportJSON(char const * execPath)
 {
-  return m_host.exportJSON(execPath).getCString();
+  return m_host.exportPresetJSON(execPath).getCString();
 }
 
 Binding Host::createBindingToNewGraph()
