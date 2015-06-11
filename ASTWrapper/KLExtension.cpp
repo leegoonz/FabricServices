@@ -40,7 +40,7 @@ KLExtension::KLExtension(const KLASTManager* astManager, const char * jsonFilePa
 {
   m_astManager = (KLASTManager*)astManager;
 
-  std::string jsonFilePathReplaced = FTL::PathNorm(jsonFilePath);
+  std::string jsonFilePathReplaced = jsonFilePath;
   std::pair<FTL::StrRef, FTL::StrRef> jsonFilePathSplit =
     FTL::PathSplit( jsonFilePathReplaced );
   m_name = jsonFilePathSplit.second;
