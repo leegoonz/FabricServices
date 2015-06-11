@@ -15,7 +15,6 @@ SConscript(
   dirs = [
     'Commands',
     'ASTWrapper',
-    'DFGWrapper',
     'CodeCompletion',
     'SplitSearch',
     ],
@@ -44,7 +43,6 @@ for msvc_version in msvc_versions:
         'dirs': [
           'Commands',
           'ASTWrapper',
-          'DFGWrapper',
           'CodeCompletion',
           # 'SplitSearch',
         ],
