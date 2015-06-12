@@ -84,12 +84,12 @@ KLExtension::KLExtension(const KLASTManager* astManager, const char * jsonFilePa
   {
     std::string klFilePath = klFileRelPaths[i];
     if ( !FTL::PathIsAbsolute( klFilePath ) )
-      klFilePath = FTL::PathJoin( jsonFilePathSplit.first, klFilePath );
+      klFilePath = FTL::PathJoin( jsonFilePathSplit.first, klFileRelPaths[i] );
 
     if ( !FTL::FSExists( klFilePath ) )
     {
       std::string message = "KLExtension: '" + m_name + "' uses a non existing KL file '";
-      message += klFilePath;
+      message += klFileRelPaths[i];
       message += "'.";
       throw(FabricCore::Exception(message.c_str()));
     }

@@ -47,7 +47,7 @@ std::string KLTypeDesc::getBaseType() const
 {
   if(!isRef())
     return getType();
-  return m_type.substr(4, m_type.length() - 6);
+  return m_type.substr(4, m_type.length() - 5);
 }
 
 const std::string & KLTypeDesc::getArrayModifier() const
