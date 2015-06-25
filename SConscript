@@ -14,6 +14,7 @@ if env['FABRIC_BUILD_OS'] == 'Darwin':
 SConscript(
   dirs = [
     'Commands',
+    'Persistence',
     'ASTWrapper',
     'CodeCompletion',
     'SplitSearch',

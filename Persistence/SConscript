@@ -1,0 +1,15 @@
+#
+# Copyright 2010-2015 Fabric Software Inc. All rights reserved.
+#
+
+Import('parentEnv')
+
+env = parentEnv.CloneSubStage('Commands')
+
+persistenceIncludeDir = env.Dir('.').dir.srcnode()
+persistenceFlags = {
+  'CPPPATH': [persistenceIncludeDir],
+}
+
+Export('persistenceIncludeDir', 'persistenceFlags')
+Return('persistenceFlags')
