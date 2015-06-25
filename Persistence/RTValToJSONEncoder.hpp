@@ -32,7 +32,7 @@ namespace FabricServices
           if(!rtVal.isObject())
             return false;
 
-          FabricCore::RTVal cast = FabricCore::RTVal::Create(context, "RTValToJSONEncoder", 1, &rtVal);
+          FabricCore::RTVal cast = FabricCore::RTVal::Construct(context, "RTValToJSONEncoder", 1, &rtVal);
           if(!cast.isValid())
             return false;
 
@@ -44,7 +44,9 @@ namespace FabricServices
           if(ref.size() == 0)
             return false;
           
+          append("\"");
           append(ref.c_str());
+          append("\"");
           return true;
         }
         catch(FabricCore::Exception e)
