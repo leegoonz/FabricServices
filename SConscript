@@ -43,6 +43,7 @@ for msvc_version in msvc_versions:
         'dirs': [
           'Commands',
           'ASTWrapper',
+          'Persistence',
           'CodeCompletion',
           # 'SplitSearch',
         ],
