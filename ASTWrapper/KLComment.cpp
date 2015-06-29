@@ -199,7 +199,7 @@ std::string KLComment::getSingleQualifierWithName(const char * qualifier, const 
 
   for(size_t i=0;i<lines.size();i++)
   {
-    int pos = lines[i].find(' ');
+    size_t pos = lines[i].find(' ');
     if(pos == std::string::npos)
       continue;
     if(lines[i].substr(0, pos) != name)
