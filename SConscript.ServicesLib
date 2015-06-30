@@ -8,6 +8,7 @@ Import('parentEnv', 'stageDir', 'dirs', 'capiSharedLibFlags', 'llvmFlags', 'msvc
 # todo: use visual studio 2013
 # env = parentEnv.CloneSubStage('FabricServices')
 env = Environment(MSVC_VERSION = msvc_version, TARGET_ARCH='x86_64')
+
 # env['ENV'] = parentEnv['ENV']
 env['FABRIC_BUILD_OS'] = parentEnv['FABRIC_BUILD_OS']
 env['FABRIC_BUILD_DIST'] = parentEnv['FABRIC_BUILD_DIST']
@@ -22,11 +23,19 @@ env.MergeFlags(capiSharedLibFlags)
 env.MergeFlags(llvmFlags)
 
 if env['FABRIC_BUILD_OS'] == 'Darwin':
+  env.Append(CCFLAGS = ['-Wall', '-Werror'])
   env.Append(CXXFLAGS = ['-std=c++03'])
   env.Append(CXXFLAGS = ['-stdlib=libstdc++'])
   env.Append(LINKFLAGS = ['-stdlib=libstdc++'])
 elif env['FABRIC_BUILD_OS'] == 'Linux':
-  env.Append(CCFLAGS = ['-fPIC'])
+  env.Append(CCFLAGS = ['-fPIC', '-Wall', '-Werror'])
+elif env['FABRIC_BUILD_OS'] == 'Windows':
+  env.Append(CCFLAGS = ['/EHsc', '/W2', '/wd4624', '/WX'])
+  env.Append(LINKFLAGS = ['/WX'])
+  if env['FABRIC_BUILD_TYPE'] == 'Debug':
+    env.Append(CCFLAGS = ['/Od'])
+  else:
+    env.Append(CCFLAGS = ['/Ox'])
 
 # disable for now, we'll build a static library for now
 # env.Append(CPPDEFINES = ['FABRICSERVICES_BUILDING'])
