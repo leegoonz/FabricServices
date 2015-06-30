@@ -140,6 +140,9 @@ servicesFlags = {
   'LIBS': [libName],
   }
 
-Export('servicesFlags', 'servicesIncludeDir', 'servicesFiles')
+suffix = msvc_version[0:2]
+locals()['servicesFlags' + suffix] = servicesFlags
+
+Export('servicesFlags', 'servicesFlags' + suffix, 'servicesIncludeDir', 'servicesFiles')
 
 Return('servicesFiles')
