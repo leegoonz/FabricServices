@@ -34,11 +34,13 @@ namespace FabricServices
             return false;
           if(!rtVal.isObject())
             return false;
+          if(rtVal.isNullObject())
+            return false;
 
           FabricCore::RTVal cast = FabricCore::RTVal::Construct(context, "RTValFromJSONDecoder", 1, &rtVal);
-          if(!cast.isValid())
-            return false;
           if(!cast.isInterface())
+            return false;
+          if(cast.isNullObject())
             return false;
 
           // by reducing the string we are cutting off the two quotes

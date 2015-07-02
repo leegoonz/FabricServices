@@ -31,9 +31,13 @@ namespace FabricServices
             return false;
           if(!rtVal.isObject())
             return false;
+          if(rtVal.isNullObject())
+            return false;
 
           FabricCore::RTVal cast = FabricCore::RTVal::Construct(context, "RTValToJSONEncoder", 1, &rtVal);
           if(!cast.isValid())
+            return false;
+          if(cast.isNullObject())
             return false;
           
           FabricCore::RTVal result = cast.callMethod("String", "convertToString", 0, 0);
