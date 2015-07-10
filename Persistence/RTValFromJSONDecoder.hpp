@@ -6,6 +6,7 @@
 #include <vector>
 #include <string>
 #include <FabricCore.h>
+#include <FTL/JSONDec.h>
 
 namespace FabricServices
 {
@@ -37,14 +38,30 @@ namespace FabricServices
           if(rtVal.isNullObject())
             return false;
 
+          std::string decodedString;
+          {
+            FTL::StrRef jsonStr( jsonData, jsonSize );
+            FTL::JSONStrWithLoc strWithLoc( jsonStr );
+            FTL::JSONDec jsonDec( strWithLoc );
+            FTL::JSONEnt jsonEnt;
+            if ( !jsonDec.getNext( jsonEnt )
+              || jsonEnt.getType() != jsonEnt.Type_String )
+              return false;
+            jsonEnt.stringAppendTo( decodedString );
+          }
+
           FabricCore::RTVal cast = FabricCore::RTVal::Construct(context, "RTValFromJSONDecoder", 1, &rtVal);
           if(!cast.isInterface())
             return false;
           if(cast.isNullObject())
             return false;
 
-          // by reducing the string we are cutting off the two quotes
-          FabricCore::RTVal data = FabricCore::RTVal::ConstructString(context, &jsonData[1], jsonSize-2);
+          FabricCore::RTVal data =
+            FabricCore::RTVal::ConstructString(
+              context,
+              decodedString.data(),
+              decodedString.size()
+              );
           FabricCore::RTVal result = cast.callMethod("Boolean", "convertFromString", 1, &data);
           if(!result.isValid())
             return false;

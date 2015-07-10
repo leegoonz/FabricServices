@@ -7,6 +7,7 @@
 #include <string>
 #include <FabricCore.h>
 #include <FTL/CStrRef.h>
+#include <FTL/JSONEnc.h>
 
 namespace FabricServices
 {
@@ -48,9 +49,14 @@ namespace FabricServices
           if(ref.size() == 0)
             return false;
           
-          append("\"");
-          append(ref.c_str());
-          append("\"");
+          std::string json;
+          {
+            FTL::JSONEnc<> jsonEnc( json );
+            FTL::JSONStringEnc<> jsonStringEnc( jsonEnc, ref );
+          }
+
+          append( json.c_str() );
+
           return true;
         }
         catch(FabricCore::Exception e)
