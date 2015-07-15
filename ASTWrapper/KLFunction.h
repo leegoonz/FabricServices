@@ -38,9 +38,12 @@ namespace FabricServices
       virtual uint32_t getParameterCount() const;
       virtual const KLParameter * getParameter(uint32_t index) const;
       virtual const KLCompoundStmt * getBody() const;
+      virtual int getFlags() const { return m_flags; }
+      virtual int getAccess() const { return m_access; }
 
       virtual bool hasUniqueName() const;
       virtual bool isMethod() const;
+      virtual bool isPrivate() const;
       virtual std::string getPrefix() const; // the prefix of the function *may* be something like 'Vec3.'
       virtual std::string getSuffix() const; // the suffix can be '!' or '?'
       virtual const char * getKLType() const;
@@ -53,6 +56,8 @@ namespace FabricServices
 
     private:
       
+      int m_flags;
+      int m_access;
       std::string m_name;
       mutable std::string m_label;
       std::string m_returnType;
