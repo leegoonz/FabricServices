@@ -22,11 +22,9 @@ KLFunction::KLFunction(const KLFile* klFile, JSONData data)
   else
     m_flags = 0;
 
-  JSONData accessVal = getDictValue("access");
-  if(accessVal)
-    m_access = accessVal->getSInt32();
-  else
-    m_access = 0;
+  const char * access = getStringDictValue("access");
+  if(access)
+    m_access = access;
 
   const char * returnType = getStringDictValue("returnType");
   if(returnType)
@@ -126,7 +124,7 @@ bool KLFunction::isMethod() const
 
 bool KLFunction::isPrivate() const
 {
-  return m_access > 1; // 2 == protected, 3 == private
+  return m_access == "private";
 }
 
 std::string KLFunction::getPrefix() const

@@ -39,7 +39,7 @@ namespace FabricServices
       virtual const KLParameter * getParameter(uint32_t index) const;
       virtual const KLCompoundStmt * getBody() const;
       virtual int getFlags() const { return m_flags; }
-      virtual int getAccess() const { return m_access; }
+      virtual const std::string & getAccess() const { return m_access; }
 
       virtual bool hasUniqueName() const;
       virtual bool isMethod() const;
@@ -56,9 +56,9 @@ namespace FabricServices
 
     private:
       
-      int m_flags;
-      int m_access;
       std::string m_name;
+      int m_flags;
+      std::string m_access;
       mutable std::string m_label;
       std::string m_returnType;
       std::string m_symbolName;
