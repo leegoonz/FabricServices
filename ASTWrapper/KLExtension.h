@@ -75,7 +75,7 @@ namespace FabricServices
       std::string m_filePath;
       Version m_version;
       std::vector<const KLFile*> m_files;
-      std::map<std::string, std::vector<std::string>> m_forwardDeclComments;
+      std::map< std::string, std::vector< std::string > > m_forwardDeclComments;
     };
 
   };
