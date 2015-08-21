@@ -31,6 +31,8 @@ namespace FabricServices
       virtual const char * getKLType() const = 0;
       virtual std::vector<const KLType*> getParents() const = 0;
 
+      virtual bool isForwardDecl() const = 0;
+
       uint32_t getMethodCount() const;
       const KLMethod * getMethod(uint32_t index) const;
       const KLMethod * getMethod(const char * labelOrName) const;

@@ -18,6 +18,7 @@ namespace FabricServices
     class KLComment : public KLDecl
     {
       friend class KLCommented;
+      friend class KLExtension;
       
     public:
       
@@ -42,15 +43,18 @@ namespace FabricServices
       std::string getRst() const;
       std::string getExample() const;
       std::string getContent() const;
+      std::vector<std::string> getContentAsVector() const;
 
     protected:
 
-      KLComment(const KLFile* klFile, JSONData data);
+      KLComment(const KLFile* klFile, const KLCommented * owner, JSONData data);
+      void appendToContent(std::vector<std::string> content) const;
 
     private:
 
       void gatherDoxygenContent() const;
 
+      const KLCommented * m_owner;
       mutable std::vector<std::string> m_content;
       mutable std::map<std::string, std::string> m_qualifiers;
     };

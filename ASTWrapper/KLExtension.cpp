@@ -399,4 +399,40 @@ std::vector<const KLOperator*> KLExtension::getOperators() const
   return result;
 }
 
+void KLExtension::storeForwardDeclComments(const KLType * klType)
+{
+  std::vector<std::string> content = klType->getComments()->getContentAsVector();
+  std::map<std::string, std::vector<std::string>>::iterator it;
+  it = m_forwardDeclComments.find(klType->getName());
+  if(it == m_forwardDeclComments.end())
+  {
+    m_forwardDeclComments.insert(std::pair<std::string, std::vector<std::string>>(
+      klType->getName(), content
+      ));
+  }
+  else
+  {
+    it->second.insert(it->second.end(), content.begin(), content.end());
+  }
 
+  std::vector<const KLType*> types = getTypes();
+  for(size_t i=0;i<types.size();i++)
+  {
+    if(types[i]->getName() == klType->getName())
+    {
+      consumeForwardDeclComments(types[i]);
+      return;
+    }
+  }
+}
+
+void KLExtension::consumeForwardDeclComments(const KLType * klType)
+{
+  std::map<std::string, std::vector<std::string>>::iterator it;
+  it = m_forwardDeclComments.find(klType->getName());
+  if(it == m_forwardDeclComments.end())
+    return;
+
+  klType->getComments()->appendToContent(it->second);
+  m_forwardDeclComments.erase(it);
+}

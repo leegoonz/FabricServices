@@ -24,12 +24,18 @@ namespace FabricServices
       virtual KLDeclType getDeclType() const;
       virtual bool isOfDeclType(KLDeclType type) const;
 
+      virtual bool isForwardDecl() const { return m_isForwardDecl; }
+
       virtual const char * getKLType() const;
       virtual std::vector<const KLType*> getParents() const;
 
     protected:
 
       KLInterface(const KLFile* klFile, JSONData data);
+
+    private:
+      bool m_isForwardDecl;
+
     };
 
   };

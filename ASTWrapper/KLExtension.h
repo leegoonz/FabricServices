@@ -61,6 +61,8 @@ namespace FabricServices
       KLExtension(const KLASTManager* astManager, const char * jsonFilePath);
       KLExtension(const KLASTManager* astManager, const char * name, const char * jsonContent, uint32_t numKLFiles, const char ** klContent);
       void parse();
+      void storeForwardDeclComments(const KLType * klType);
+      void consumeForwardDeclComments(const KLType * klType);
 
     private:
 
@@ -73,6 +75,7 @@ namespace FabricServices
       std::string m_filePath;
       Version m_version;
       std::vector<const KLFile*> m_files;
+      std::map<std::string, std::vector<std::string>> m_forwardDeclComments;
     };
 
   };

@@ -13,7 +13,8 @@ KLStruct::KLStruct(const KLFile* klFile, JSONData data)
     m_parentStructName = parentStructName;
 
   JSONData members = getArrayDictValue("members");
-  if(members)
+  m_isForwardDecl = members == NULL;
+  if(!m_isForwardDecl)
   {
     for(uint32_t i=0;i<members->getArraySize();i++)
     {

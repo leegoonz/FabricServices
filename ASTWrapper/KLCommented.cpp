@@ -10,12 +10,12 @@ KLCommented::KLCommented(const KLFile* klFile, JSONData data)
   JSONData preComments = getDictValue("preComments");
   if(preComments)
   {
-    m_comments = new KLComment(klFile, preComments);
+    m_comments = new KLComment(klFile, this, preComments);
   }
   else
   {
     FabricCore::Variant variant = FabricCore::Variant::CreateArray();
-    m_comments = new KLComment(klFile, &variant);
+    m_comments = new KLComment(klFile, this, &variant);
   }
 }
 

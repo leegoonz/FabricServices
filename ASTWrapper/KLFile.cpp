@@ -107,7 +107,16 @@ void KLFile::parse()
         else if(et == "ASTStructDecl")
         {
           KLStruct * e = new KLStruct(this, element);
-          m_types.push_back(e);
+          if(e->isForwardDecl())
+          {
+            m_extension->storeForwardDeclComments(e);
+            delete(e);
+          }
+          else
+          {
+            m_extension->consumeForwardDeclComments(e);
+            m_types.push_back(e);
+          }
         }
         else if(et == "MethodOpImpl")
         {
@@ -140,12 +149,30 @@ void KLFile::parse()
         else if(et == "ASTInterfaceDecl")
         {
           KLInterface * e = new KLInterface(this, element);
-          m_types.push_back(e);
+          if(e->isForwardDecl())
+          {
+            m_extension->storeForwardDeclComments(e);
+            delete(e);
+          }
+          else
+          {
+            m_extension->consumeForwardDeclComments(e);
+            m_types.push_back(e);
+          }
         }
         else if(et == "ASTObjectDecl")
         {
           KLObject * e = new KLObject(this, element);
-          m_types.push_back(e);
+          if(e->isForwardDecl())
+          {
+            m_extension->storeForwardDeclComments(e);
+            delete(e);
+          }
+          else
+          {
+            m_extension->consumeForwardDeclComments(e);
+            m_types.push_back(e);
+          }
         }
         else if(et == "ComparisonOpImpl" ||
           et == "AssignOpImpl" ||

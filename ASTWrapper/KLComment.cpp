@@ -1,6 +1,8 @@
 // Copyright 2010-2015 Fabric Software Inc. All rights reserved.
 
 #include "KLComment.h"
+#include "KLCommented.h"
+#include "KLStruct.h"
 
 #include <FTL/MatchChar.h>
 #include <FTL/MatchPrefix.h>
@@ -9,8 +11,9 @@
 
 using namespace FabricServices::ASTWrapper;
 
-KLComment::KLComment(const KLFile* klFile, JSONData data)
+KLComment::KLComment(const KLFile* klFile, const KLCommented * owner, JSONData data)
 : KLDecl(klFile, data)
+, m_owner(owner)
 {
   gatherDoxygenContent();
 }
@@ -99,6 +102,10 @@ bool KLComment::hasQualifier(const char * qualifier) const
   if(q.length() == 0)
     return true;
 
+  std::map<std::string, std::string>::iterator it = m_qualifiers.find(q);
+  if(it != m_qualifiers.end())
+    return true;
+
   for(uint32_t i=0;i<m_content.size();i++)
   {
     std::string l = m_content[i];
@@ -107,6 +114,19 @@ bool KLComment::hasQualifier(const char * qualifier) const
     if(l.substr(0, q.length()+1) == "\\"+q)
       return true;
   }
+
+  // check if the parents have some
+  if(m_owner->isOfDeclType(KLDeclType_Struct))
+  {
+    const KLStruct * klStruct = (const KLStruct *)m_owner;
+    std::vector<const KLType*> parents = klStruct->getParents();
+    for(size_t i=0;i<parents.size();i++)
+    {
+      if(parents[i]->getComments()->hasQualifier(qualifier))
+        return true;
+    }
+  }
+
   return false;
 }
 
@@ -160,10 +180,30 @@ std::string KLComment::getQualifier(const char * qualifier, const char * default
     }
   }
 
+  std::string result;
+
+  // check if any parent has something for us
+  if(content.size() == 0)
+  {
+    if(m_owner->isOfDeclType(KLDeclType_Struct))
+    {
+      const KLStruct * klStruct = (const KLStruct *)m_owner;
+      std::vector<const KLType*> parents = klStruct->getParents();
+      for(size_t i=0;i<parents.size();i++)
+      {
+        result = parents[i]->getComments()->getQualifier(qualifier);
+        if(result.length() > 0)
+        {
+          m_qualifiers.insert(std::pair<std::string, std::string>(q, result));
+          return result;          
+        }
+      }
+    }    
+  }
+
   if(content.size() == 0 && defaultResult)
     content.push_back(defaultResult);
 
-  std::string result;
   for(uint32_t i=0;i<content.size();i++)
   {
     if(i>0)
@@ -437,4 +477,14 @@ std::string KLComment::getContent() const
     result += m_content[i];
   }
   return result;
+}
+
+std::vector<std::string> KLComment::getContentAsVector() const
+{
+  return m_content;
+}
+
+void KLComment::appendToContent(std::vector<std::string> content) const
+{
+  m_content.insert(m_content.end(), content.begin(), content.end());
 }
