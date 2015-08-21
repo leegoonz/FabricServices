@@ -14,6 +14,8 @@ namespace FabricServices
 
   namespace ASTWrapper
   {
+    // forward declarations
+    class KLCommented;
 
     class KLComment : public KLDecl
     {
@@ -63,5 +65,6 @@ namespace FabricServices
 
 };
 
+#include "KLCommented.h"
 
 #endif // __ASTWrapper_KLComment__
