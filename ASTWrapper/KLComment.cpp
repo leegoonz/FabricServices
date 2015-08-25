@@ -89,7 +89,10 @@ bool KLComment::isEmpty() const
   return m_content.size() == 0;
 }
 
-bool KLComment::hasQualifier(const char * qualifier) const
+bool KLComment::hasQualifier(
+  const char * qualifier,
+  bool searchParents
+  ) const
 {
   std::string q;
   if(qualifier)
@@ -116,13 +119,17 @@ bool KLComment::hasQualifier(const char * qualifier) const
   }
 
   // check if the parents have some
-  if(m_owner->isOfDeclType(KLDeclType_Struct))
+  if ( searchParents
+    && m_owner->isOfDeclType(KLDeclType_Struct) )
   {
     const KLStruct * klStruct = (const KLStruct *)m_owner;
     std::vector<const KLType*> parents = klStruct->getParents();
     for(size_t i=0;i<parents.size();i++)
     {
-      if(parents[i]->getComments()->hasQualifier(qualifier))
+      if ( parents[i]->getComments()->hasQualifier(
+        qualifier,
+        searchParents
+        ) )
         return true;
     }
   }

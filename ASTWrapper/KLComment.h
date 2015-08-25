@@ -31,7 +31,10 @@ namespace FabricServices
 
       virtual bool isInternal() const;
       bool isEmpty() const;
-      bool hasQualifier(const char * qualifier) const;
+      bool hasQualifier(
+        const char * qualifier,
+        bool searchParents = true
+        ) const;
       std::string getQualifier(const char * qualifier = 0, const char * defaultResult = 0) const;
       std::string getSingleQualifier(const char * qualifier, const char * defaultResult = 0) const;
       std::string getSingleQualifierWithName(const char * qualifier, const char * name, const char * defaultResult = 0) const;
