@@ -31,6 +31,9 @@ void KLFile::parse()
     return;
   m_parsed = true;
 
+  // [andrew 20150909] GetKLJSONAST() doesn't work with DFG KL code, filed FE-5214
+  // to decide how best to address this later
+#if 0
   const FabricCore::Client * client = m_extension->getASTManager()->getClient();
 
   try
@@ -210,6 +213,7 @@ void KLFile::parse()
   {
     throw(e);
   }
+#endif
 }
 
 KLFile::~KLFile()
