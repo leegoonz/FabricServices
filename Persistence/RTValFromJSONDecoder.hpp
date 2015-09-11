@@ -70,7 +70,7 @@ namespace FabricServices
         }
         catch(FabricCore::Exception e)
         {
-          printf("decodeRTValToJSON: Hit exception: %s\n", e.getDesc_cstr());
+          printf("decodeRTValFromJSON: Hit exception: %s\n", e.getDesc_cstr());
         }
 
         return false;
