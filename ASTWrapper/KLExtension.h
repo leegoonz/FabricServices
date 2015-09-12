@@ -49,6 +49,7 @@ namespace FabricServices
       virtual std::vector<const KLConstant*> getConstants() const;
       virtual std::vector<const KLType*> getTypes() const;
       virtual std::vector<const KLFunction*> getFunctions() const;
+      virtual std::vector<const KLMethod*> getMethods() const;
       virtual std::vector<const KLOperator*> getOperators() const;
 
       // decl vector getter overloads

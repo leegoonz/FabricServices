@@ -355,6 +355,17 @@ std::vector<const KLFunction*> KLExtension::getFunctions() const
   return result;
 }
 
+std::vector<const KLMethod*> KLExtension::getMethods() const
+{
+  std::vector<const KLMethod*> result;
+  for(uint32_t i=0;i<m_files.size();i++)
+  {
+    std::vector<const KLMethod*> singleResult = m_files[i]->getMethods();
+    result.insert(result.end(), singleResult.begin(), singleResult.end());
+  }
+  return result;
+}
+
 std::vector<const KLInterface*> KLExtension::getInterfaces() const
 {
   std::vector<const KLInterface*> result;

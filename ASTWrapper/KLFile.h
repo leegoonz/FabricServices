@@ -39,6 +39,7 @@ namespace FabricServices
       virtual std::vector<const KLConstant*> getConstants() const;
       virtual std::vector<const KLType*> getTypes() const;
       virtual std::vector<const KLFunction*> getFunctions() const;
+      virtual std::vector<const KLMethod*> getMethods() const;
       virtual std::vector<const KLOperator*> getOperators() const;
       virtual std::vector<const KLError*> getErrors() const;
 
@@ -68,6 +69,7 @@ namespace FabricServices
       std::vector<const KLConstant*> m_constants;
       std::vector<const KLType*> m_types;
       std::vector<const KLFunction*> m_functions;
+      std::vector<const KLMethod*> m_methods;
       std::vector<const KLOperator*> m_operators;
       std::vector<const KLError*> m_errors;
     };

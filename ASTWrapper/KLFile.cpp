@@ -92,6 +92,8 @@ void KLFile::parse()
             KLMethod * m = new KLMethod(this, element, e->getName());
             if(!klType->pushMethod(m))
               m_functions.push_back(m);
+            else
+              m_methods.push_back(m);
             delete(e);
           }
           else
@@ -127,6 +129,8 @@ void KLFile::parse()
           {
             if(!klType->pushMethod(e))
               m_functions.push_back(e);
+            else
+              m_methods.push_back(e);
           }
           else
             m_functions.push_back(e);
@@ -294,6 +298,11 @@ std::vector<const KLType*> KLFile::getTypes() const
 std::vector<const KLFunction*> KLFile::getFunctions() const
 {
   return m_functions;
+}
+
+std::vector<const KLMethod*> KLFile::getMethods() const
+{
+  return m_methods;
 }
 
 std::vector<const KLInterface*> KLFile::getInterfaces() const
