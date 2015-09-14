@@ -38,7 +38,7 @@ bool KLCommented::isInternal() const
 {
   if(!getComments())
     return false;
-  return getComments()->hasQualifier("internal");
+  return getComments()->hasQualifier("internal", false);
 }
 
 const KLComment * KLCommented::getComments() const
