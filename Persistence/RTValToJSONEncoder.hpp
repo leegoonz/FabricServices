@@ -20,34 +20,35 @@ namespace FabricServices
 
     public:
 
-      virtual bool encodeRTValToJSON(
+      virtual FabricCore::RTValCodecResult encodeRTValToJSON(
         FabricCore::Context const &context,
         FabricCore::RTVal const &rtVal,
-        FabricCore::RTValToJSONEncoder::AppendFunctor const &append
+        FabricCore::RTValToJSONEncoder::AppendFunctor const &append,
+        FabricCore::RTValToJSONEncoder::MetadataLookupFunctor const &metadataLookup
         )
       {
         try
         {
           if(!rtVal.isValid())
-            return false;
+            return FabricCore::RTValCodecResult_Accept_Pending;
           if(!rtVal.isObject())
-            return false;
+            return FabricCore::RTValCodecResult_Accept_Pending;
           if(rtVal.isNullObject())
-            return false;
+            return FabricCore::RTValCodecResult_Accept_Pending;
 
           FabricCore::RTVal cast = FabricCore::RTVal::Construct(context, "RTValToJSONEncoder", 1, &rtVal);
           if(!cast.isValid())
-            return false;
+            return FabricCore::RTValCodecResult_Accept_Pending;
           if(cast.isNullObject())
-            return false;
+            return FabricCore::RTValCodecResult_Accept_Pending;
           
           FabricCore::RTVal result = cast.callMethod("String", "convertToString", 0, 0);
           if(!result.isValid())
-            return false;
+            return FabricCore::RTValCodecResult_Accept_Pending;
 
           FTL::CStrRef ref = result.getStringCString();
           if(ref.size() == 0)
-            return false;
+            return FabricCore::RTValCodecResult_Accept_Pending;
           
           std::string json;
           {
@@ -57,13 +58,13 @@ namespace FabricServices
 
           append( json.c_str() );
 
-          return true;
+          return FabricCore::RTValCodecResult_Accept_Complete;
         }
         catch(FabricCore::Exception e)
         {
           printf("encodeRTValToJSON: Hit exception: %s\n", e.getDesc_cstr());
         }
-        return false;
+        return FabricCore::RTValCodecResult_Accept_Pending;
       }
 
     };

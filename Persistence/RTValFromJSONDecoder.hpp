@@ -19,24 +19,25 @@ namespace FabricServices
 
     public:
 
-      virtual bool decodeRTValFromJSON(
+      virtual FabricCore::RTValCodecResult decodeRTValFromJSON(
         FabricCore::Context const &context,
         FabricCore::RTVal &rtVal,
         char const *jsonData,
-        uint32_t jsonSize
+        uint32_t jsonSize,
+        FabricCore::RTValFromJSONDecoder::MetadataLookupFunctor const &metadataLookup
         )
       {
         if(jsonSize <= 2)
-          return false;
+          return FabricCore::RTValCodecResult_Accept_Pending;
 
         try
         {
           if(!rtVal.isValid())
-            return false;
+            return FabricCore::RTValCodecResult_Accept_Pending;
           if(!rtVal.isObject())
-            return false;
+            return FabricCore::RTValCodecResult_Accept_Pending;
           if(rtVal.isNullObject())
-            return false;
+            return FabricCore::RTValCodecResult_Accept_Pending;
 
           std::string decodedString;
           {
@@ -46,15 +47,15 @@ namespace FabricServices
             FTL::JSONEnt jsonEnt;
             if ( !jsonDec.getNext( jsonEnt )
               || jsonEnt.getType() != jsonEnt.Type_String )
-              return false;
+              return FabricCore::RTValCodecResult_Accept_Pending;
             jsonEnt.stringAppendTo( decodedString );
           }
 
           FabricCore::RTVal cast = FabricCore::RTVal::Construct(context, "RTValFromJSONDecoder", 1, &rtVal);
           if(!cast.isInterface())
-            return false;
+            return FabricCore::RTValCodecResult_Accept_Pending;
           if(cast.isNullObject())
-            return false;
+            return FabricCore::RTValCodecResult_Accept_Pending;
 
           FabricCore::RTVal data =
             FabricCore::RTVal::ConstructString(
@@ -64,16 +65,18 @@ namespace FabricServices
               );
           FabricCore::RTVal result = cast.callMethod("Boolean", "convertFromString", 1, &data);
           if(!result.isValid())
-            return false;
+            return FabricCore::RTValCodecResult_Accept_Pending;
 
-          return result.getBoolean();
+          return result.getBoolean()?
+            FabricCore::RTValCodecResult_Accept_Complete:
+            FabricCore::RTValCodecResult_Accept_Pending;
         }
         catch(FabricCore::Exception e)
         {
           printf("decodeRTValFromJSON: Hit exception: %s\n", e.getDesc_cstr());
         }
 
-        return false;
+        return FabricCore::RTValCodecResult_Accept_Pending;
       }
 
     };
