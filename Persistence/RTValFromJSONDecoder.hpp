@@ -22,6 +22,7 @@ namespace FabricServices
       virtual FabricCore::RTValCodecResult decodeRTValFromJSON(
         FabricCore::Context const &context,
         FabricCore::RTVal &rtVal,
+        FabricCore::RTValCodecContext codecContext,
         char const *jsonData,
         uint32_t jsonSize,
         FabricCore::RTValFromJSONDecoder::MetadataLookupFunctor const &metadataLookup
@@ -32,6 +33,9 @@ namespace FabricServices
 
         try
         {
+          // DFG_METADATA_UIPERSISTVALUE was checked only when encoding binding args.
+          // Here, we always decode if the value exists.
+
           if(!rtVal.isValid())
             return FabricCore::RTValCodecResult_Accept_Pending;
           if(!rtVal.isObject())

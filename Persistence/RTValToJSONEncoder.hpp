@@ -9,6 +9,10 @@
 #include <FTL/CStrRef.h>
 #include <FTL/JSONEnc.h>
 
+#include <iostream>
+
+#define DFG_METADATA_UIPERSISTVALUE "uiPersistValue"
+
 namespace FabricServices
 {
 
@@ -23,12 +27,21 @@ namespace FabricServices
       virtual FabricCore::RTValCodecResult encodeRTValToJSON(
         FabricCore::Context const &context,
         FabricCore::RTVal const &rtVal,
+        FabricCore::RTValCodecContext codecContext,
         FabricCore::RTValToJSONEncoder::AppendFunctor const &append,
         FabricCore::RTValToJSONEncoder::MetadataLookupFunctor const &metadataLookup
         )
       {
         try
         {
+          // We always persist if codecContext == FabricCore::RTValCodecContext_DefaultValue
+          // If codecContext == FabricCore::RTValCodecContext_BindingArgument, we persist
+          // only if there is the DFG_METADATA_UIPERSISTVALUE metadata.
+          if(    codecContext == FabricCore::RTValCodecContext_BindingArgument 
+              && metadataLookup
+              && strcmp( metadataLookup( DFG_METADATA_UIPERSISTVALUE ), "true" ) != 0 )
+            return FabricCore::RTValCodecResult_Reject;
+
           if(!rtVal.isValid())
             return FabricCore::RTValCodecResult_Accept_Pending;
           if(!rtVal.isObject())
