@@ -11,10 +11,10 @@ env = Environment(MSVC_VERSION = msvc_version, TARGET_ARCH='x86_64')
 
 # env['ENV'] = parentEnv['ENV']
 env['FABRIC_BUILD_OS'] = parentEnv['FABRIC_BUILD_OS']
-env['FABRIC_BUILD_DIST'] = parentEnv['FABRIC_BUILD_DIST']
+# env['FABRIC_BUILD_DIST'] = parentEnv['FABRIC_BUILD_DIST']
 env['FABRIC_BUILD_ARCH'] = parentEnv['FABRIC_BUILD_ARCH']
 env['FABRIC_BUILD_TYPE'] = parentEnv['FABRIC_BUILD_TYPE']
-env['TARGET_ARCH'] = parentEnv['TARGET_ARCH']
+# env['TARGET_ARCH'] = parentEnv['TARGET_ARCH']
 env['FABRIC_VERSION_MAJ'] = parentEnv['FABRIC_VERSION_MAJ']
 env['FABRIC_VERSION_MIN'] = parentEnv['FABRIC_VERSION_MIN']
 env['FABRIC_VERSION_REV'] = parentEnv['FABRIC_VERSION_REV']
@@ -79,6 +79,7 @@ includeDir = stageDir.Dir('include').Dir('FabricServices')
 servicesFiles = []
 # servicesLib = env.SharedLibrary('FabricServices', sources)
 
+suffix = ''
 libName = 'FabricServices'
 if env['FABRIC_BUILD_OS'] == 'Windows': 
   if env['FABRIC_BUILD_TYPE'] == 'Debug':
@@ -88,6 +89,7 @@ if env['FABRIC_BUILD_OS'] == 'Windows':
 
   libName += '-MSVC-' + msvc_version + '-' + opt_version + '.lib'
   env.Append(CCFLAGS = ['/'+opt_version[0:2].upper()+opt_version[2:]])
+  suffix = msvc_version[0:2]
 
 servicesLib = env.StaticLibrary(libName, sources)
 servicesFiles += servicesLib
@@ -140,7 +142,6 @@ servicesFlags = {
   'LIBS': [libName],
   }
 
-suffix = msvc_version[0:2]
 locals()['servicesFlags' + suffix] = servicesFlags
 
 Export('servicesFlags', 'servicesFlags' + suffix, 'servicesIncludeDir', 'servicesFiles')
